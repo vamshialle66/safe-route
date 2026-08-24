@@ -1,0 +1,230 @@
+import { useState, type ReactNode } from "react";
+import { Link, useRouterState } from "@tanstack/react-router";
+import {
+  Bell,
+  Compass,
+  History,
+  LayoutDashboard,
+  LifeBuoy,
+  Map,
+  Menu,
+  Bookmark,
+  Search,
+  Settings,
+  User,
+  X,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Logo } from "@/components/brand/Logo";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { MOCK_USER } from "@/data/mockData";
+
+interface NavItem {
+  to: string;
+  label: string;
+  icon: LucideIcon;
+}
+
+const MAIN_NAV: NavItem[] = [
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/route-planner", label: "Plan Route", icon: Compass },
+  { to: "/routes", label: "Route Comparison", icon: Map },
+  { to: "/recent-trips", label: "Route History", icon: History },
+  { to: "/saved-routes", label: "Saved Routes", icon: Bookmark },
+  { to: "/safety-map", label: "Safety Map", icon: Map },
+  { to: "/emergency", label: "Emergency", icon: LifeBuoy },
+  { to: "/notifications", label: "Notifications", icon: Bell },
+];
+
+const BOTTOM_NAV: NavItem[] = [
+  { to: "/profile", label: "Profile", icon: User },
+  { to: "/settings", label: "Settings", icon: Settings },
+];
+
+const MOBILE_NAV: NavItem[] = [
+  { to: "/dashboard", label: "Home", icon: LayoutDashboard },
+  { to: "/route-planner", label: "Plan", icon: Compass },
+  { to: "/routes", label: "Routes", icon: Map },
+  { to: "/safety-map", label: "Safety", icon: LifeBuoy },
+  { to: "/profile", label: "Profile", icon: User },
+];
+
+function SidebarLink({ item, onNavigate }: { item: NavItem; onNavigate?: () => void }) {
+  const Icon = item.icon;
+  return (
+    <Link
+      to={item.to}
+      onClick={onNavigate}
+      className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-sidebar-foreground/75 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+      activeProps={{
+        className: "bg-sidebar-accent text-sidebar-accent-foreground font-medium",
+      }}
+      activeOptions={{ exact: item.to === "/routes" }}
+    >
+      <Icon className="size-4 shrink-0" aria-hidden="true" />
+      {item.label}
+    </Link>
+  );
+}
+
+function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
+  return (
+    <div className="flex h-full flex-col bg-sidebar">
+      <div className="px-5 py-5">
+        <Link to="/" aria-label="SafeRoute home" onClick={onNavigate}>
+          <Logo variant="inverted" />
+        </Link>
+      </div>
+      <nav aria-label="App sections" className="flex-1 space-y-1 overflow-y-auto px-3">
+        {MAIN_NAV.map((item) => (
+          <SidebarLink key={item.to} item={item} onNavigate={onNavigate} />
+        ))}
+      </nav>
+      <div className="space-y-1 border-t border-sidebar-border p-3">
+        {BOTTOM_NAV.map((item) => (
+          <SidebarLink key={item.to} item={item} onNavigate={onNavigate} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function AppLayout({
+  children,
+  title,
+  description,
+  actions,
+  fullBleed = false,
+}: {
+  children: ReactNode;
+  title: string;
+  description?: string;
+  actions?: ReactNode;
+  fullBleed?: boolean;
+}) {
+  const [drawer, setDrawer] = useState(false);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  return (
+    <div className="min-h-screen bg-background">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-sidebar-border lg:block">
+        <SidebarContent />
+      </aside>
+
+      {drawer && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <button
+            type="button"
+            className="absolute inset-0 bg-foreground/40"
+            aria-label="Close navigation"
+            onClick={() => setDrawer(false)}
+          />
+          <div className="absolute inset-y-0 left-0 w-72 shadow-lift">
+            <SidebarContent onNavigate={() => setDrawer(false)} />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-2 top-4 text-sidebar-foreground"
+              onClick={() => setDrawer(false)}
+              aria-label="Close navigation"
+            >
+              <X className="size-4" />
+            </Button>
+          </div>
+        </div>
+      )}
+
+      <div className="lg:pl-64">
+        <header className="sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur">
+          <div className="flex h-16 items-center gap-3 px-4 sm:px-6">
+            <Button
+              variant="outline"
+              size="icon"
+              className="lg:hidden"
+              onClick={() => setDrawer(true)}
+              aria-label="Open navigation"
+            >
+              <Menu className="size-4" />
+            </Button>
+
+            <div className="relative hidden max-w-sm flex-1 sm:block">
+              <Search
+                className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                aria-hidden="true"
+              />
+              <Input
+                placeholder="Search places, routes, saved trips"
+                className="h-10 pl-9"
+                aria-label="Search"
+              />
+            </div>
+
+            <div className="ml-auto flex items-center gap-2">
+              <Button asChild variant="ghost" size="icon" aria-label="Notifications">
+                <Link to="/notifications">
+                  <span className="relative">
+                    <Bell className="size-5" />
+                    <span className="absolute -right-0.5 -top-0.5 size-2 rounded-full bg-risk" />
+                  </span>
+                </Link>
+              </Button>
+              <Button asChild variant="ghost" size="icon" aria-label="Profile">
+                <Link to="/profile">
+                  <span className="grid size-8 place-items-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
+                    {MOCK_USER.initials}
+                  </span>
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </header>
+
+        <main
+          key={pathname}
+          className={cn(
+            "animate-fade-up pb-24 lg:pb-10",
+            fullBleed ? "" : "mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:py-8",
+          )}
+        >
+          {!fullBleed && (
+            <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <h1 className="font-display text-2xl font-semibold sm:text-3xl">{title}</h1>
+                {description && (
+                  <p className="mt-1.5 max-w-2xl text-sm text-muted-foreground">{description}</p>
+                )}
+              </div>
+              {actions}
+            </div>
+          )}
+          {children}
+        </main>
+      </div>
+
+      <nav
+        aria-label="Mobile navigation"
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 backdrop-blur lg:hidden"
+      >
+        <ul className="grid grid-cols-5">
+          {MOBILE_NAV.map((item) => {
+            const Icon = item.icon;
+            return (
+              <li key={item.to}>
+                <Link
+                  to={item.to}
+                  className="flex flex-col items-center gap-1 py-2.5 text-[11px] text-muted-foreground transition-colors"
+                  activeProps={{ className: "text-primary font-medium" }}
+                >
+                  <Icon className="size-5" aria-hidden="true" />
+                  {item.label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+    </div>
+  );
+}
