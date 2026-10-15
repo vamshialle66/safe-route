@@ -145,7 +145,7 @@ function TrustedContacts() {
             onSubmit={(e) => {
               e.preventDefault();
               const n = name.trim(), p = phone.trim();
-              if (!n || !/^[+\d][\d\s-]{2,19}$/.test(p)) return toast.error("Enter a name and a valid phone number");
+              if (!n || !/^[+\d][\d\s-]{2,19}$/.test(p)) { toast.error("Enter a name and a valid phone number"); return; }
               add.mutate(
                 { name: n.slice(0, 80), phone: p, relation: relation.trim().slice(0, 40) },
                 {

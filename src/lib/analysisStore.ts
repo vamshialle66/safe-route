@@ -62,7 +62,7 @@ export interface SavedItem {
   name: string;
   savedAt: string;
   /** Copy of the trip so saved routes never expire. */
-  analysis?: Analysis;
+  analysis?: Analysis | undefined;
 }
 
 let syncUser: string | null = null;
