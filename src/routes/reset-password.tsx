@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { AuthShell } from "@/components/layout/AuthShell";
@@ -25,6 +25,18 @@ function ResetPage() {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const code = url.searchParams.get("code");
+    if (code) void supabase.auth.exchangeCodeForSession(code).then(() => setReady(true));
+    supabase.auth.getSession().then(({ data }) => data.session && setReady(true));
+    const { data } = supabase.auth.onAuthStateChange((event, s) => {
+      if (event === "PASSWORD_RECOVERY" || s) setReady(true);
+    });
+    const t = setTimeout(() => setReady((r) => { if (!r) setError("This reset link is invalid or has expired. Request a new one from the login page."); return r; }), 6000);
+    return () => { data.subscription.unsubscribe(); clearTimeout(t); };
+  }, []);
   return (
     <AuthShell title="Choose a new password" subtitle="Enter a new password for your account.">
       <form
@@ -32,6 +44,7 @@ function ResetPage() {
         onSubmit={async (e) => {
           e.preventDefault();
           if (password.length < 6) return setError("Password must be at least 6 characters.");
+          if (!ready) return setError("Still verifying your reset link — wait a second and try again.");
           const { error } = await supabase.auth.updateUser({ password });
           if (error) return setError(error.message);
           toast.success("Password updated");
