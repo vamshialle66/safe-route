@@ -1,3 +1,7 @@
+import { RouteMap } from "@/components/map/RouteMap";
+import { IndexRing } from "@/components/route/IndexPill";
+import { demoSegments } from "@/lib/demoAnalysis";
+import { SAMPLE_DESTINATION, SAMPLE_ORIGIN } from "@/lib/geocode";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
@@ -52,79 +56,79 @@ const STEPS = [
 
 const FACTOR_ICONS = [Lightbulb, ShieldCheck, Users, RouteIcon, MapPinned, Gauge];
 
+const HERO = demoSegments(SAMPLE_ORIGIN, SAMPLE_DESTINATION, "WALK");
+
 function LandingPage() {
   const safest = MOCK_ROUTES[0]!;
 
   return (
     <PublicLayout>
       {/* HERO */}
-      <section className="relative overflow-hidden border-b border-border">
-        <div className="pointer-events-none absolute inset-x-0 -top-40 h-96 bg-primary/8 blur-3xl" aria-hidden="true" />
-        <div className="relative mx-auto grid w-full max-w-7xl gap-12 px-4 py-14 sm:px-6 lg:grid-cols-[1fr_1.05fr] lg:items-center lg:px-8 lg:py-24">
-          <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-soft">
-              <ShieldCheck className="size-3.5 text-primary" aria-hidden="true" />
-              Safety-scored navigation
+      <section className="relative overflow-hidden bg-hero text-sidebar-accent-foreground">
+        <div className="pointer-events-none absolute inset-0 bg-grid" aria-hidden="true" />
+        <div className="relative mx-auto grid w-full max-w-7xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_1.1fr] lg:items-center lg:px-8 lg:py-24">
+          <div className="animate-fade-up">
+            <span className="glass-dark inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium">
+              <span className="relative flex size-2">
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-safe opacity-75" />
+                <span className="relative inline-flex size-2 rounded-full bg-safe" />
+              </span>
+              Scoring every 100 m of your journey
             </span>
-            <h1 className="mt-6 text-4xl font-semibold leading-[1.08] sm:text-5xl lg:text-6xl">
-              <span className="text-gradient-brand">Your destination matters.</span>
-              <br />
-              So does how you get there.
+            <h1 className="mt-6 text-4xl font-semibold leading-[1.05] sm:text-6xl lg:text-7xl">
+              Take the
+              <span className="relative mx-3 inline-block text-sidebar-primary">
+                livelier
+                <svg viewBox="0 0 200 12" className="absolute -bottom-2 left-0 w-full" aria-hidden="true"><path d="M2 9 Q 100 -2 198 8" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /></svg>
+              </span>
+              way home.
             </h1>
-            <p className="mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
-              SafeRoute helps you compare routes using safety, distance and travel time — so you can
-              make more informed travel decisions.
+            <p className="mt-6 max-w-xl text-base text-sidebar-foreground/80 sm:text-lg">
+              SafeRoute compares every route to your destination and shows, stretch by stretch, how many shops, cafés and services along the way are open right now.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild size="lg">
+              <Button asChild size="lg" className="bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90">
                 <Link to="/route-planner">
-                  Plan a Safe Route
+                  Plan a route
                   <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link to="/how-it-works">How It Works</Link>
+              <Button asChild size="lg" variant="outline" className="glass-dark border-0 text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+                <Link to="/how-it-works">How it works</Link>
               </Button>
             </div>
-            <dl className="mt-10 grid max-w-lg grid-cols-3 gap-4">
+            <dl className="mt-10 grid max-w-lg grid-cols-3 gap-3">
               {[
-                ["3", "Route alternatives"],
-                ["5", "Safety factors"],
-                ["100", "Point score scale"],
+                ["5", "Routes compared"],
+                ["100 m", "Stretch size"],
+                ["20 m", "Search band"],
               ].map(([value, label]) => (
-                <div key={label} className="rounded-2xl border border-border bg-card p-4 shadow-soft">
+                <div key={label} className="glass-dark rounded-2xl p-4">
                   <dt className="font-display text-2xl font-semibold">{value}</dt>
-                  <dd className="mt-1 text-xs text-muted-foreground">{label}</dd>
+                  <dd className="mt-1 text-xs text-sidebar-foreground/70">{label}</dd>
                 </div>
               ))}
             </dl>
           </div>
 
           <div className="relative">
-            <MapView
-              routes={MOCK_ROUTES}
-              activeRouteId="safest"
-              safePlaces={SAFE_PLACES}
-              destinationLabel="14 Elmgrove Terrace"
-              className="h-[420px] w-full shadow-lift sm:h-[500px]"
-              showControls={false}
-              interactive={false}
-            />
-            <div className="mt-4 grid gap-4 sm:absolute sm:-bottom-10 sm:-left-6 sm:mt-0 sm:w-[19rem]">
-              <div className="rounded-2xl border border-border bg-card p-4 shadow-lift">
-                <div className="flex items-center gap-4">
-                  <SafetyScore score={safest.safetyScore} label="Excellent" size="sm" />
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                      Overall Route Safety
-                    </p>
-                    <p className="mt-1 font-display text-base font-semibold">{safest.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {formatKm(safest.distanceKm)} · {formatMin(safest.durationMin)}
-                    </p>
-                  </div>
+            <div className="absolute -inset-6 rounded-[2.5rem] bg-sidebar-primary/20 blur-3xl" aria-hidden="true" />
+            <div className="relative h-[440px] overflow-hidden rounded-3xl border border-sidebar-border shadow-lift sm:h-[520px]">
+              <RouteMap routes={HERO.routes} selectedRoute={2} origin={SAMPLE_ORIGIN} destination={SAMPLE_DESTINATION} showPlaces={false} />
+            </div>
+            <div className="glass absolute -bottom-6 left-4 z-[500] w-[17rem] animate-float rounded-2xl p-4 text-card-foreground sm:-left-8">
+              <div className="flex items-center gap-3">
+                <IndexRing value={HERO.routes[1]?.safetyIndex} size={64} />
+                <div>
+                  <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Liveliest route</p>
+                  <p className="font-display font-semibold">Kurla → Dadar</p>
+                  <p className="text-xs text-muted-foreground">Most places open along the way</p>
                 </div>
               </div>
+            </div>
+            <div className="glass absolute -top-4 right-4 z-[500] hidden rounded-2xl px-4 py-3 text-card-foreground sm:block" style={{ animationDelay: "1.5s" }}>
+              <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Quiet stretch ahead</p>
+              <p className="flex items-center gap-2 text-sm font-semibold"><span className="size-2 rounded-full bg-risk" /> 2 of 9 places open</p>
             </div>
           </div>
         </div>
