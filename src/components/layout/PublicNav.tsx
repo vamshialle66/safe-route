@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
+import { ThemePicker } from "@/components/theme/ThemePicker";
 
 const LINKS = [
   { to: "/", label: "Home" },
@@ -36,6 +37,7 @@ export function PublicNav() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
+          <ThemePicker />
           <Button asChild variant="ghost" size="sm">
             <Link to="/login">Log In</Link>
           </Button>
