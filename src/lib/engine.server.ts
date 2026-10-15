@@ -145,6 +145,16 @@ interface GPlace {
 const PLACE_MASK =
   "places.id,places.displayName,places.location,places.types,places.businessStatus,places.currentOpeningHours.openNow";
 
+/** Only places that mean people are around: shops, food, pharmacies, fuel, police, hospitals, transit, hotels. */
+export const USEFUL_TYPES = [
+  "convenience_store", "supermarket", "grocery_store", "store", "department_store", "shopping_mall",
+  "clothing_store", "electronics_store", "hardware_store", "liquor_store", "book_store",
+  "pharmacy", "drugstore", "hospital", "police",
+  "restaurant", "cafe", "fast_food_restaurant", "bakery", "meal_takeaway", "bar",
+  "gas_station", "bank", "hotel", "lodging",
+  "bus_station", "train_station", "subway_station", "transit_station",
+];
+
 const placeCache = new Map<string, { at: number; places: ApiPlace[] }>();
 const CACHE_MS = 5 * 60_000;
 
@@ -156,6 +166,7 @@ async function nearbyPlaces(p: LatLng, radius: number): Promise<ApiPlace[]> {
     "/places/v1/places:searchNearby",
     {
       maxResultCount: 20,
+      includedTypes: USEFUL_TYPES,
       rankPreference: "DISTANCE",
       locationRestriction: { circle: { center: p, radius } },
     },
