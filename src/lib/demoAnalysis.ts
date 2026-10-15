@@ -23,7 +23,7 @@ function haversine(a: LatLng, b: LatLng) {
 }
 
 const NAMES = ["Chai Point", "Apollo Pharmacy", "Metro Station Gate", "24/7 Mart", "City Hospital", "Police Chowki", "Café Madras", "Petrol Pump", "Bus Depot", "Bookstore", "Bakery", "ATM Kiosk", "Hotel Lobby", "Clinic", "Supermarket"];
-const TYPES = [["cafe"], ["pharmacy"], ["transit_station"], ["convenience_store"], ["hospital"], ["police"], ["restaurant"], ["gas_station"], ["bus_station"], ["book_store"], ["bakery"], ["atm"], ["lodging"], ["doctor"], ["supermarket"]];
+const TYPES = [["cafe"], ["pharmacy"], ["transit_station"], ["convenience_store"], ["hospital"], ["police"], ["restaurant"], ["gas_station"], ["bus_station"], ["book_store"], ["bakery"], ["atm"], ["lodging"], ["doctor"], ["supermarket"], ["public_bathroom"], ["fire_station"], ["post_office"]];
 
 const SPEED: Record<BackendTravelMode, number> = { WALK: 1.35, BICYCLE: 4.5, TWO_WHEELER: 8, DRIVE: 9, TRANSIT: 6 };
 
