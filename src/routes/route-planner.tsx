@@ -95,7 +95,7 @@ function PlannerPage() {
               <h1 className="font-display text-xl font-semibold">Where are you heading?</h1>
               <p className="mt-1 text-sm text-muted-foreground">We compare up to five routes and score each stretch.</p>
             </div>
-            <div className="relative space-y-3">
+            <div className="space-y-1">
               <PlaceSearch
                 label="Start"
                 icon={MapPin}
@@ -103,25 +103,29 @@ function PlannerPage() {
                 onChange={setOrigin}
                 placeholder="Search a place or paste lat, lng"
                 trailing={
-                  <Button type="button" variant="ghost" size="icon" className="size-8" onClick={useMyLocation} aria-label="Use my current location" disabled={locating}>
+                  <Button type="button" variant="ghost" size="icon" className="size-10" onClick={useMyLocation} aria-label="Use my current location" disabled={locating}>
                     {locating ? <Loader2 className="size-4 animate-spin" /> : <Crosshair className="size-4" />}
                   </Button>
                 }
               />
+              <div className="flex items-center gap-2 py-1">
+                <span className="h-px flex-1 bg-border" aria-hidden="true" />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-10 rounded-full bg-card px-4"
+                  aria-label="Swap start and destination"
+                  onClick={() => {
+                    setOrigin(destination);
+                    setDestination(origin);
+                  }}
+                >
+                  <ArrowDownUp className="size-4" /> Swap
+                </Button>
+                <span className="h-px flex-1 bg-border" aria-hidden="true" />
+              </div>
               <PlaceSearch label="Destination" icon={Flag} value={destination} onChange={setDestination} placeholder="Where to?" />
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="absolute right-12 top-[54px] z-10 size-8 rounded-full bg-card"
-                aria-label="Swap start and destination"
-                onClick={() => {
-                  setOrigin(destination);
-                  setDestination(origin);
-                }}
-              >
-                <ArrowDownUp className="size-3.5" />
-              </Button>
             </div>
 
             <div>
