@@ -21,7 +21,7 @@ import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemePicker } from "@/components/theme/ThemePicker";
-import { MOCK_USER } from "@/data/mockData";
+import { displayName, initials, useSession } from "@/lib/session";
 
 interface NavItem {
   to: string;
@@ -107,6 +107,7 @@ export function AppLayout({
   fullBleed?: boolean;
 }) {
   const [drawer, setDrawer] = useState(false);
+  const session = useSession();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
@@ -173,13 +174,17 @@ export function AppLayout({
                   </span>
                 </Link>
               </Button>
-              <Button asChild variant="ghost" size="icon" aria-label="Profile">
-                <Link to="/profile">
-                  <span className="grid size-8 place-items-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
-                    {MOCK_USER.initials}
-                  </span>
-                </Link>
-              </Button>
+              {session.user ? (
+                <Button asChild variant="ghost" size="icon" aria-label="Profile">
+                  <Link to="/profile">
+                    <span className="grid size-8 place-items-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
+                      {initials(displayName(session))}
+                    </span>
+                  </Link>
+                </Button>
+              ) : (
+                <Button asChild size="sm"><Link to="/login">Log in</Link></Button>
+              )}
             </div>
           </div>
         </header>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSession } from "@/lib/session";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
@@ -14,6 +15,7 @@ const LINKS = [
 
 export function PublicNav() {
   const [open, setOpen] = useState(false);
+  const signedIn = !!useSession().user;
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/80 bg-background/85 backdrop-blur">
@@ -38,12 +40,18 @@ export function PublicNav() {
 
         <div className="hidden items-center gap-2 md:flex">
           <ThemePicker />
-          <Button asChild variant="ghost" size="sm">
-            <Link to="/login">Log In</Link>
-          </Button>
-          <Button asChild size="sm">
-            <Link to="/signup">Get Started</Link>
-          </Button>
+          {signedIn ? (
+            <Button asChild size="sm"><Link to="/dashboard">Open app</Link></Button>
+          ) : (
+            <>
+              <Button asChild variant="ghost" size="sm">
+                <Link to="/login">Log In</Link>
+              </Button>
+              <Button asChild size="sm">
+                <Link to="/signup">Get Started</Link>
+              </Button>
+            </>
+          )}
         </div>
 
         <Button
@@ -75,7 +83,7 @@ export function PublicNav() {
             ))}
             <div className="mt-2 grid grid-cols-2 gap-2">
               <Button asChild variant="outline" onClick={() => setOpen(false)}>
-                <Link to="/login">Log In</Link>
+                <Link to={signedIn ? "/profile" : "/login"}>{signedIn ? "Account" : "Log In"}</Link>
               </Button>
               <Button asChild onClick={() => setOpen(false)}>
                 <Link to="/signup">Get Started</Link>

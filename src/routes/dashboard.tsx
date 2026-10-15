@@ -27,7 +27,7 @@ import { useCurrentAnalysis, useHistory, useSaved, analysisStore } from "@/lib/a
 import { demoSegments } from "@/lib/demoAnalysis";
 import { SAMPLE_DESTINATION, SAMPLE_ORIGIN } from "@/lib/geocode";
 import { formatDistance, formatDuration, indexTone, topRouteNumbers } from "@/lib/saferouteApi";
-import { MOCK_USER } from "@/data/mockData";
+import { displayName, useSession } from "@/lib/session";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/dashboard")({
@@ -58,6 +58,7 @@ function Dashboard() {
   const current = useCurrentAnalysis();
   const history = useHistory();
   const saved = useSaved();
+  const session = useSession();
   const now = useClock();
   const [selected, setSelected] = useState<number | undefined>();
 
@@ -117,7 +118,7 @@ function Dashboard() {
                 )}
               </div>
               <h1 className="mt-5 font-display text-3xl font-semibold leading-tight sm:text-5xl">
-                {greeting}, {MOCK_USER.name.split(" ")[0]}.
+                {greeting}{session.user ? `, ${displayName(session).split(" ")[0]}` : ""}.
                 <br />
                 <span className="text-sidebar-primary">Where to, safely?</span>
               </h1>

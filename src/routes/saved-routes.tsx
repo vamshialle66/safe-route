@@ -32,7 +32,7 @@ function SavedPage() {
       ) : (
         <ul className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {saved.map((s) => {
-            const a = history.find((h) => h.id === s.analysisId);
+            const a = s.analysis ?? history.find((h) => h.id === s.analysisId);
             const r = a?.routes.find((x) => x.routeNumber === s.routeNumber);
             return (
               <li key={s.id} className="rounded-2xl border border-border bg-card p-5 shadow-soft">
@@ -52,7 +52,7 @@ function SavedPage() {
                       variant="outline"
                       className="mt-4 w-full"
                       onClick={() => {
-                        analysisStore.open(s.analysisId);
+                        analysisStore.openSaved(s);
                         navigate({ to: "/routes/$id", params: { id: String(s.routeNumber) } });
                       }}
                     >

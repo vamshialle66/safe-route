@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { MapPin, Phone, Share2, Siren, UserRound } from "lucide-react";
+import { MapPin, Phone, Plus, Share2, Siren, Trash2, UserRound } from "lucide-react";
 import { toast } from "sonner";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
-import { EMERGENCY_CONTACTS } from "@/data/mockData";
+import { Input } from "@/components/ui/input";
+import { SignInPrompt } from "@/components/auth/SignInPrompt";
+import { useSession } from "@/lib/session";
+import { useAddContact, useContacts, useRemoveContact } from "@/lib/contacts";
 import { currentPosition } from "@/lib/geocode";
 import { cn } from "@/lib/utils";
 
@@ -93,24 +96,72 @@ function EmergencyPage() {
               ))}
             </div>
           </div>
-          <div className="rounded-2xl border border-border bg-card p-5">
-            <h2 className="font-display font-semibold">Trusted contacts</h2>
-            <ul className="mt-3 divide-y divide-border">
-              {EMERGENCY_CONTACTS.map((c) => (
-                <li key={c.id} className="flex items-center gap-3 py-3">
-                  <span className="grid size-9 place-items-center rounded-full bg-secondary"><UserRound className="size-4" /></span>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">{c.name}</p>
-                    <p className="text-xs text-muted-foreground">{c.relation}</p>
-                  </div>
-                  <Button asChild size="icon" variant="outline" aria-label={`Call ${c.name}`}><a href={`tel:${c.phone}`}><Phone className="size-4" /></a></Button>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <TrustedContacts />
           <p className="flex items-center gap-2 text-xs text-muted-foreground"><Siren className="size-3.5" /> In immediate danger, always call your local emergency number.</p>
         </div>
       </div>
     </AppLayout>
+  );
+}
+
+function TrustedContacts() {
+  const session = useSession();
+  const uid = session.user?.id;
+  const { data: contacts = [], isLoading } = useContacts(uid);
+  const add = useAddContact(uid);
+  const remove = useRemoveContact(uid);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [relation, setRelation] = useState("");
+
+  return (
+    <div className="rounded-2xl border border-border bg-card p-5">
+      <h2 className="font-display font-semibold">Trusted contacts</h2>
+      {!session.ready ? null : !uid ? (
+        <div className="mt-3"><SignInPrompt text="Log in to keep your own trusted contacts here, ready to call in one tap." /></div>
+      ) : (
+        <>
+          {isLoading ? (
+            <p className="mt-3 text-sm text-muted-foreground">Loading…</p>
+          ) : contacts.length === 0 ? (
+            <p className="mt-3 text-sm text-muted-foreground">No contacts yet — add someone you trust below.</p>
+          ) : (
+            <ul className="mt-3 divide-y divide-border">
+              {contacts.map((c) => (
+                <li key={c.id} className="flex items-center gap-3 py-3">
+                  <span className="grid size-9 place-items-center rounded-full bg-secondary"><UserRound className="size-4" /></span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium">{c.name}</p>
+                    <p className="text-xs text-muted-foreground">{[c.relation, c.phone].filter(Boolean).join(" · ")}</p>
+                  </div>
+                  <Button asChild size="icon" variant="outline" aria-label={`Call ${c.name}`}><a href={`tel:${c.phone}`}><Phone className="size-4" /></a></Button>
+                  <Button size="icon" variant="ghost" aria-label={`Remove ${c.name}`} onClick={() => remove.mutate(c.id)}><Trash2 className="size-4" /></Button>
+                </li>
+              ))}
+            </ul>
+          )}
+          <form
+            className="mt-4 grid gap-2 sm:grid-cols-[1fr_1fr_auto]"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const n = name.trim(), p = phone.trim();
+              if (!n || !/^[+\d][\d\s-]{2,19}$/.test(p)) { toast.error("Enter a name and a valid phone number"); return; }
+              add.mutate(
+                { name: n.slice(0, 80), phone: p, relation: relation.trim().slice(0, 40) },
+                {
+                  onSuccess: () => { setName(""); setPhone(""); setRelation(""); toast.success("Contact added"); },
+                  onError: (err) => toast.error(err.message),
+                },
+              );
+            }}
+          >
+            <Input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} aria-label="Contact name" />
+            <Input placeholder="Phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} aria-label="Contact phone" />
+            <Input className="sm:col-span-2" placeholder="Relation (optional)" value={relation} onChange={(e) => setRelation(e.target.value)} aria-label="Relation" />
+            <Button type="submit" disabled={add.isPending} className="sm:row-start-1 sm:col-start-3"><Plus className="size-4" /> Add</Button>
+          </form>
+        </>
+      )}
+    </div>
   );
 }
