@@ -111,7 +111,7 @@ function SafetyMapPage() {
           )}
           <Disclaimer />
         </aside>
-        <section className="relative order-1 h-[45vh] min-h-[300px] sm:h-[50vh] flex-1 lg:order-2 lg:h-auto">
+        <section className="relative order-1 h-[45vh] min-h-[300px] flex-none sm:h-[50vh] lg:flex-1 lg:order-2 lg:h-auto">
           <RouteMap center={center} places={places} />
         </section>
       </div>
