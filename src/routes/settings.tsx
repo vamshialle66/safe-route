@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ALL_CATEGORY_IDS, PLACE_CATEGORIES, getScoreCategories, setScoreCategories } from "@/lib/placeCategories";
 import { getCustomApiUrl, getDemoOnly, saferouteApi, setApiUrl, setDemoOnly } from "@/lib/saferouteApi";
 
 export const Route = createFileRoute("/settings")({
@@ -28,7 +30,15 @@ function SettingsPage() {
   const [demo, setDemo] = useState(false);
   const [status, setStatus] = useState<"idle" | "checking" | "ok" | "fail">("idle");
 
+  const [cats, setCats] = useState<string[]>(ALL_CATEGORY_IDS);
+  function toggleCat(id: string, on: boolean) {
+    const next = on ? [...cats, id] : cats.filter((c) => c !== id);
+    setCats(next);
+    setScoreCategories(next);
+  }
+
   useEffect(() => {
+    setCats(getScoreCategories());
     setUrl(getCustomApiUrl());
     setDemo(getDemoOnly());
   }, []);
@@ -66,6 +76,23 @@ function SettingsPage() {
             </div>
             <Switch checked={demo} onCheckedChange={(v) => { setDemo(v); setDemoOnly(v); toast.success(v ? "Sample data on" : "Live data on"); }} />
           </div>
+        </section>
+        <section className="rounded-2xl border border-border bg-card p-6">
+          <h2 className="font-display font-semibold">Places that count toward the score</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Choose which kinds of open places make a route feel lively. Unticked places still show on the map but don't change the score. Applies to new trips and scans.</p>
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            {PLACE_CATEGORIES.map((c) => (
+              <label key={c.id} className="flex min-h-11 cursor-pointer items-start gap-3 rounded-xl border border-border p-3 hover:bg-muted/50">
+                <Checkbox className="mt-0.5" checked={cats.includes(c.id)} onCheckedChange={(v) => toggleCat(c.id, v === true)} />
+                <span><span className="block text-sm font-medium">{c.label}</span><span className="block text-xs text-muted-foreground">{c.hint}</span></span>
+              </label>
+            ))}
+          </div>
+          <div className="mt-4 flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => { setCats(ALL_CATEGORY_IDS); setScoreCategories(ALL_CATEGORY_IDS); }}>Select all</Button>
+            <Button variant="outline" size="sm" onClick={() => { setCats([]); setScoreCategories([]); }}>Clear all</Button>
+          </div>
+          {cats.length === 0 && <p className="mt-3 text-sm text-risk">With nothing selected, routes can't be scored.</p>}
         </section>
       </div>
     </AppLayout>

@@ -20,3 +20,15 @@ describe("safety index rules", () => {
     expect(splitLine(line).length).toBe(5);
   });
 });
+
+import { placeIndex as pi2 } from "../engine.server";
+import { typesFor } from "../placeCategories";
+describe("score categories", () => {
+  it("only selected categories count toward the index", () => {
+    const mk = (types: string[], openNow: boolean) => ({ id: types[0]!, name: "x", latitude: 0, longitude: 0, types, businessStatus: "OPERATIONAL", openNow });
+    const places = [mk(["atm"], true), mk(["public_bathroom"], false), mk(["bar"], false)];
+    const r = pi2(places, new Set(typesFor(["atm", "toilets"])));
+    expect(r.scoredPlaceCount).toBe(2);
+    expect(r.safetyIndex).toBe(50);
+  });
+});

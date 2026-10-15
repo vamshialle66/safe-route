@@ -1,3 +1,4 @@
+import { getScoreCategories } from "./placeCategories";
 import { analysisStore, type Analysis, type NamedPoint } from "./analysisStore";
 import { demoSegments } from "./demoAnalysis";
 import { liveNearbyFn, liveSegmentsFn } from "./engine.functions";
@@ -35,7 +36,7 @@ async function withBuiltInBackup<T>(ext: () => Promise<T>, own: () => Promise<Li
 export function fetchNearby(p: LatLng): Promise<Live<NearbyResponse>> {
   return withBuiltInBackup(
     () => saferouteApi.nearby(p),
-    () => liveNearbyFn({ data: p }),
+    () => liveNearbyFn({ data: { ...p, categories: getScoreCategories() } }),
   );
 }
 
@@ -56,7 +57,7 @@ export async function runAnalysis(
     const d = { latitude: destination.latitude, longitude: destination.longitude };
     const r = await withBuiltInBackup(
       () => saferouteApi.segments(o, d, travelMode),
-      () => liveSegmentsFn({ data: { origin: o, destination: d, travelMode } }),
+      () => liveSegmentsFn({ data: { origin: o, destination: d, travelMode, categories: getScoreCategories() } }),
     );
     if (r.ok) routes = r.data.routes;
     else {
