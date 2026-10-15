@@ -8,6 +8,7 @@ import {
   LifeBuoy,
   Map,
   Menu,
+  Radar,
   Bookmark,
   Search,
   Settings,
