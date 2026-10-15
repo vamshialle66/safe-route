@@ -17,15 +17,12 @@ import {
 } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { Button } from "@/components/ui/button";
-import { MapView } from "@/components/map/MapView";
 import { RouteCard } from "@/components/route/RouteCard";
 import { SafetyScore } from "@/components/safety/SafetyScore";
 import { SafetyBreakdown } from "@/components/safety/SafetyBreakdown";
 import { MOCK_ROUTES } from "@/data/mockRoutes";
 import { DISCLAIMER, SAFETY_FACTOR_INFO } from "@/data/mockData";
-import { SAFE_PLACES } from "@/data/mockData";
 import { safetyService } from "@/services/safetyService";
-import { formatKm, formatMin } from "@/lib/risk";
 
 export const Route = createFileRoute("/")({
   head: () => ({
