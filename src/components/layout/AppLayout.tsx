@@ -33,7 +33,7 @@ const MAIN_NAV: NavItem[] = [
   { to: "/routes", label: "Route Comparison", icon: Map },
   { to: "/recent-trips", label: "Route History", icon: History },
   { to: "/saved-routes", label: "Saved Routes", icon: Bookmark },
-  { to: "/safety-map", label: "Safety Map", icon: Map },
+  { to: "/safety-map", label: "Around Me", icon: Map },
   { to: "/emergency", label: "Emergency", icon: LifeBuoy },
   { to: "/notifications", label: "Notifications", icon: Bell },
 ];
@@ -51,7 +51,7 @@ const MOBILE_NAV: NavItem[] = [
   { to: "/profile", label: "Profile", icon: User },
 ];
 
-function SidebarLink({ item, onNavigate }: { item: NavItem; onNavigate?: () => void }) {
+function SidebarLink({ item, onNavigate }: { item: NavItem; onNavigate?: (() => void) | undefined }) {
   const Icon = item.icon;
   return (
     <Link
@@ -69,7 +69,7 @@ function SidebarLink({ item, onNavigate }: { item: NavItem; onNavigate?: () => v
   );
 }
 
-function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
+function SidebarContent({ onNavigate }: { onNavigate?: (() => void) | undefined }) {
   return (
     <div className="flex h-full flex-col bg-sidebar">
       <div className="px-5 py-5">
