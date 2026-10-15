@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { IndexRing, IndexPill, TONE_CLASSES } from "@/components/route/IndexPill";
 import { SourceBadge } from "@/components/route/Disclaimer";
 import { RouteMap } from "@/components/map/RouteMap";
-import { MapLegend } from "@/routes/route-planner";
+import { MapLegend } from "@/components/map/MapLegend";
 import { useCurrentAnalysis, useHistory, useSaved, analysisStore } from "@/lib/analysisStore";
 import { demoSegments } from "@/lib/demoAnalysis";
 import { SAMPLE_DESTINATION, SAMPLE_ORIGIN } from "@/lib/geocode";
