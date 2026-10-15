@@ -67,7 +67,7 @@ function RouteDetail() {
     >
       <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
         <div className="space-y-6">
-          <div className="relative h-[380px] overflow-hidden rounded-2xl border border-border">
+          <div className="relative h-[300px] sm:h-[380px] overflow-hidden rounded-2xl border border-border">
             <RouteMap routes={[route]} selectedRoute={route.routeNumber} highlightSegment={hl} origin={analysis.origin} destination={analysis.destination} />
           </div>
 
