@@ -191,21 +191,21 @@ export function AppLayout({
           )}
         >
           {!fullBleed && (
-            <div className="relative mb-8 overflow-hidden rounded-3xl bg-hero px-6 py-8 text-sidebar-accent-foreground shadow-lg sm:px-10 sm:py-10">
+            <div className="relative mb-8 overflow-hidden rounded-2xl bg-hero px-5 py-6 text-sidebar-accent-foreground shadow-lg sm:rounded-3xl sm:px-10 sm:py-10">
               <div className="pointer-events-none absolute inset-0 bg-grid" aria-hidden="true" />
               <div className="pointer-events-none absolute -right-20 -top-24 size-72 rounded-full bg-primary/40 blur-3xl" aria-hidden="true" />
-              <div className="relative flex flex-wrap items-end justify-between gap-4">
-                <div>
+              <div className="relative flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
+                <div className="min-w-0">
                   <span className="glass-dark inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-medium uppercase tracking-[0.16em]">
                     <span className="size-1.5 animate-pulse rounded-full bg-safe" aria-hidden="true" />
                     SafeRoute
                   </span>
-                  <h1 className="mt-4 font-display text-3xl font-semibold leading-tight sm:text-4xl">{title}</h1>
+                  <h1 className="mt-4 font-display text-2xl font-semibold leading-tight break-words sm:text-4xl">{title}</h1>
                   {description && (
                     <p className="mt-2 max-w-2xl text-sm text-sidebar-foreground/80 sm:text-base">{description}</p>
                   )}
                 </div>
-                {actions && <div className="glass-dark rounded-2xl p-1.5">{actions}</div>}
+                {actions && <div className="glass-dark flex w-full flex-wrap gap-2 rounded-2xl p-1.5 sm:w-auto [&>*]:flex-1 sm:[&>*]:flex-none">{actions}</div>}
               </div>
             </div>
           )}

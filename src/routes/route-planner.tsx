@@ -246,7 +246,7 @@ function PlannerPage() {
           </div>
         </section>
 
-        <section className="relative order-1 h-[52vh] flex-1 lg:order-2 lg:h-auto">
+        <section className="relative order-1 h-[45vh] min-h-[300px] sm:h-[52vh] flex-1 lg:order-2 lg:h-auto">
           <RouteMap
             routes={routes}
             selectedRoute={selected}

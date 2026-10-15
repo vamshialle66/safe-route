@@ -205,7 +205,7 @@ function Dashboard() {
 
         {/* MAP + ROUTES */}
         <section className="grid gap-5 lg:grid-cols-[1fr_380px]">
-          <div className="relative h-[460px] overflow-hidden rounded-3xl border border-border shadow-soft">
+          <div className="relative h-[340px] sm:h-[460px] overflow-hidden rounded-3xl border border-border shadow-soft">
             <RouteMap
               routes={routes}
               selectedRoute={active?.routeNumber}
