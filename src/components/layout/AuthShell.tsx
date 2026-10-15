@@ -14,11 +14,13 @@ export function AuthShell({
 }) {
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
-      <div className="relative hidden flex-col justify-between bg-brand-gradient p-12 lg:flex">
-        <Link to="/" aria-label="SafeRoute home">
+      <div className="relative hidden flex-col justify-between overflow-hidden bg-hero p-12 lg:flex">
+        <div className="pointer-events-none absolute inset-0 bg-grid" aria-hidden="true" />
+        <div className="pointer-events-none absolute -bottom-24 -left-24 size-96 rounded-full bg-primary/40 blur-3xl" aria-hidden="true" />
+        <Link to="/" aria-label="SafeRoute home" className="relative">
           <Logo variant="inverted" />
         </Link>
-        <div>
+        <div className="relative">
           <h2 className="max-w-sm text-3xl font-semibold text-primary-foreground">
             Your destination matters. So does how you get there.
           </h2>
@@ -35,7 +37,7 @@ export function AuthShell({
             ))}
           </ul>
         </div>
-        <p className="text-xs text-primary-foreground/70">
+        <p className="relative text-xs text-primary-foreground/70">
           Sample data is used throughout this preview experience.
         </p>
       </div>
