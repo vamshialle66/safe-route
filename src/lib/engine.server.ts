@@ -167,12 +167,12 @@ async function nearbyPlaces(p: LatLng, radius: number): Promise<ApiPlace[]> {
       const closed = g.businessStatus && g.businessStatus !== "OPERATIONAL";
       const open = g.currentOpeningHours?.openNow;
       return {
-        id: g.id,
+        id: g.id ?? `${g.location!.latitude},${g.location!.longitude}`,
         name: g.displayName?.text ?? "Unnamed place",
         latitude: g.location!.latitude,
         longitude: g.location!.longitude,
         types: g.types ?? [],
-        businessStatus: g.businessStatus,
+        businessStatus: g.businessStatus ?? "UNKNOWN",
         openNow: closed ? false : typeof open === "boolean" ? open : null,
       };
     });
