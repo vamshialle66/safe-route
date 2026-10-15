@@ -1,6 +1,7 @@
 import { Navigation, useCallback, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowDownUp, ArrowRight, Bookmark, Crosshair, Flag, Loader2, MapPin, Sparkles } from "lucide-react";
+import { Navigation, ArrowDownUp, ArrowRight, Bookmark, Crosshair, Flag, Loader2, MapPin, Sparkles } from "lucide-react";
+import { googleDirectionsUrl } from "@/lib/directions";
 import { toast } from "sonner";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { RouteMap } from "@/components/map/RouteMap";
