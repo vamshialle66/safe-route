@@ -15,6 +15,9 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { THEME_INIT_SCRIPT } from "@/components/theme/ThemePicker";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { supabase } from "@/integrations/supabase/client";
+import { setSessionUser } from "@/lib/session";
+import { clearForSignOut, hydrateForUser } from "@/lib/analysisStore";
 
 function NotFoundComponent() {
   return (
@@ -125,6 +128,24 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    const apply = (user: import("@supabase/supabase-js").User | null) => {
+      setSessionUser(user);
+      if (user) void hydrateForUser(user.id);
+      else clearForSignOut();
+    };
+    supabase.auth.getSession().then(({ data }) => apply(data.session?.user ?? null));
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+      apply(session?.user ?? null);
+      router.invalidate();
+      if (event === "SIGNED_OUT") queryClient.clear();
+      else queryClient.invalidateQueries();
+    });
+    return () => data.subscription.unsubscribe();
+  }, [router, queryClient]);
 
   return (
     <QueryClientProvider client={queryClient}>
