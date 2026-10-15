@@ -11,9 +11,21 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as EmergencyRouteImport } from './routes/emergency'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as RecentTripsRouteImport } from './routes/recent-trips'
+import { Route as RoutePlannerRouteImport } from './routes/route-planner'
 import { Route as SafetyRouteImport } from './routes/safety'
+import { Route as SafetyMapRouteImport } from './routes/safety-map'
+import { Route as SavedRoutesRouteImport } from './routes/saved-routes'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as RoutesIndexRouteImport } from './routes/routes.index'
+import { Route as RoutesIdRouteImport } from './routes/routes.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -23,6 +35,16 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmergencyRoute = EmergencyRouteImport.update({
+  id: '/emergency',
+  path: '/emergency',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HowItWorksRoute = HowItWorksRouteImport.update({
@@ -35,48 +57,198 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecentTripsRoute = RecentTripsRouteImport.update({
+  id: '/recent-trips',
+  path: '/recent-trips',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RoutePlannerRoute = RoutePlannerRouteImport.update({
+  id: '/route-planner',
+  path: '/route-planner',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SafetyRoute = SafetyRouteImport.update({
   id: '/safety',
   path: '/safety',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SafetyMapRoute = SafetyMapRouteImport.update({
+  id: '/safety-map',
+  path: '/safety-map',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SavedRoutesRoute = SavedRoutesRouteImport.update({
+  id: '/saved-routes',
+  path: '/saved-routes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RoutesIndexRoute = RoutesIndexRouteImport.update({
+  id: '/routes/',
+  path: '/routes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RoutesIdRoute = RoutesIdRouteImport.update({
+  id: '/routes/$id',
+  path: '/routes/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/dashboard': typeof DashboardRoute
+  '/emergency': typeof EmergencyRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
+  '/notifications': typeof NotificationsRoute
+  '/profile': typeof ProfileRoute
+  '/recent-trips': typeof RecentTripsRoute
+  '/route-planner': typeof RoutePlannerRoute
   '/safety': typeof SafetyRoute
+  '/safety-map': typeof SafetyMapRoute
+  '/saved-routes': typeof SavedRoutesRoute
+  '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
+  '/routes/$id': typeof RoutesIdRoute
+  '/routes/': typeof RoutesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/dashboard': typeof DashboardRoute
+  '/emergency': typeof EmergencyRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
+  '/notifications': typeof NotificationsRoute
+  '/profile': typeof ProfileRoute
+  '/recent-trips': typeof RecentTripsRoute
+  '/route-planner': typeof RoutePlannerRoute
   '/safety': typeof SafetyRoute
+  '/safety-map': typeof SafetyMapRoute
+  '/saved-routes': typeof SavedRoutesRoute
+  '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
+  '/routes/$id': typeof RoutesIdRoute
+  '/routes': typeof RoutesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/dashboard': typeof DashboardRoute
+  '/emergency': typeof EmergencyRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
+  '/notifications': typeof NotificationsRoute
+  '/profile': typeof ProfileRoute
+  '/recent-trips': typeof RecentTripsRoute
+  '/route-planner': typeof RoutePlannerRoute
   '/safety': typeof SafetyRoute
+  '/safety-map': typeof SafetyMapRoute
+  '/saved-routes': typeof SavedRoutesRoute
+  '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
+  '/routes/$id': typeof RoutesIdRoute
+  '/routes/': typeof RoutesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/how-it-works' | '/login' | '/safety'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/dashboard'
+    | '/emergency'
+    | '/how-it-works'
+    | '/login'
+    | '/notifications'
+    | '/profile'
+    | '/recent-trips'
+    | '/route-planner'
+    | '/safety'
+    | '/safety-map'
+    | '/saved-routes'
+    | '/settings'
+    | '/signup'
+    | '/routes/$id'
+    | '/routes/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/how-it-works' | '/login' | '/safety'
-  id: '__root__' | '/' | '/about' | '/how-it-works' | '/login' | '/safety'
+  to:
+    | '/'
+    | '/about'
+    | '/dashboard'
+    | '/emergency'
+    | '/how-it-works'
+    | '/login'
+    | '/notifications'
+    | '/profile'
+    | '/recent-trips'
+    | '/route-planner'
+    | '/safety'
+    | '/safety-map'
+    | '/saved-routes'
+    | '/settings'
+    | '/signup'
+    | '/routes/$id'
+    | '/routes'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/dashboard'
+    | '/emergency'
+    | '/how-it-works'
+    | '/login'
+    | '/notifications'
+    | '/profile'
+    | '/recent-trips'
+    | '/route-planner'
+    | '/safety'
+    | '/safety-map'
+    | '/saved-routes'
+    | '/settings'
+    | '/signup'
+    | '/routes/$id'
+    | '/routes/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  DashboardRoute: typeof DashboardRoute
+  EmergencyRoute: typeof EmergencyRoute
   HowItWorksRoute: typeof HowItWorksRoute
   LoginRoute: typeof LoginRoute
+  NotificationsRoute: typeof NotificationsRoute
+  ProfileRoute: typeof ProfileRoute
+  RecentTripsRoute: typeof RecentTripsRoute
+  RoutePlannerRoute: typeof RoutePlannerRoute
   SafetyRoute: typeof SafetyRoute
+  SafetyMapRoute: typeof SafetyMapRoute
+  SavedRoutesRoute: typeof SavedRoutesRoute
+  SettingsRoute: typeof SettingsRoute
+  SignupRoute: typeof SignupRoute
+  RoutesIdRoute: typeof RoutesIdRoute
+  RoutesIndexRoute: typeof RoutesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -95,6 +267,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/emergency': {
+      id: '/emergency'
+      path: '/emergency'
+      fullPath: '/emergency'
+      preLoaderRoute: typeof EmergencyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/how-it-works': {
       id: '/how-it-works'
       path: '/how-it-works'
@@ -109,11 +295,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recent-trips': {
+      id: '/recent-trips'
+      path: '/recent-trips'
+      fullPath: '/recent-trips'
+      preLoaderRoute: typeof RecentTripsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/route-planner': {
+      id: '/route-planner'
+      path: '/route-planner'
+      fullPath: '/route-planner'
+      preLoaderRoute: typeof RoutePlannerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/safety': {
       id: '/safety'
       path: '/safety'
       fullPath: '/safety'
       preLoaderRoute: typeof SafetyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/safety-map': {
+      id: '/safety-map'
+      path: '/safety-map'
+      fullPath: '/safety-map'
+      preLoaderRoute: typeof SafetyMapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/saved-routes': {
+      id: '/saved-routes'
+      path: '/saved-routes'
+      fullPath: '/saved-routes'
+      preLoaderRoute: typeof SavedRoutesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/routes/': {
+      id: '/routes/'
+      path: '/routes'
+      fullPath: '/routes/'
+      preLoaderRoute: typeof RoutesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/routes/$id': {
+      id: '/routes/$id'
+      path: '/routes/$id'
+      fullPath: '/routes/$id'
+      preLoaderRoute: typeof RoutesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -122,9 +378,21 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  DashboardRoute: DashboardRoute,
+  EmergencyRoute: EmergencyRoute,
   HowItWorksRoute: HowItWorksRoute,
   LoginRoute: LoginRoute,
+  NotificationsRoute: NotificationsRoute,
+  ProfileRoute: ProfileRoute,
+  RecentTripsRoute: RecentTripsRoute,
+  RoutePlannerRoute: RoutePlannerRoute,
   SafetyRoute: SafetyRoute,
+  SafetyMapRoute: SafetyMapRoute,
+  SavedRoutesRoute: SavedRoutesRoute,
+  SettingsRoute: SettingsRoute,
+  SignupRoute: SignupRoute,
+  RoutesIdRoute: RoutesIdRoute,
+  RoutesIndexRoute: RoutesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -147,8 +147,8 @@ export function MapView({
                   key={`${active.id}-${i}`}
                   x1={point.x}
                   y1={point.y}
-                  x2={next.x}
-                  y2={next.y}
+                  x2={next!.x}
+                  y2={next!.y}
                   strokeWidth="2.8"
                   strokeLinecap="round"
                   className={ROUTE_STROKE[segment?.risk ?? active.risk]}

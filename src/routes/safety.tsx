@@ -38,7 +38,7 @@ export const Route = createFileRoute("/safety")({
 });
 
 function SafetyPage() {
-  const safest = MOCK_ROUTES[0];
+  const safest = MOCK_ROUTES[0]!;
   const weights = safetyService.factorWeights();
   const chartData = weights.map((w) => ({
     name: w.label,

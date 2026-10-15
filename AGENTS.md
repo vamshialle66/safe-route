@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+- The frontend talks to the external SafeRoute Express backend (POST /location, /location/segments) via src/lib/saferouteApi.ts; server URL is user-configurable in Settings and falls back to src/lib/demoAnalysis.ts when unreachable — keeps the app usable without the backend running.
+- Maps use Leaflet loaded only in the browser through src/components/map/RouteMap.tsx — Leaflet breaks during server rendering.

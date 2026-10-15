@@ -53,7 +53,7 @@ const STEPS = [
 const FACTOR_ICONS = [Lightbulb, ShieldCheck, Users, RouteIcon, MapPinned, Gauge];
 
 function LandingPage() {
-  const safest = MOCK_ROUTES[0];
+  const safest = MOCK_ROUTES[0]!;
 
   return (
     <PublicLayout>
@@ -184,7 +184,7 @@ function LandingPage() {
             ))}
           </div>
           <p className="mt-6 text-sm text-muted-foreground">
-            {safetyService.recommendationReason(MOCK_ROUTES[0])}
+            {safetyService.recommendationReason(MOCK_ROUTES[0]!)}
           </p>
         </div>
       </section>
@@ -221,7 +221,7 @@ function LandingPage() {
           <h2 className="text-2xl font-semibold sm:text-3xl">Safety factors we evaluate</h2>
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {SAFETY_FACTOR_INFO.map((factor, i) => {
-              const Icon = FACTOR_ICONS[i % FACTOR_ICONS.length];
+              const Icon = FACTOR_ICONS[i % FACTOR_ICONS.length]!;
               return (
                 <div
                   key={factor.id}
