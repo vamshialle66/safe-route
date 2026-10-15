@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { IndexRing } from "@/components/route/IndexPill";
 import { Disclaimer, SourceBadge } from "@/components/route/Disclaimer";
 import { currentPosition, SAMPLE_ORIGIN } from "@/lib/geocode";
-import { ApiError, getDemoOnly, saferouteApi, type LatLng, type NearbyResponse } from "@/lib/saferouteApi";
+import { getDemoOnly, type LatLng, type NearbyResponse } from "@/lib/saferouteApi";
 import { demoNearby } from "@/lib/demoAnalysis";
 import { cn } from "@/lib/utils";
 
