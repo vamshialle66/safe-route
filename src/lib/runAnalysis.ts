@@ -22,9 +22,21 @@ async function builtIn<T>(call: () => Promise<Live<T>>): Promise<Live<T>> {
   }
 }
 
+/** Try the custom server (if set); if it can't be reached, use the built-in Google engine. */
+async function withBuiltInBackup<T>(ext: () => Promise<T>, own: () => Promise<Live<T>>): Promise<Live<T>> {
+  if (getCustomApiUrl()) {
+    const r = await external(ext);
+    if (r.ok) return r;
+  }
+  return builtIn(own);
+}
+
 /** Live nearby places: custom server if set, else built-in Google engine. */
 export function fetchNearby(p: LatLng): Promise<Live<NearbyResponse>> {
-  return getCustomApiUrl() ? external(() => saferouteApi.nearby(p)) : builtIn(() => liveNearbyFn({ data: p }));
+  return withBuiltInBackup(
+    () => saferouteApi.nearby(p),
+    () => liveNearbyFn({ data: p }),
+  );
 }
 
 export async function runAnalysis(
@@ -42,9 +54,10 @@ export async function runAnalysis(
   } else {
     const o = { latitude: origin.latitude, longitude: origin.longitude };
     const d = { latitude: destination.latitude, longitude: destination.longitude };
-    const r = getCustomApiUrl()
-      ? await external(() => saferouteApi.segments(o, d, travelMode))
-      : await builtIn(() => liveSegmentsFn({ data: { origin: o, destination: d, travelMode } }));
+    const r = await withBuiltInBackup(
+      () => saferouteApi.segments(o, d, travelMode),
+      () => liveSegmentsFn({ data: { origin: o, destination: d, travelMode } }),
+    );
     if (r.ok) routes = r.data.routes;
     else {
       source = "demo";
