@@ -85,7 +85,11 @@ function Dashboard() {
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
   const night = hour >= 19 || hour < 6;
 
-  const profile = active?.segments.map((s, i) => ({ i, v: s.safetyIndex ?? 0 })) ?? [];
+  const raw = active?.segments.map((s) => s.safetyIndex) ?? [];
+  const profile = raw.map((_, i) => {
+    const w = raw.slice(Math.max(0, i - 4), i + 5).filter((x): x is number => x != null);
+    return { i, v: w.length ? w.reduce((a, b) => a + b, 0) / w.length : 0 };
+  });
   const places = active?.segments.reduce((a, s) => a + s.placeCount, 0) ?? 0;
   const open = active?.segments.reduce((a, s) => a + s.openPlaceCount, 0) ?? 0;
   const quiet = active?.segments.filter((s) => indexTone(s.safetyIndex) === "risk").length ?? 0;
