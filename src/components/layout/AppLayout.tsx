@@ -8,6 +8,7 @@ import {
   LifeBuoy,
   Map,
   Menu,
+  Radar,
   Bookmark,
   Search,
   Settings,
@@ -48,7 +49,7 @@ const MOBILE_NAV: NavItem[] = [
   { to: "/dashboard", label: "Home", icon: LayoutDashboard },
   { to: "/route-planner", label: "Plan", icon: Compass },
   { to: "/routes", label: "Routes", icon: Map },
-  { to: "/safety-map", label: "Safety", icon: LifeBuoy },
+  { to: "/safety-map", label: "Around me", icon: Radar },
   { to: "/profile", label: "Profile", icon: User },
 ];
 
