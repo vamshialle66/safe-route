@@ -107,6 +107,7 @@ export function AppLayout({
   fullBleed?: boolean;
 }) {
   const [drawer, setDrawer] = useState(false);
+  const session = useSession();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
