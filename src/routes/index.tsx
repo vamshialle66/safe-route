@@ -90,7 +90,7 @@ function LandingPage() {
                   <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="glass-dark border-0 text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+              <Button asChild size="lg" variant="ghost" className="glass-dark text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
                 <Link to="/how-it-works">How it works</Link>
               </Button>
             </div>

@@ -343,7 +343,7 @@ function Metric({ icon: Icon, label, value, sub, tone }: { icon: typeof Store; l
     primary: "bg-primary-soft text-primary",
     safe: "bg-safe-soft text-safe",
     risk: "bg-risk-soft text-risk",
-    moderate: "bg-moderate-soft text-moderate-foreground",
+    moderate: "bg-moderate-soft text-moderate-foreground dark:text-moderate",
   };
   return (
     <div className="card-hover rounded-2xl border border-border bg-card p-4 shadow-soft">

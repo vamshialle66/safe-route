@@ -19,7 +19,7 @@ export const RISK_STYLES: Record<
     soft: "bg-safe-soft",
   },
   moderate: {
-    chip: "bg-moderate-soft text-moderate-foreground border-moderate/40",
+    chip: "bg-moderate-soft text-moderate-foreground dark:text-moderate border-moderate/40",
     dot: "bg-moderate",
     text: "text-moderate",
     stroke: "stroke-moderate",

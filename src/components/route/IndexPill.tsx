@@ -3,7 +3,7 @@ import { formatIndex, indexTone, type IndexTone } from "@/lib/saferouteApi";
 
 export const TONE_CLASSES: Record<IndexTone, { chip: string; text: string; bar: string; label: string }> = {
   safe: { chip: "bg-safe-soft text-safe border-safe/30", text: "text-safe", bar: "bg-safe", label: "Mostly open" },
-  moderate: { chip: "bg-moderate-soft text-moderate-foreground border-moderate/40", text: "text-moderate", bar: "bg-moderate", label: "Mixed" },
+  moderate: { chip: "bg-moderate-soft text-moderate-foreground dark:text-moderate border-moderate/40", text: "text-moderate", bar: "bg-moderate", label: "Mixed" },
   risk: { chip: "bg-risk-soft text-risk border-risk/30", text: "text-risk", bar: "bg-risk", label: "Mostly closed" },
   none: { chip: "bg-muted text-muted-foreground border-border", text: "text-muted-foreground", bar: "bg-muted-foreground/40", label: "Not enough data" },
 };
