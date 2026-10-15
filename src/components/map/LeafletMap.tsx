@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { ApiPlace, ApiRoute, LatLng } from "@/lib/saferouteApi";
@@ -37,6 +37,12 @@ export default function LeafletMap({
   const map = useRef<L.Map | null>(null);
   const layer = useRef<L.LayerGroup | null>(null);
   const fittedKey = useRef<string>("");
+  const [themeTick, setThemeTick] = useState(0);
+  useEffect(() => {
+    const f = () => setThemeTick((t) => t + 1);
+    window.addEventListener("saferoute-theme", f);
+    return () => window.removeEventListener("saferoute-theme", f);
+  }, []);
 
   useEffect(() => {
     if (!el.current || map.current) return;
@@ -146,7 +152,7 @@ export default function LeafletMap({
       fittedKey.current = key;
       m.fitBounds(bounds, { padding: [48, 48], maxZoom: 16 });
     }
-  }, [routes, selectedRoute, highlightSegment, places, origin, destination, center, showPlaces, onSelectRoute]);
+  }, [routes, selectedRoute, highlightSegment, places, origin, destination, center, showPlaces, onSelectRoute, themeTick]);
 
   return <div ref={el} className="h-full w-full" role="application" aria-label="Route map" />;
 }

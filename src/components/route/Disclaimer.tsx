@@ -15,7 +15,7 @@ export function SourceBadge({ source }: { source: "live" | "demo" }) {
     <span
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium",
-        source === "live" ? "bg-safe-soft text-safe" : "bg-moderate-soft text-moderate-foreground",
+        source === "live" ? "bg-safe-soft text-safe" : "bg-moderate-soft text-moderate-foreground dark:text-moderate",
       )}
     >
       <span className={cn("size-1.5 rounded-full", source === "live" ? "bg-safe animate-pulse" : "bg-moderate")} />

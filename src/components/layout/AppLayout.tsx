@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ThemePicker } from "@/components/theme/ThemePicker";
 import { MOCK_USER } from "@/data/mockData";
 
 interface NavItem {
@@ -162,6 +163,7 @@ export function AppLayout({
             </div>
 
             <div className="ml-auto flex items-center gap-2">
+              <ThemePicker />
               <Button asChild variant="ghost" size="icon" aria-label="Notifications">
                 <Link to="/notifications">
                   <span className="relative">
