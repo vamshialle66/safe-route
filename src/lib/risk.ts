@@ -12,7 +12,7 @@ export const RISK_STYLES: Record<
   { chip: string; dot: string; text: string; stroke: string; soft: string }
 > = {
   low: {
-    chip: "bg-safe-soft text-safe-foreground border-safe/30",
+    chip: "bg-safe-soft text-safe border-safe/30",
     dot: "bg-safe",
     text: "text-safe",
     stroke: "stroke-safe",
