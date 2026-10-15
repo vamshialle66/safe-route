@@ -145,13 +145,13 @@ interface GPlace {
 const PLACE_MASK =
   "places.id,places.displayName,places.location,places.types,places.businessStatus,places.currentOpeningHours.openNow";
 
-/** Only places that mean people are around: shops, food, pharmacies, fuel, police, hospitals, transit, hotels. */
+/** Only places that mean people are around: shops, food, pharmacies, fuel, police, hospitals, transit, hotels, toilets, fire stations, ATMs, post offices. */
 export const USEFUL_TYPES = [
   "convenience_store", "supermarket", "grocery_store", "store", "department_store", "shopping_mall",
   "clothing_store", "electronics_store", "hardware_store", "liquor_store", "book_store",
-  "pharmacy", "drugstore", "hospital", "police",
+  "pharmacy", "drugstore", "hospital", "police", "fire_station",
   "restaurant", "cafe", "fast_food_restaurant", "bakery", "meal_takeaway", "bar",
-  "gas_station", "bank", "hotel", "lodging",
+  "gas_station", "bank", "atm", "post_office", "hotel", "lodging", "public_bathroom",
   "bus_station", "train_station", "subway_station", "transit_station",
 ];
 
