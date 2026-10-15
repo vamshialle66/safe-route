@@ -1,3 +1,4 @@
+import { placeCounts, typesFor } from "./placeCategories";
 /**
  * Built-in SafeRoute engine (server-only). Ports the friend's Express backend rules:
  * ~100 m segments, narrow corridor, index = % of scored places open right now,
@@ -99,8 +100,8 @@ function lineLength(pts: LatLng[]) {
 }
 
 /* ---------- index rules (shared with demo) ---------- */
-export function placeIndex(places: ApiPlace[]) {
-  const scored = places.filter((p) => typeof p.openNow === "boolean");
+export function placeIndex(places: ApiPlace[], allowed?: Set<string>) {
+  const scored = places.filter((p) => typeof p.openNow === "boolean" && placeCounts(p.types, allowed));
   const open = scored.filter((p) => p.openNow).length;
   return {
     scoredPlaceCount: scored.length,
@@ -108,12 +109,12 @@ export function placeIndex(places: ApiPlace[]) {
     safetyIndex: scored.length ? (open / scored.length) * 100 : null,
   };
 }
-export function scoreSegments(lines: LatLng[][], places: ApiPlace[]): ApiSegment[] {
+export function scoreSegments(lines: LatLng[][], places: ApiPlace[], allowed?: Set<string>): ApiSegment[] {
   return lines.map((geometry, i) => {
     const near = places.filter((p) =>
       geometry.some((a, j) => j > 0 && distToSeg(p, geometry[j - 1]!, a) <= CORRIDOR_M),
     );
-    const idx = placeIndex(near);
+    const idx = placeIndex(near, allowed);
     return {
       segmentNumber: i + 1,
       source: "google",
@@ -244,7 +245,8 @@ export function validPoint(p: unknown): p is LatLng {
   );
 }
 
-export async function liveSegments(origin: LatLng, destination: LatLng, travelMode: BackendTravelMode) {
+export async function liveSegments(origin: LatLng, destination: LatLng, travelMode: BackendTravelMode, categories?: string[]) {
+  const allowed = categories ? new Set(typesFor(categories)) : undefined;
   if (dist(origin, destination) > MAX_TRIP_M) throw new EngineError("Trips are limited to 60 km for live analysis.", "input");
   const body: Record<string, unknown> = {
     origin: { location: { latLng: origin } },
@@ -267,7 +269,7 @@ export async function liveSegments(origin: LatLng, destination: LatLng, travelMo
     const lists = await mapLimit(samplePoints(pts), 4, (p) => nearbyPlaces(p, SAMPLE_RADIUS_M));
     const byId = new Map<string, ApiPlace>();
     lists.flat().forEach((p) => byId.set(p.id ?? `${p.latitude},${p.longitude}`, p));
-    const segments = scoreSegments(splitLine(pts), [...byId.values()]);
+    const segments = scoreSegments(splitLine(pts), [...byId.values()], allowed);
     const idx = routeIndex(segments);
     routes.push({
       routeNumber: i + 1,
@@ -282,8 +284,8 @@ export async function liveSegments(origin: LatLng, destination: LatLng, travelMo
   return { routes };
 }
 
-export async function liveNearby(p: LatLng): Promise<NearbyResponse> {
+export async function liveNearby(p: LatLng, categories?: string[]): Promise<NearbyResponse> {
   const places = await nearbyPlaces(p, 500);
-  const idx = placeIndex(places);
+  const idx = placeIndex(places, categories ? new Set(typesFor(categories)) : undefined);
   return { places, ...idx, safetyStatus: idx.safetyIndex == null ? "insufficient-data" : "available" };
 }

@@ -10,17 +10,21 @@ function point(p: unknown): LatLng {
   return { latitude: Number(q.latitude), longitude: Number(q.longitude) };
 }
 
+function cats(c: unknown): string[] | undefined {
+  return Array.isArray(c) ? c.filter((x): x is string => typeof x === "string").slice(0, 30) : undefined;
+}
+
 export type EngineResult<T> = { ok: true; data: T } | { ok: false; reason: string };
 
 export const liveSegmentsFn = createServerFn({ method: "POST" })
-  .inputValidator((d: { origin: LatLng; destination: LatLng; travelMode: BackendTravelMode }) => {
+  .inputValidator((d: { origin: LatLng; destination: LatLng; travelMode: BackendTravelMode; categories?: string[] }) => {
     if (!MODES.includes(d?.travelMode)) throw new Error("Invalid travel mode");
-    return { origin: point(d.origin), destination: point(d.destination), travelMode: d.travelMode };
+    return { origin: point(d.origin), destination: point(d.destination), travelMode: d.travelMode, categories: cats(d.categories) };
   })
   .handler(async ({ data }): Promise<EngineResult<{ routes: ApiRoute[] }>> => {
     const { liveSegments } = await import("./engine.server");
     try {
-      return { ok: true, data: await liveSegments(data.origin, data.destination, data.travelMode) };
+      return { ok: true, data: await liveSegments(data.origin, data.destination, data.travelMode, data.categories) };
     } catch (e) {
       console.error("liveSegments failed", e);
       return { ok: false, reason: e instanceof Error ? e.message : "Live service unavailable." };
@@ -28,11 +32,11 @@ export const liveSegmentsFn = createServerFn({ method: "POST" })
   });
 
 export const liveNearbyFn = createServerFn({ method: "POST" })
-  .inputValidator((d: LatLng) => point(d))
+  .inputValidator((d: LatLng & { categories?: string[] }) => ({ ...point(d), categories: cats(d?.categories) }))
   .handler(async ({ data }): Promise<EngineResult<NearbyResponse>> => {
     const { liveNearby } = await import("./engine.server");
     try {
-      return { ok: true, data: await liveNearby(data) };
+      return { ok: true, data: await liveNearby({ latitude: data.latitude, longitude: data.longitude }, data.categories) };
     } catch (e) {
       console.error("liveNearby failed", e);
       return { ok: false, reason: e instanceof Error ? e.message : "Live service unavailable." };
