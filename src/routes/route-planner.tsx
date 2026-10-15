@@ -62,12 +62,12 @@ function PlannerPage() {
     setStage(0);
     const timer = setInterval(() => setStage((s) => Math.min(s + 1, STAGES.length - 1)), 1600);
     try {
-      const { analysis: a, fellBack } = await runAnalysis(origin, destination, mode);
+      const { analysis: a, fellBack, reason } = await runAnalysis(origin, destination, mode);
       const top = [...topRouteNumbers(a.routes)][0] ?? a.routes[0]?.routeNumber;
       setSelected(top);
       if (!a.routes.length) toast.message("No routes were found between these places.");
-      else if (fellBack) toast.warning("Couldn't reach the SafeRoute engine — showing sample data. You can set its address in Settings.");
-      else toast.success(`${a.routes.length} routes analysed`);
+      else if (fellBack) toast.warning(`Live data unavailable — showing sample data. ${reason ?? ""}`.trim());
+      else toast.success(`${a.routes.length} routes analysed with live data`);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Something went wrong.");
     } finally {

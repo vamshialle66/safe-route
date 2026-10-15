@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { getApiUrl, getDemoOnly, saferouteApi, setApiUrl, setDemoOnly } from "@/lib/saferouteApi";
+import { getCustomApiUrl, getDemoOnly, saferouteApi, setApiUrl, setDemoOnly } from "@/lib/saferouteApi";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -29,12 +29,13 @@ function SettingsPage() {
   const [status, setStatus] = useState<"idle" | "checking" | "ok" | "fail">("idle");
 
   useEffect(() => {
-    setUrl(getApiUrl());
+    setUrl(getCustomApiUrl());
     setDemo(getDemoOnly());
   }, []);
 
   async function test() {
     setApiUrl(url);
+    if (!url.trim()) { setStatus("ok"); return; }
     setStatus("checking");
     setStatus((await saferouteApi.ping()) ? "ok" : "fail");
   }
@@ -44,15 +45,15 @@ function SettingsPage() {
       <div className="mx-auto max-w-2xl space-y-6">
         <section className="rounded-2xl border border-border bg-card p-6">
           <div className="flex items-center gap-2"><Server className="size-4" /><h2 className="font-display font-semibold">Route engine</h2></div>
-          <p className="mt-1 text-sm text-muted-foreground">The address where the SafeRoute server is running. On your own computer this is usually http://localhost:3000.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Live results come from Google Maps by default. Only fill this in to use your own SafeRoute server instead (for example http://localhost:3000). Leave it empty for the built-in live engine.</p>
           <Label htmlFor="url" className="mt-4 block">Server address</Label>
           <div className="mt-1.5 flex gap-2">
-            <Input id="url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="http://localhost:3000" />
+            <Input id="url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="Empty = built-in live engine" />
             <Button onClick={test} disabled={status === "checking"}>
               {status === "checking" && <Loader2 className="size-4 animate-spin" />} Test & save
             </Button>
           </div>
-          {status === "ok" && <p className="mt-3 flex items-center gap-2 text-sm text-safe"><CheckCircle2 className="size-4" /> Connected.</p>}
+          {status === "ok" && <p className="mt-3 flex items-center gap-2 text-sm text-safe"><CheckCircle2 className="size-4" /> {url.trim() ? "Connected." : "Using the built-in live engine."}</p>}
           {status === "fail" && (
             <p className="mt-3 flex items-start gap-2 text-sm text-risk">
               <XCircle className="mt-0.5 size-4 shrink-0" /> Couldn't connect. Check the server is running and allows requests from this site.
