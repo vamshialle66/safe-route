@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export function MapLegend() {
@@ -7,9 +8,12 @@ export function MapLegend() {
     ["bg-risk", "Mostly closed (<40)"],
     ["bg-muted-foreground/50", "Not enough data"],
   ];
+  const [open, setOpen] = useState(false);
+  useEffect(() => setOpen(window.matchMedia("(min-width: 640px)").matches), []);
   return (
     <details
-      open
+      open={open}
+      onToggle={(e) => setOpen(e.currentTarget.open)}
       className="group absolute bottom-3 left-3 z-[500] max-w-[calc(100%-1.5rem)] rounded-xl border border-border bg-card/95 text-xs shadow-soft backdrop-blur [&:not([open])]:rounded-full"
     >
       <summary className="flex min-h-9 cursor-pointer list-none items-center gap-2 px-3 py-2 font-semibold [&::-webkit-details-marker]:hidden">
