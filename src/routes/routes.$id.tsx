@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Bookmark, Clock, MapPin, Route as RouteIcon, Store } from "lucide-react";
+import { ArrowLeft, Bookmark, Navigation, Clock, MapPin, Route as RouteIcon, Store } from "lucide-react";
 import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { toast } from "sonner";
 import { AppLayout } from "@/components/layout/AppLayout";
@@ -12,6 +12,7 @@ import { EmptyState } from "@/components/common/EmptyState";
 import { analysisStore, useCurrentAnalysis } from "@/lib/analysisStore";
 import { formatDistance, formatDuration, formatIndex, indexTone } from "@/lib/saferouteApi";
 import { cn } from "@/lib/utils";
+import { googleDirectionsUrl } from "@/lib/directions";
 
 export const Route = createFileRoute("/routes/$id")({
   head: () => ({
@@ -57,7 +58,12 @@ function RouteDetail() {
       title={`Route ${route.routeNumber}`}
       description={`${analysis.origin.label.split(",")[0]} → ${analysis.destination.label.split(",")[0]}`}
       actions={
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <Button asChild className="bg-safe text-safe-foreground hover:bg-safe/90">
+            <a href={googleDirectionsUrl(analysis.origin, analysis.destination, analysis.travelMode, route)} target="_blank" rel="noopener noreferrer">
+              <Navigation className="size-4" /> Directions
+            </a>
+          </Button>
           <Button asChild variant="outline"><Link to="/routes"><ArrowLeft className="size-4" /> All routes</Link></Button>
           <Button onClick={() => toast[analysisStore.saveRoute(analysis, route.routeNumber) ? "success" : "message"]("Saved to your routes")}>
             <Bookmark className="size-4" /> Save
