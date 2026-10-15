@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { Navigation, useCallback, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowDownUp, ArrowRight, Bookmark, Crosshair, Flag, Loader2, MapPin, Sparkles } from "lucide-react";
 import { toast } from "sonner";
@@ -218,6 +218,11 @@ function PlannerPage() {
                             <Link to="/routes/$id" params={{ id: String(r.routeNumber) }}>
                               Details <ArrowRight className="size-3.5" />
                             </Link>
+                          </Button>
+                          <Button asChild size="sm" variant="outline">
+                            <a href={googleDirectionsUrl(analysis.origin, analysis.destination, analysis.travelMode, r)} target="_blank" rel="noopener noreferrer">
+                              <Navigation className="size-3.5" /> Go
+                            </a>
                           </Button>
                           <Button
                             size="sm"
