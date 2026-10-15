@@ -12,6 +12,7 @@ export interface Analysis {
   destination: NamedPoint;
   travelMode: BackendTravelMode;
   source: "live" | "demo";
+  fallbackReason?: string;
   routes: ApiRoute[];
 }
 

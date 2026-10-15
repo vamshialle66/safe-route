@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { fetchNearby } from "@/lib/runAnalysis";
 import { createFileRoute } from "@tanstack/react-router";
 import { Crosshair, Loader2, Store } from "lucide-react";
 import { toast } from "sonner";
@@ -9,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { IndexRing } from "@/components/route/IndexPill";
 import { Disclaimer, SourceBadge } from "@/components/route/Disclaimer";
 import { currentPosition, SAMPLE_ORIGIN } from "@/lib/geocode";
-import { ApiError, getDemoOnly, saferouteApi, type LatLng, type NearbyResponse } from "@/lib/saferouteApi";
+import { getDemoOnly, type LatLng, type NearbyResponse } from "@/lib/saferouteApi";
 import { demoNearby } from "@/lib/demoAnalysis";
 import { cn } from "@/lib/utils";
 
@@ -43,15 +44,14 @@ function SafetyMapPage() {
         setSource("demo");
         setData(demoNearby(p));
       } else {
-        try {
-          setData(await saferouteApi.nearby(p));
+        const r = await fetchNearby(p);
+        if (r.ok) {
+          setData(r.data);
           setSource("live");
-        } catch (e) {
-          if (e instanceof ApiError && e.unreachable) {
-            setSource("demo");
-            setData(demoNearby(p));
-            toast.warning("Couldn't reach the SafeRoute engine — showing sample places.");
-          } else throw e;
+        } else {
+          setSource("demo");
+          setData(demoNearby(p));
+          toast.warning(`Live data unavailable — showing sample places. ${r.reason}`);
         }
       }
     } catch (e) {

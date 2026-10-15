@@ -74,7 +74,13 @@ export function getApiUrl() {
   return (localStorage.getItem(URL_KEY) || import.meta.env["VITE_SAFEROUTE_API_URL"] || DEFAULT_API_URL).replace(/\/$/, "");
 }
 export function setApiUrl(url: string) {
-  localStorage.setItem(URL_KEY, url.trim());
+  if (url.trim()) localStorage.setItem(URL_KEY, url.trim());
+  else localStorage.removeItem(URL_KEY);
+}
+/** A custom external server address, or "" to use the built-in Google Maps engine. */
+export function getCustomApiUrl() {
+  if (typeof window === "undefined") return "";
+  return localStorage.getItem(URL_KEY) || import.meta.env["VITE_SAFEROUTE_API_URL"] || "";
 }
 export function getDemoOnly() {
   return typeof window !== "undefined" && localStorage.getItem(DEMO_KEY) === "1";
