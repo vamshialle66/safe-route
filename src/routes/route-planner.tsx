@@ -1,4 +1,4 @@
-import { Navigation, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Navigation, ArrowDownUp, ArrowRight, Bookmark, Crosshair, Flag, Loader2, MapPin, Sparkles } from "lucide-react";
 import { googleDirectionsUrl } from "@/lib/directions";
