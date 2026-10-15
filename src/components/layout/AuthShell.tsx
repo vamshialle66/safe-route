@@ -14,7 +14,9 @@ export function AuthShell({
 }) {
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
-      <div className="relative hidden flex-col justify-between bg-brand-gradient p-12 lg:flex">
+      <div className="relative hidden flex-col justify-between overflow-hidden bg-hero p-12 lg:flex">
+        <div className="pointer-events-none absolute inset-0 bg-grid" aria-hidden="true" />
+        <div className="pointer-events-none absolute -bottom-24 -left-24 size-96 rounded-full bg-primary/40 blur-3xl" aria-hidden="true" />
         <Link to="/" aria-label="SafeRoute home">
           <Logo variant="inverted" />
         </Link>

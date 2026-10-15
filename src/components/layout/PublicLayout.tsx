@@ -22,11 +22,16 @@ export function PageHeader({
   description: string;
 }) {
   return (
-    <section className="border-b border-border bg-card">
-      <div className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">{eyebrow}</p>
-        <h1 className="mt-3 max-w-3xl text-3xl font-semibold sm:text-4xl lg:text-5xl">{title}</h1>
-        <p className="mt-4 max-w-2xl text-base text-muted-foreground sm:text-lg">{description}</p>
+    <section className="relative overflow-hidden bg-hero text-sidebar-accent-foreground">
+      <div className="pointer-events-none absolute inset-0 bg-grid" aria-hidden="true" />
+      <div className="pointer-events-none absolute -right-32 -top-32 size-[28rem] rounded-full bg-primary/40 blur-3xl" aria-hidden="true" />
+      <div className="relative mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+        <span className="glass-dark inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium uppercase tracking-[0.18em]">
+          <span className="size-1.5 animate-pulse rounded-full bg-safe" aria-hidden="true" />
+          {eyebrow}
+        </span>
+        <h1 className="mt-6 max-w-3xl font-display text-4xl font-semibold leading-[1.05] sm:text-5xl lg:text-6xl">{title}</h1>
+        <p className="mt-5 max-w-2xl text-base text-sidebar-foreground/80 sm:text-lg">{description}</p>
       </div>
     </section>
   );

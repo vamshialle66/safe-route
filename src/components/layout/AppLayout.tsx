@@ -191,14 +191,22 @@ export function AppLayout({
           )}
         >
           {!fullBleed && (
-            <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-              <div>
-                <h1 className="font-display text-2xl font-semibold sm:text-3xl">{title}</h1>
-                {description && (
-                  <p className="mt-1.5 max-w-2xl text-sm text-muted-foreground">{description}</p>
-                )}
+            <div className="relative mb-8 overflow-hidden rounded-3xl bg-hero px-6 py-8 text-sidebar-accent-foreground shadow-lg sm:px-10 sm:py-10">
+              <div className="pointer-events-none absolute inset-0 bg-grid" aria-hidden="true" />
+              <div className="pointer-events-none absolute -right-20 -top-24 size-72 rounded-full bg-primary/40 blur-3xl" aria-hidden="true" />
+              <div className="relative flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <span className="glass-dark inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-medium uppercase tracking-[0.16em]">
+                    <span className="size-1.5 animate-pulse rounded-full bg-safe" aria-hidden="true" />
+                    SafeRoute
+                  </span>
+                  <h1 className="mt-4 font-display text-3xl font-semibold leading-tight sm:text-4xl">{title}</h1>
+                  {description && (
+                    <p className="mt-2 max-w-2xl text-sm text-sidebar-foreground/80 sm:text-base">{description}</p>
+                  )}
+                </div>
+                {actions && <div className="glass-dark rounded-2xl p-1.5">{actions}</div>}
               </div>
-              {actions}
             </div>
           )}
           {children}
