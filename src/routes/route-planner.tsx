@@ -19,6 +19,7 @@ import {
   type BackendTravelMode,
 } from "@/lib/saferouteApi";
 import { cn } from "@/lib/utils";
+import { MiniHero } from "@/components/layout/MiniHero";
 import { MapLegend } from "@/components/map/MapLegend";
 
 export const Route = createFileRoute("/route-planner")({
@@ -88,13 +89,11 @@ function PlannerPage() {
 
   return (
     <AppLayout title="Plan Route" fullBleed>
-      <div className="flex flex-col lg:h-[calc(100vh-4rem)] lg:flex-row">
+      <MiniHero className="m-4 mb-0 lg:hidden" title="Plan Route" description="Where are you heading? We compare up to five routes and score each stretch." />
+      <div className="flex flex-col pt-4 lg:h-[calc(100vh-4rem)] lg:flex-row lg:pt-0">
         <section className="order-2 flex w-full flex-col border-r border-border bg-card lg:order-1 lg:w-[420px] lg:overflow-y-auto">
           <div className="space-y-4 border-b border-border p-5">
-            <div>
-              <h1 className="font-display text-xl font-semibold">Where are you heading?</h1>
-              <p className="mt-1 text-sm text-muted-foreground">We compare up to five routes and score each stretch.</p>
-            </div>
+            <MiniHero className="hidden lg:block" title="Plan Route" description="Where are you heading? We compare up to five routes and score each stretch." />
             <div className="space-y-1">
               <PlaceSearch
                 label="Start"
@@ -250,7 +249,7 @@ function PlannerPage() {
           </div>
         </section>
 
-        <section className="relative order-1 h-[45vh] min-h-[300px] sm:h-[52vh] flex-1 lg:order-2 lg:h-auto">
+        <section className="relative order-1 h-[45vh] min-h-[300px] flex-none sm:h-[52vh] lg:flex-1 lg:order-2 lg:h-auto">
           <RouteMap
             routes={routes}
             selectedRoute={selected}

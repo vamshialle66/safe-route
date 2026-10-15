@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Crosshair, Loader2, Store } from "lucide-react";
 import { toast } from "sonner";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { MiniHero } from "@/components/layout/MiniHero";
 import { RouteMap } from "@/components/map/RouteMap";
 import { Button } from "@/components/ui/button";
 import { IndexRing } from "@/components/route/IndexPill";
@@ -64,12 +65,10 @@ function SafetyMapPage() {
 
   return (
     <AppLayout title="Around Me" fullBleed>
-      <div className="flex flex-col lg:h-[calc(100vh-4rem)] lg:flex-row">
+      <MiniHero className="m-4 mb-0 lg:hidden" title="Around Me" description="Find out how many places close to you are open right now." />
+      <div className="flex flex-col pt-4 lg:h-[calc(100vh-4rem)] lg:flex-row lg:pt-0">
         <aside className="order-2 w-full space-y-4 border-r border-border bg-card p-5 lg:order-1 lg:w-[380px] lg:overflow-y-auto">
-          <div>
-            <h1 className="font-display text-xl font-semibold">Around me</h1>
-            <p className="mt-1 text-sm text-muted-foreground">Find out how many places close to you are open right now.</p>
-          </div>
+          <MiniHero className="hidden lg:block" title="Around Me" description="Find out how many places close to you are open right now." />
           <div className="flex gap-2">
             <Button className="flex-1" onClick={() => scan()} disabled={loading}>
               {loading ? <Loader2 className="size-4 animate-spin" /> : <Crosshair className="size-4" />} Scan my area
@@ -111,7 +110,7 @@ function SafetyMapPage() {
           )}
           <Disclaimer />
         </aside>
-        <section className="relative order-1 h-[45vh] min-h-[300px] sm:h-[50vh] flex-1 lg:order-2 lg:h-auto">
+        <section className="relative order-1 h-[45vh] min-h-[300px] flex-none sm:h-[50vh] lg:flex-1 lg:order-2 lg:h-auto">
           <RouteMap center={center} places={places} />
         </section>
       </div>
