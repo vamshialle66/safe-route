@@ -55,7 +55,8 @@ export const deleteAlertFn = createServerFn({ method: "POST" }).middleware([requ
     return { ok: true };
   });
 
-async function isReviewer(supabase: { rpc: (fn: "has_role", args: { _user_id: string; _role: "admin" | "moderator" }) => PromiseLike<{ data: boolean | null }> }, userId: string) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function isReviewer(supabase: any, userId: string) {
   const [admin, moderator] = await Promise.all([
     supabase.rpc("has_role", { _user_id: userId, _role: "admin" }),
     supabase.rpc("has_role", { _user_id: userId, _role: "moderator" }),
@@ -76,7 +77,7 @@ export const reviewQueueFn = createServerFn({ method: "POST" }).middleware([requ
 export const moderateAlertFn = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
   .inputValidator(input => z.object({ id: z.string().uuid(), decision: z.enum(["approved", "rejected"]), note: z.string().trim().max(500).optional() }).parse(input))
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase.rpc("moderate_alert", { _id: data.id, _decision: data.decision, _note: data.note || undefined });
+    const { error } = await context.supabase.rpc("moderate_alert", { _id: data.id, _decision: data.decision, ...(data.note ? { _note: data.note } : {}) });
     if (error) throw new Error("This decision could not be saved. You may not have reviewer access.");
     return { ok: true };
   });

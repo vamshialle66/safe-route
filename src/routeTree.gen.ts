@@ -15,6 +15,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as EmergencyRouteImport } from './routes/emergency'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ModerationRouteImport } from './routes/moderation'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as RecentTripsRouteImport } from './routes/recent-trips'
@@ -56,6 +57,11 @@ const HowItWorksRoute = HowItWorksRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModerationRoute = ModerationRouteImport.update({
+  id: '/moderation',
+  path: '/moderation',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotificationsRoute = NotificationsRouteImport.update({
@@ -126,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/emergency': typeof EmergencyRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
+  '/moderation': typeof ModerationRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/recent-trips': typeof RecentTripsRoute
@@ -146,6 +153,7 @@ export interface FileRoutesByTo {
   '/emergency': typeof EmergencyRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
+  '/moderation': typeof ModerationRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/recent-trips': typeof RecentTripsRoute
@@ -167,6 +175,7 @@ export interface FileRoutesById {
   '/emergency': typeof EmergencyRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
+  '/moderation': typeof ModerationRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/recent-trips': typeof RecentTripsRoute
@@ -189,6 +198,7 @@ export interface FileRouteTypes {
     | '/emergency'
     | '/how-it-works'
     | '/login'
+    | '/moderation'
     | '/notifications'
     | '/profile'
     | '/recent-trips'
@@ -209,6 +219,7 @@ export interface FileRouteTypes {
     | '/emergency'
     | '/how-it-works'
     | '/login'
+    | '/moderation'
     | '/notifications'
     | '/profile'
     | '/recent-trips'
@@ -229,6 +240,7 @@ export interface FileRouteTypes {
     | '/emergency'
     | '/how-it-works'
     | '/login'
+    | '/moderation'
     | '/notifications'
     | '/profile'
     | '/recent-trips'
@@ -250,6 +262,7 @@ export interface RootRouteChildren {
   EmergencyRoute: typeof EmergencyRoute
   HowItWorksRoute: typeof HowItWorksRoute
   LoginRoute: typeof LoginRoute
+  ModerationRoute: typeof ModerationRoute
   NotificationsRoute: typeof NotificationsRoute
   ProfileRoute: typeof ProfileRoute
   RecentTripsRoute: typeof RecentTripsRoute
@@ -306,6 +319,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/moderation': {
+      id: '/moderation'
+      path: '/moderation'
+      fullPath: '/moderation'
+      preLoaderRoute: typeof ModerationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/notifications': {
@@ -402,6 +422,7 @@ const rootRouteChildren: RootRouteChildren = {
   EmergencyRoute: EmergencyRoute,
   HowItWorksRoute: HowItWorksRoute,
   LoginRoute: LoginRoute,
+  ModerationRoute: ModerationRoute,
   NotificationsRoute: NotificationsRoute,
   ProfileRoute: ProfileRoute,
   RecentTripsRoute: RecentTripsRoute,
