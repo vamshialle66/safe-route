@@ -3,9 +3,9 @@ import { cn } from "@/lib/utils";
 
 export function MapLegend() {
   const items = [
-    ["bg-safe", "Mostly open (70+)"],
-    ["bg-moderate", "Mixed (40–69)"],
-    ["bg-risk", "Mostly closed (<40)"],
+    ["bg-safe", "70–100% of checked places open"],
+    ["bg-moderate", "40–69% of checked places open"],
+    ["bg-risk", "Less than 40% of checked places open"],
     ["bg-muted-foreground/50", "Not enough data"],
   ];
   const [open, setOpen] = useState(false);

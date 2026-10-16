@@ -3,7 +3,7 @@ import { formatIndex, indexTone, type IndexTone } from "@/lib/saferouteApi";
 
 export const TONE_CLASSES: Record<IndexTone, { chip: string; text: string; bar: string; label: string }> = {
   safe: { chip: "bg-safe-soft text-safe border-safe/30", text: "text-safe", bar: "bg-safe", label: "Mostly open" },
-  moderate: { chip: "bg-moderate-soft text-moderate-foreground dark:text-moderate border-moderate/40", text: "text-moderate", bar: "bg-moderate", label: "Mixed" },
+  moderate: { chip: "bg-moderate-soft text-moderate-foreground dark:text-moderate border-moderate/40", text: "text-moderate", bar: "bg-moderate", label: "Some open, some closed" },
   risk: { chip: "bg-risk-soft text-risk border-risk/30", text: "text-risk", bar: "bg-risk", label: "Mostly closed" },
   none: { chip: "bg-muted text-muted-foreground border-border", text: "text-muted-foreground", bar: "bg-muted-foreground/40", label: "Not enough data" },
 };
@@ -26,7 +26,7 @@ export function IndexRing({ value, size = 72 }: { value: number | null | undefin
   const c = 2 * Math.PI * r;
   const pct = value == null ? 0 : Math.max(0, Math.min(100, value));
   return (
-    <div className="relative grid place-items-center" style={{ width: size, height: size }}>
+    <div className="relative grid shrink-0 place-items-center" style={{ width: size, height: size }}>
       <svg viewBox="0 0 36 36" className="absolute inset-0 -rotate-90">
         <circle cx="18" cy="18" r={r} fill="none" strokeWidth="3" className="stroke-muted" strokeDasharray={value == null ? "2 2" : undefined} />
         <circle

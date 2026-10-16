@@ -18,9 +18,9 @@ export const Route = createFileRoute("/routes/$id")({
   head: () => ({
     meta: [
       { title: "Route Details — SafeRoute" },
-      { name: "description", content: "Stretch-by-stretch breakdown of a route: places nearby, how many are open, and the experimental index." },
+      { name: "description", content: "See your journey on the map, check nearby open places and open directions in Google Maps." },
       { property: "og:title", content: "Route Details — SafeRoute" },
-      { property: "og:description", content: "See every stretch of your route." },
+      { property: "og:description", content: "Check nearby open places along your journey and get directions." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -40,14 +40,19 @@ function RouteDetail() {
         <EmptyState
           icon={RouteIcon}
           title="No route to show yet"
-          description="Analyse a trip first, then open any route for its full breakdown."
+          description="Choose a start and destination in Plan Route, then select a route to see its details."
           action={<Button asChild><Link to="/route-planner">Plan a route</Link></Button>}
         />
       </AppLayout>
     );
   }
 
-  const chart = route.segments.map((s) => ({ n: s.segmentNumber, v: s.safetyIndex ?? 0, has: s.safetyIndex != null, tone: indexTone(s.safetyIndex) }));
+  let distanceFromStart = 0;
+  const chart = route.segments.map((s) => {
+    const start = distanceFromStart;
+    distanceFromStart += s.lengthMeters;
+    return { n: s.segmentNumber, range: `${formatDistance(start)} – ${formatDistance(distanceFromStart)} from start`, v: s.safetyIndex ?? 0, has: s.safetyIndex != null, tone: indexTone(s.safetyIndex) };
+  });
   const totalPlaces = route.segments.reduce((a, s) => a + s.placeCount, 0);
   const openPlaces = route.segments.reduce((a, s) => a + s.openPlaceCount, 0);
   const lowStretches = route.segments.filter((s) => indexTone(s.safetyIndex) === "risk");
@@ -61,10 +66,10 @@ function RouteDetail() {
         <div className="flex flex-wrap gap-2">
           <Button asChild className="bg-safe text-safe-foreground hover:bg-safe/90">
             <a href={googleDirectionsUrl(analysis.origin, analysis.destination, analysis.travelMode, route)} target="_blank" rel="noopener noreferrer">
-              <Navigation className="size-4" /> Directions
+              <Navigation className="size-4" /> Open Google Maps
             </a>
           </Button>
-          <Button asChild variant="outline"><Link to="/routes"><ArrowLeft className="size-4" /> All routes</Link></Button>
+          <Button asChild variant="outline" className="bg-card text-card-foreground"><Link to="/routes"><ArrowLeft className="size-4" /> All routes</Link></Button>
           <Button onClick={() => toast[analysisStore.saveRoute(analysis, route.routeNumber) ? "success" : "message"]("Saved to your routes")}>
             <Bookmark className="size-4" /> Save
           </Button>
@@ -78,10 +83,11 @@ function RouteDetail() {
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-5">
-            <div className="flex items-center justify-between">
-              <h2 className="font-display font-semibold">Open-places score along the route</h2>
-              <span className="text-xs text-muted-foreground">Each bar is one stretch, start → finish</span>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h2 className="font-display font-semibold">Where are places open along the way?</h2>
+              <span className="text-xs text-muted-foreground">Your journey, from start to destination</span>
             </div>
+            <p className="mt-2 text-sm text-muted-foreground">Taller bars mean a higher percentage of nearby places are open. Grey means opening hours are unavailable.</p>
             <div className="mt-4 h-48">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chart} onMouseMove={(s) => setHl(s?.activeLabel ? Number(s.activeLabel) : undefined)} onMouseLeave={() => setHl(undefined)}>
@@ -90,7 +96,7 @@ function RouteDetail() {
                   <Tooltip
                     cursor={{ fill: "var(--muted)" }}
                     formatter={(v: number, _n, p) => [p.payload.has ? v.toFixed(0) : "No data", "Open-places score"]}
-                    labelFormatter={(l) => `Stretch ${l}`}
+                    labelFormatter={(l) => chart.find((c) => c.n === Number(l))?.range ?? "Along your route"}
                     contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", fontSize: 12 }}
                   />
                   <Bar dataKey="v" radius={[3, 3, 0, 0]} minPointSize={3}>
@@ -104,17 +110,17 @@ function RouteDetail() {
           </div>
 
           <div className="rounded-2xl border border-border bg-card">
-            <h2 className="border-b border-border px-5 py-4 font-display font-semibold">Stretch by stretch</h2>
+            <h2 className="border-b border-border px-5 py-4 font-display font-semibold">Nearby places along your journey</h2>
             <ul className="divide-y divide-border">
-              {route.segments.map((s) => {
+              {route.segments.map((s, i) => {
                 const tone = indexTone(s.safetyIndex);
                 return (
                   <li key={s.segmentNumber} onMouseEnter={() => setHl(s.segmentNumber)} onMouseLeave={() => setHl(undefined)} className={cn("flex items-center gap-4 px-5 py-3 transition-colors", hl === s.segmentNumber && "bg-accent")}>
                     <span className={cn("h-8 w-1 rounded-full", TONE_CLASSES[tone].bar)} />
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium">Stretch {s.segmentNumber} <span className="font-normal text-muted-foreground">· {formatDistance(s.lengthMeters)}</span></p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {s.placeCount === 0 ? "No places found nearby" : `${s.openPlaceCount} of ${s.scoredPlaceCount} open · ${s.places.slice(0, 3).map((p) => p.name).join(", ")}`}
+                      <p className="text-sm font-medium">{chart[i]?.range}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {s.placeCount === 0 ? "No places found nearby" : `${s.scoredPlaceCount ? `${s.openPlaceCount} of ${s.scoredPlaceCount} checked places open` : "Opening hours unavailable"} · ${s.places.slice(0, 3).map((p) => p.name).join(", ")}`}
                       </p>
                     </div>
                     <IndexPill value={s.safetyIndex} showLabel={false} />
@@ -135,20 +141,20 @@ function RouteDetail() {
               <IndexRing value={route.safetyIndex} size={88} />
               <div>
                 <p className={cn("font-display text-lg font-semibold", TONE_CLASSES[indexTone(route.safetyIndex)].text)}>{TONE_CLASSES[indexTone(route.safetyIndex)].label}</p>
-                <p className="text-xs text-muted-foreground">Based on {route.scoredSegmentCount} parts with data; longer parts count more</p>
+                <p className="text-xs text-muted-foreground">{route.safetyIndex == null ? "Not enough opening hours to calculate a score." : `${formatIndex(route.safetyIndex)} out of 100 — the average percentage of checked nearby places open along this journey.`}</p>
               </div>
             </div>
             <dl className="mt-5 grid grid-cols-2 gap-3 text-sm">
               <Stat icon={RouteIcon} label="Distance" value={formatDistance(route.distanceMeters)} />
-              <Stat icon={Clock} label="Duration" value={formatDuration(route.duration)} />
-              <Stat icon={Store} label="Places found" value={`${openPlaces}/${totalPlaces} open`} />
-              <Stat icon={MapPin} label="Route with data" value={`${coverage}%`} />
+              <Stat icon={Clock} label="Travel time" value={formatDuration(route.duration)} />
+              <Stat icon={Store} label="Nearby places" value={`${openPlaces} open · ${totalPlaces} found`} />
+              <Stat icon={MapPin} label="Hours available" value={`${coverage}% of route`} />
             </dl>
           </div>
 
           {lowStretches.length > 0 && (
             <div className="rounded-2xl border border-risk/30 bg-risk-soft p-5">
-              <p className="font-semibold text-risk">{lowStretches.length} part{lowStretches.length > 1 ? "s" : ""} with fewer open places</p>
+              <p className="font-semibold text-risk">Fewer open places along the way</p>
               <p className="mt-1 text-sm text-foreground/80">
                 Fewer than 40% of nearby places are open on {formatDistance(lowStretches.reduce((a, s) => a + s.lengthMeters, 0))} of this route. Consider sharing your trip with a contact.
               </p>
@@ -156,16 +162,16 @@ function RouteDetail() {
             </div>
           )}
 
-          <div className="rounded-2xl border border-border bg-card p-5 text-sm">
-            <p className="font-semibold">How this is worked out</p>
+          <details className="rounded-2xl border border-border bg-card p-5 text-sm">
+            <summary className="cursor-pointer font-semibold">What does this score mean?</summary>
             <ol className="mt-2 list-decimal space-y-1 pl-4 text-muted-foreground">
-              <li>Route split into stretches of about 100 m.</li>
-              <li>Nearby places from your selected categories are checked.</li>
-              <li>Places without known opening hours are left out.</li>
-              <li>Score = percentage of counted places open right now.</li>
+              <li>We check shops and services near your route.</li>
+              <li>Only your chosen types of places affect the score.</li>
+              <li>Places without known opening hours do not affect it.</li>
+              <li>A score of 80 means 80% are open, averaged along your journey.</li>
             </ol>
-            <p className="mt-2 text-xs text-muted-foreground">The overall score of {formatIndex(route.safetyIndex)} gives longer parts more weight.</p>
-          </div>
+            <p className="mt-2 text-xs text-muted-foreground">Longer distances contribute more to the average. A higher score does not mean the route is safer.</p>
+          </details>
           <Disclaimer />
         </aside>
       </div>

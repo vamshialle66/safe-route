@@ -29,7 +29,7 @@ export const Route = createFileRoute("/route-planner")({
       { title: "Plan a Route — SafeRoute" },
       { name: "description", content: "Enter a start and destination to compare alternative routes by how many places along the way are open right now." },
       { property: "og:title", content: "Plan a Route — SafeRoute" },
-      { property: "og:description", content: "Compare alternative routes segment by segment." },
+      { property: "og:description", content: "Find routes and compare nearby open places, travel time and distance." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -37,7 +37,7 @@ export const Route = createFileRoute("/route-planner")({
   component: PlannerPage,
 });
 
-const STAGES = ["Finding alternative routes", "Checking short parts of each route", "Looking up places along each stretch", "Calculating open-places scores"];
+const STAGES = ["Finding routes to your destination", "Finding shops and services along the way", "Checking which places are open", "Getting your route options ready"];
 
 function PlannerPage() {
   const analysis = useCurrentAnalysis();
@@ -68,7 +68,7 @@ function PlannerPage() {
       setSelected(top);
       if (!a.routes.length) toast.message("No routes were found between these places.");
       else if (fellBack) toast.warning(`Live data unavailable — showing sample data. ${reason ?? ""}`.trim());
-      else toast.success(`${a.routes.length} routes analysed with live data`);
+      else toast.success(`${a.routes.length} routes found using current map data`);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Something went wrong.");
     } finally {
@@ -209,7 +209,7 @@ function PlannerPage() {
                             {formatDistance(r.distanceMeters)} · {formatDuration(r.duration)}
                           </p>
                           <p className="mt-1 text-xs text-muted-foreground">
-                            {r.segments.length} stretches · {r.scoredSegmentCount} with data
+                            {r.safetyIndex == null ? "Opening hours unavailable along this route" : `Open-places score: ${Math.round(r.safetyIndex)} out of 100`}
                           </p>
                         </div>
                       </button>
@@ -222,7 +222,7 @@ function PlannerPage() {
                           </Button>
                           <Button asChild size="sm" variant="outline">
                             <a href={googleDirectionsUrl(analysis.origin, analysis.destination, analysis.travelMode, r)} target="_blank" rel="noopener noreferrer">
-                              <Navigation className="size-3.5" /> Maps
+                              <Navigation className="size-3.5" /> Directions
                             </a>
                           </Button>
                           <Button
