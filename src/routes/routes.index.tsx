@@ -35,7 +35,7 @@ function ComparePage() {
   }
   const best = topRouteNumbers(a.routes);
   const fastest = Math.min(...a.routes.map((r) => durationSeconds(r.duration)));
-  const data = a.routes.map((r) => ({ name: `Route ${r.routeNumber}`, index: r.safetyIndex ?? 0, minutes: Math.round(durationSeconds(r.duration) / 60) }));
+  const data = a.routes.map((r) => ({ name: `Route ${r.routeNumber}`, comparison: r.assessment?.score ?? null, minutes: Math.round(durationSeconds(r.duration) / 60) }));
 
   return (
     <AppLayout
@@ -85,8 +85,8 @@ function ComparePage() {
         <div className="space-y-4">
           <div className="border-y border-border py-4"><h2 className="font-semibold">Why these routes rank differently</h2><p className="mt-2 text-sm text-muted-foreground">The comparison considers the number of observed open places and nearby open help services. It needs opening-hour information near at least half the journey. Crime and street lighting are not verified; this is not a safety rating.</p></div>
           <div className="rounded-2xl border border-border bg-card p-5">
-            <h2 className="font-display font-semibold">Nearby open places vs travel time</h2>
-            <p className="mt-2 text-sm text-muted-foreground">A score of 80 means 80% of checked nearby places are open, averaged along the route. It is not a safety rating.</p>
+            <h2 className="font-display font-semibold">Comparison score vs travel time</h2>
+            <p className="mt-2 text-sm text-muted-foreground">Higher scores mean more open places and help services were found nearby. Routes without enough information have no score bar. This is not a safety rating.</p>
             <div className="mt-4 h-56">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data}>
@@ -94,7 +94,7 @@ function ComparePage() {
                   <XAxis dataKey="name" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 11 }} width={28} axisLine={false} tickLine={false} />
                   <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", fontSize: 12 }} />
-                  <Bar dataKey="index" name="Open-places score" fill="var(--safe)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="comparison" name="Comparison score" fill="var(--safe)" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="minutes" name="Minutes" fill="var(--primary)" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
