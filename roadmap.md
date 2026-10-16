@@ -12,4 +12,5 @@
 - [x] Add a signed-in concern form with AI classification and editable alert review.
 - [x] Keep saved community alerts unverified, private and separate from route scores.
 - [x] Verify classification, review and saved-alert readback with a signed-in account.
-- [ ] Connect real crime and lighting evidence to scoring — verify available source coverage before implementation.
+- [x] Verify Mumbai source coverage: inspected public BMC map layers; no operational lighting feed found, and available police statistics are too coarse for individual roads.
+- [ ] Connect real Mumbai crime and lighting evidence to scoring — blocked on authorized road-level police records and BEST/BMC lighting-status access; public map layers and aggregate crime totals are insufficient.
