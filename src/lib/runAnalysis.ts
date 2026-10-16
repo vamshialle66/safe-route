@@ -1,4 +1,6 @@
 import { getScoreCategories } from "./placeCategories";
+import { typesFor } from "./placeCategories";
+import { assessRoute } from "./routeAssessment";
 import { analysisStore, type Analysis, type NamedPoint } from "./analysisStore";
 import { demoSegments } from "./demoAnalysis";
 import { liveNearbyFn, liveSegmentsFn } from "./engine.functions";
@@ -66,6 +68,7 @@ export async function runAnalysis(
       routes = demoSegments(origin, destination, travelMode).routes;
     }
   }
+  routes = routes.map(route => ({ ...route, assessment: route.assessment ?? assessRoute(route, undefined, new Set(typesFor(getScoreCategories()))) }));
   const analysis: Analysis = {
     id: crypto.randomUUID(),
     createdAt: new Date().toISOString(),

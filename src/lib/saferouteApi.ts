@@ -6,6 +6,7 @@
  *   POST /location/segments  -> routes + segments + corridors + indices
  */
 
+import type { RouteAssessment } from "./routeAssessment";
 export type BackendTravelMode = "DRIVE" | "BICYCLE" | "WALK" | "TWO_WHEELER" | "TRANSIT";
 export type SafetyStatus = "available" | "insufficient-data";
 
@@ -38,6 +39,7 @@ export interface ApiSegment {
 }
 
 export interface ApiRoute {
+  assessment?: RouteAssessment;
   routeNumber: number;
   distanceMeters: number;
   duration: string;
@@ -170,6 +172,12 @@ export function formatIndex(v: number | null | undefined) {
 
 /** Routes tied for the highest available index (N/A never ranks). */
 export function topRouteNumbers(routes: ApiRoute[]) {
+  if (routes.some(r => r.assessment)) {
+    const eligible = routes.filter(r => r.assessment?.score != null);
+    if (!eligible.length) return new Set<number>();
+    const best = Math.max(...eligible.map(r => r.assessment?.score ?? -1));
+    return new Set(eligible.filter(r => r.assessment?.score === best).map(r => r.routeNumber));
+  }
   const scored = routes.filter((r) => r.safetyStatus === "available" && r.safetyIndex != null);
   if (!scored.length) return new Set<number>();
   const best = Math.max(...scored.map((r) => r.safetyIndex as number));
