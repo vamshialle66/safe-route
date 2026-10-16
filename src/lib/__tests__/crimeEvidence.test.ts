@@ -42,5 +42,6 @@ describe("source-linked Mumbai crime evidence", () => {
     expect(policeRecordSchema.safeParse({ ...report, latitude: null, longitude: null }).success).toBe(false);
     expect(policeDatasetSchema.safeParse({ ...dataset, source_url: "https://example.com/report.pdf" }).success).toBe(false);
     expect(policeDatasetSchema.safeParse({ ...dataset, coverage_geojson: null }).success).toBe(false);
+    expect(policeDatasetSchema.safeParse({ ...dataset, reviewed_at: "2026-10-16T07:18:00+00:00" }).success).toBe(true);
   });
 });

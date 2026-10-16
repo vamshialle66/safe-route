@@ -12,7 +12,7 @@ export const policeDatasetSchema = z.object({
   title: z.string().trim().min(1).max(240), period_start: date, period_end: date,
   content_sha256: z.string().regex(/^[a-f0-9]{64}$/), completeness: z.enum(["partial", "complete"]),
   coverage_geojson: z.object({ type: z.literal("Polygon"), coordinates: z.array(z.array(coordinates).min(4)).min(1) }).nullable(),
-  methodology: z.string().trim().min(30).max(4000), reviewed_at: z.string().datetime(),
+  methodology: z.string().trim().min(30).max(4000), reviewed_at: z.string().datetime({ offset: true }),
 }).superRefine((v, ctx) => {
   if (v.period_end < v.period_start) ctx.addIssue({ code: "custom", message: "Reporting dates are reversed" });
   if (v.completeness === "complete" && !v.coverage_geojson) ctx.addIssue({ code: "custom", message: "Complete records require a verified coverage boundary" });
