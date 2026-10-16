@@ -14,6 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_feature_state: {
+        Row: {
+          blocked_at: string
+          feature: string
+          safe_message: string
+        }
+        Insert: {
+          blocked_at?: string
+          feature: string
+          safe_message: string
+        }
+        Update: {
+          blocked_at?: string
+          feature?: string
+          safe_message?: string
+        }
+        Relationships: []
+      }
+      community_alerts: {
+        Row: {
+          category: string
+          concern: string
+          created_at: string
+          id: string
+          journey_id: string
+          location_label: string
+          model: string
+          reviewed_at: string | null
+          route_label: string
+          status: string
+          summary: string
+          urgency: string
+          user_id: string
+          verification: string
+        }
+        Insert: {
+          category: string
+          concern: string
+          created_at?: string
+          id?: string
+          journey_id: string
+          location_label: string
+          model: string
+          reviewed_at?: string | null
+          route_label: string
+          status?: string
+          summary: string
+          urgency: string
+          user_id: string
+          verification?: string
+        }
+        Update: {
+          category?: string
+          concern?: string
+          created_at?: string
+          id?: string
+          journey_id?: string
+          location_label?: string
+          model?: string
+          reviewed_at?: string | null
+          route_label?: string
+          status?: string
+          summary?: string
+          urgency?: string
+          user_id?: string
+          verification?: string
+        }
+        Relationships: []
+      }
       emergency_contacts: {
         Row: {
           created_at: string
