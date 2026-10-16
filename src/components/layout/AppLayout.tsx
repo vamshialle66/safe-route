@@ -12,6 +12,7 @@ import {
   Bookmark,
   Search,
   Settings,
+  ShieldCheck,
   User,
   X,
 } from "lucide-react";
@@ -42,6 +43,7 @@ const MAIN_NAV: NavItem[] = [
 
 const BOTTOM_NAV: NavItem[] = [
   { to: "/profile", label: "Profile", icon: User },
+  { to: "/moderation", label: "Review reports", icon: ShieldCheck },
   { to: "/settings", label: "Settings", icon: Settings },
 ];
 

@@ -54,3 +54,36 @@ export const deleteAlertFn = createServerFn({ method: "POST" }).middleware([requ
     if (result.error) throw new Error("Your alert could not be deleted.");
     return { ok: true };
   });
+
+async function isReviewer(supabase: { rpc: (fn: "has_role", args: { _user_id: string; _role: "admin" | "moderator" }) => PromiseLike<{ data: boolean | null }> }, userId: string) {
+  const [admin, moderator] = await Promise.all([
+    supabase.rpc("has_role", { _user_id: userId, _role: "admin" }),
+    supabase.rpc("has_role", { _user_id: userId, _role: "moderator" }),
+  ]);
+  return !!admin.data || !!moderator.data;
+}
+
+export const reviewQueueFn = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    if (!(await isReviewer(context.supabase, context.userId))) return { allowed: false as const, alerts: [] };
+    const result = await context.supabase.from("community_alerts")
+      .select("id, category, urgency, summary, concern, location_label, status, created_at, moderated_at, moderator_note")
+      .neq("status", "draft").order("created_at", { ascending: false }).limit(100);
+    if (result.error) throw new Error("Reports waiting for review could not be loaded.");
+    return { allowed: true as const, alerts: result.data };
+  });
+
+export const moderateAlertFn = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
+  .inputValidator(input => z.object({ id: z.string().uuid(), decision: z.enum(["approved", "rejected"]), note: z.string().trim().max(500).optional() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase.rpc("moderate_alert", { _id: data.id, _decision: data.decision, _note: data.note || undefined });
+    if (error) throw new Error("This decision could not be saved. You may not have reviewer access.");
+    return { ok: true };
+  });
+
+export const communityTipsFn = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const result = await context.supabase.rpc("list_community_tips", { _limit: 10 });
+    if (result.error) throw new Error("Community tips could not be loaded.");
+    return result.data ?? [];
+  });
