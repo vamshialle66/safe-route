@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSession } from "@/lib/session";
 import { ALERT_CATEGORIES, ALERT_URGENCY, concernSchema, reviewSchema } from "@/lib/communityAlerts";
-import { classifyAlertFn, listAlertsFn, reviewAlertFn, deleteAlertFn } from "@/lib/communityAlerts.functions";
+import { classifyAlertFn, listAlertsFn, reviewAlertFn, deleteAlertFn, communityTipsFn } from "@/lib/communityAlerts.functions";
 import type { Database } from "@/integrations/supabase/types";
 
 type Alert = Database["public"]["Tables"]["community_alerts"]["Row"];
@@ -20,6 +20,8 @@ export function CommunityAlerts({ journeyId, routeLabel }: { journeyId: string; 
   const list = useServerFn(listAlertsFn);
   const review = useServerFn(reviewAlertFn);
   const remove = useServerFn(deleteAlertFn);
+  const tipsFn = useServerFn(communityTipsFn);
+  const tips = useQuery({ queryKey: ["community-tips", user?.id], queryFn: () => tipsFn(), enabled: !!user });
   const cache = useQueryClient();
   const key = ["community-alerts", user?.id, journeyId];
   const saved = useQuery({ queryKey: key, queryFn: () => list({ data: { journeyId } }), enabled: !!user });
@@ -59,7 +61,7 @@ export function CommunityAlerts({ journeyId, routeLabel }: { journeyId: string; 
     try {
       await review({ data: valid.data }); await cache.invalidateQueries({ queryKey: key });
       setDraft(null); setEditing(false); setConcern(""); setLocation("");
-      setSuccess("Alert saved for review. It remains unverified and private to your account.");
+      setSuccess("Sent for review. A reviewer will approve or reject it; until then only you can see it.");
     } catch (e) { setError(e instanceof Error ? e.message : "Your review could not be saved."); }
     finally { setBusy(false); }
   }
@@ -74,7 +76,7 @@ export function CommunityAlerts({ journeyId, routeLabel }: { journeyId: string; 
 
   return <section className="border-y border-border py-5" aria-label="Community alerts">
     <div className="flex items-center gap-2"><MessageSquareWarning className="size-5 shrink-0 text-primary" /><h2 className="font-display font-semibold">Community alerts</h2></div>
-    <p className="mt-2 text-sm text-muted-foreground">Describe something you noticed on this route. AI suggests a category; you check the wording. Reports are unverified, private to your account and do not change route scores.</p>
+    <p className="mt-2 text-sm text-muted-foreground">Describe something you noticed on this route. AI suggests a category; you check the wording. Reports stay private until a reviewer approves them. Approved reports show to others as unverified tips — without your name or original words — and never change route scores.</p>
     <p className="mt-2 text-xs text-muted-foreground">In immediate danger? <Link to="/emergency" className="text-risk underline">Get emergency help</Link>. Reporting here does not contact emergency services.</p>
     {!user ? <Button asChild variant="outline" className="mt-4"><Link to="/login">Sign in to report a concern</Link></Button> : <>
       {!editing && <Button variant="outline" className="mt-4" onClick={() => { setDraft(null); setConcern(""); setLocation(""); setEditing(true); setError(""); setSuccess(""); }}><MessageSquareWarning className="size-4" /> Report a concern</Button>}
@@ -90,18 +92,19 @@ export function CommunityAlerts({ journeyId, routeLabel }: { journeyId: string; 
           <div className="space-y-2"><Label htmlFor="alert-urgency">Suggested attention</Label><Select value={urgency} onValueChange={setUrgency} disabled={busy}><SelectTrigger id="alert-urgency"><SelectValue /></SelectTrigger><SelectContent>{Object.entries(ALERT_URGENCY).map(([value, label]) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectContent></Select></div>
           <div className="space-y-2"><Label htmlFor="alert-summary">Alert wording</Label><Textarea id="alert-summary" value={summary} onChange={e => setSummary(e.target.value)} maxLength={500} rows={4} disabled={busy} required /></div>
           {urgency === "urgent" && <p className="text-sm text-risk">If someone needs help now, use emergency tools rather than waiting for review.</p>}
-          <p className="text-xs text-muted-foreground">AI can misunderstand. Check the category and wording before saving. No public sharing or moderator approval is enabled yet.</p>
+          <p className="text-xs text-muted-foreground">AI can misunderstand. Check the category and wording before saving. After saving, a reviewer decides whether it is shared as a community tip.</p>
         </>}
         <div className="flex flex-wrap gap-2"><Button type="submit" disabled={busy}>{busy ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />}{busy ? "Please wait…" : draft ? "Save for review" : "Classify with AI"}</Button><Button type="button" variant="ghost" disabled={busy} onClick={() => { setEditing(false); setError(""); }}>Close</Button></div>
       </form>}
       {saved.isLoading && <p className="mt-4 text-sm text-muted-foreground">Loading your alerts…</p>}
       {saved.error && <div className="mt-3 text-sm text-risk">Your alerts could not be loaded. <Button variant="ghost" size="sm" onClick={() => void saved.refetch()}>Try again</Button></div>}
       {!!saved.data?.length && <div className="mt-5"><h3 className="text-sm font-semibold">Your reports for this journey</h3><ul className="mt-2 divide-y divide-border">{saved.data.map(alert => <li key={alert.id} className="py-3">
-        <p className="text-xs font-semibold text-moderate">Community alert · Unverified · {alert.status === "draft" ? "Draft" : "Awaiting review"}</p>
+        <p className="text-xs font-semibold text-moderate">Community alert · Unverified · {({ draft: "Draft", pending_review: "Awaiting review", approved: "Approved — shared as a tip", rejected: "Not approved" } as Record<string, string>)[alert.status] ?? alert.status}</p>
         <p className="mt-1 text-sm font-medium">{ALERT_CATEGORIES[alert.category as keyof typeof ALERT_CATEGORIES]}</p><p className="mt-1 break-words text-sm">{alert.summary}</p><p className="mt-1 break-words text-xs text-muted-foreground">{alert.route_label} · {alert.location_label} · {ALERT_URGENCY[alert.urgency as keyof typeof ALERT_URGENCY]}</p>
         <div className="mt-2 flex gap-2"><Button variant="ghost" size="sm" disabled={busy} onClick={() => edit(alert)}><Pencil className="size-3.5" /> Review</Button><Button variant="ghost" size="sm" disabled={busy} onClick={() => void discard(alert.id)}><Trash2 className="size-3.5" /> Delete</Button></div>
       </li>)}</ul></div>}
     </>}
+    {!!tips.data?.length && <div className="mt-5"><h3 className="text-sm font-semibold">Community tips</h3><p className="text-xs text-muted-foreground">Recent reports approved by a reviewer. Unverified — use your own judgement.</p><ul className="mt-2 divide-y divide-border">{tips.data.map(t => <li key={t.id} className="py-2"><p className="text-sm font-medium">{ALERT_CATEGORIES[t.category as keyof typeof ALERT_CATEGORIES]} · {t.location_label}</p><p className="break-words text-sm">{t.summary}</p><p className="text-xs text-muted-foreground">{ALERT_URGENCY[t.urgency as keyof typeof ALERT_URGENCY]}</p></li>)}</ul></div>}
     {error && <p role="alert" className="mt-3 break-words text-sm text-risk">{error}</p>}
     {success && <p role="status" className="mt-3 text-sm text-safe">{success}</p>}
   </section>;
