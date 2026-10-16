@@ -14,3 +14,6 @@
 - [x] Verify classification, review and saved-alert readback with a signed-in account.
 - [x] Verify Mumbai source coverage: inspected public BMC map layers; no operational lighting feed found, and available police statistics are too coarse for individual roads.
 - [ ] Connect real Mumbai crime and lighting evidence to scoring — blocked on authorized road-level police records and BEST/BMC lighting-status access; public map layers and aggregate crime totals are insufficient.
+- [x] Build a source-linked Mumbai police-report store with restricted verified imports.
+- [x] Connect suitable, dated crime evidence to route comparisons without treating missing reports as no crime.
+- [x] Test location precision, coverage, duplicates and route evidence display.

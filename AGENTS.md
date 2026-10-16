@@ -16,3 +16,5 @@
 - Require account authentication for built-in Google Routes and Places calls, preserving bounded batches and caches, because those connector requests are billable; signed-out fallback remains explicitly labelled sample data.
 - Community concern classification uses authenticated server functions and AI Gateway Responses; alerts stay owner-readable unverified drafts/pending review, never public or inputs to route scores, because AI classification is not event verification.
 - Persist AI access/billing blocks in the server-only ai_feature_state table; only an explicit owner action after restored access may clear them, preventing automatic billed retries across restarts.
+- Curated Mumbai police evidence uses privileged offline imports with original-document hashes and source locators; ordinary users have reviewed-read access only, because community reports and AI extraction are not verification.
+- Crime matching uses Turf geometry against whole-route reporting coverage and dated street coordinates; incomplete, stale, oversized or failed queries never change scores, because sparse report collections cannot establish comparative crime rates.
