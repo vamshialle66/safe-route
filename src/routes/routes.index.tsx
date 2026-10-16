@@ -14,7 +14,7 @@ export const Route = createFileRoute("/routes/")({
   head: () => ({
     meta: [
       { title: "Compare Routes — SafeRoute" },
-      { name: "description", content: "Side-by-side comparison of alternative routes: distance, time and the experimental open-places index." },
+      { name: "description", content: "Compare your route options by nearby open places, travel time and distance." },
       { property: "og:title", content: "Compare Routes — SafeRoute" },
       { property: "og:description", content: "Compare alternative routes side by side." },
       { property: "og:type", content: "website" },
@@ -28,7 +28,7 @@ function ComparePage() {
   const a = useCurrentAnalysis();
   if (!a || !a.routes.length) {
     return (
-      <AppLayout title="Route Comparison">
+      <AppLayout title="Compare routes">
         <EmptyState icon={Map} title="Nothing to compare yet" description="Choose a start and destination in Plan Route to see your options here." action={<Button asChild><Link to="/route-planner">Plan a route</Link></Button>} />
       </AppLayout>
     );
@@ -39,7 +39,7 @@ function ComparePage() {
 
   return (
     <AppLayout
-      title="Route Comparison"
+      title="Compare routes"
       description={`${a.origin.label.split(",")[0]} → ${a.destination.label.split(",")[0]} · ${new Date(a.createdAt).toLocaleString()}`}
       actions={<SourceBadge source={a.source} />}
     >
@@ -51,8 +51,8 @@ function ComparePage() {
                 <TableHead>Route</TableHead>
                 <TableHead>Open-places score</TableHead>
                 <TableHead>Distance</TableHead>
-                <TableHead>Duration</TableHead>
-                <TableHead className="hidden md:table-cell">Parts with data</TableHead>
+                <TableHead>Travel time</TableHead>
+                <TableHead className="hidden md:table-cell">Opening hours available</TableHead>
                 <TableHead className="hidden md:table-cell">Fewer open places</TableHead>
                 <TableHead />
               </TableRow>
@@ -68,8 +68,8 @@ function ComparePage() {
                   <TableCell><IndexPill value={r.safetyIndex} showLabel={false} /></TableCell>
                   <TableCell>{formatDistance(r.distanceMeters)}</TableCell>
                   <TableCell>{formatDuration(r.duration)}</TableCell>
-                  <TableCell className="hidden md:table-cell">{r.scoredSegmentCount}/{r.segments.length}</TableCell>
-                  <TableCell className="hidden md:table-cell">{r.segments.filter((s) => indexTone(s.safetyIndex) === "risk").length}</TableCell>
+                  <TableCell className="hidden md:table-cell">{r.distanceMeters ? Math.round(r.scoredLengthMeters / r.distanceMeters * 100) : 0}% of route</TableCell>
+                  <TableCell className="hidden md:table-cell">{formatDistance(r.segments.filter((s) => indexTone(s.safetyIndex) === "risk").reduce((total, s) => total + s.lengthMeters, 0))}</TableCell>
                   <TableCell>
                     <Button asChild size="sm" variant="ghost">
                       <Link to="/routes/$id" params={{ id: String(r.routeNumber) }}>View <ArrowRight className="size-3.5" /></Link>
@@ -82,7 +82,8 @@ function ComparePage() {
         </div>
         <div className="space-y-4">
           <div className="rounded-2xl border border-border bg-card p-5">
-            <h2 className="font-display font-semibold">Open-places score and minutes</h2>
+            <h2 className="font-display font-semibold">Nearby open places vs travel time</h2>
+            <p className="mt-2 text-sm text-muted-foreground">A score of 80 means 80% of checked nearby places are open, averaged along the route. It is not a safety rating.</p>
             <div className="mt-4 h-56">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data}>

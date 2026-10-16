@@ -87,7 +87,7 @@ export default function LeafletMap({
         pts.forEach((p) => bounds.extend(p));
         L.polyline(pts, { color: colors.none, weight: 5, opacity: 0.35 })
           .on("click", () => onSelectRoute?.(r.routeNumber))
-          .bindTooltip(`Route ${r.routeNumber} · index ${formatIndex(r.safetyIndex)}`, { sticky: true })
+          .bindTooltip(`Route ${r.routeNumber} · Open-places score: ${formatIndex(r.safetyIndex)}`, { sticky: true })
           .addTo(g);
       });
 
@@ -107,7 +107,7 @@ export default function LeafletMap({
           lineCap: "round",
         })
           .bindTooltip(
-            `Segment ${s.segmentNumber} · ${Math.round(s.lengthMeters)} m<br/>Index ${formatIndex(s.safetyIndex)} · ${s.openPlaceCount}/${s.scoredPlaceCount} open`,
+            `${Math.round(s.lengthMeters)} m of your journey<br/>${s.scoredPlaceCount ? `${s.openPlaceCount} of ${s.scoredPlaceCount} checked places open` : "Opening hours unavailable here"}`,
             { sticky: true },
           )
           .addTo(g);
