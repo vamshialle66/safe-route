@@ -19,6 +19,14 @@ describe("expanded comparison", () => {
   it("all unknown opening hours give no comparison score", () => {
     expect(assessRoute(route([place("unknown", "store", null)])).score).toBeNull();
   });
+  it("less than half the journey checked suppresses the comparison score", () => {
+    const r = route([place("shop")]);
+    const first = r.segments[0];
+    if (!first) throw new Error("Missing first test distance");
+    r.segments.push({ ...first, segmentNumber: 2, lengthMeters: 300, geometry: [{ latitude: 1, longitude: 1 }], places: [] });
+    expect(assessRoute(r).coverage).toBe(25);
+    expect(assessRoute(r).score).toBeNull();
+  });
   it("confirmed open police adds a help factor with explicit weights", () => {
     const a = assessRoute(route([place("police", "police")]));
     expect(a.help).toBe(100);

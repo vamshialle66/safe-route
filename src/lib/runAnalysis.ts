@@ -4,6 +4,7 @@ import { assessRoute } from "./routeAssessment";
 import { analysisStore, type Analysis, type NamedPoint } from "./analysisStore";
 import { demoSegments } from "./demoAnalysis";
 import { liveNearbyFn, liveSegmentsFn } from "./engine.functions";
+import { supabase } from "@/integrations/supabase/client";
 import { ApiError, getCustomApiUrl, getDemoOnly, saferouteApi, type ApiRoute, type BackendTravelMode, type LatLng, type NearbyResponse } from "./saferouteApi";
 
 type Live<T> = { ok: true; data: T } | { ok: false; reason: string };
@@ -19,6 +20,8 @@ async function external<T>(call: () => Promise<T>): Promise<Live<T>> {
 
 async function builtIn<T>(call: () => Promise<Live<T>>): Promise<Live<T>> {
   try {
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) return { ok: false, reason: "Sign in to search current Google Maps information. Examples remain available without an account." };
     return await call();
   } catch {
     return { ok: false, reason: "The live service couldn't be reached." };

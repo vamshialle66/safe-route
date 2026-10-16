@@ -255,7 +255,7 @@ function Dashboard() {
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-1.5">
                         <span className="font-semibold">Route {r.routeNumber}</span>
-                        {bestSet.has(r.routeNumber) && <Tag className="bg-safe text-safe-foreground">Most open places</Tag>}
+                        {bestSet.has(r.routeNumber) && <Tag className="bg-safe text-safe-foreground">{r.assessment ? "Higher comparison score" : "Most open places"}</Tag>}
                         {fastest?.routeNumber === r.routeNumber && <Tag className="bg-primary text-primary-foreground">Fastest</Tag>}
                       </div>
                       <p className="mt-0.5 text-xs text-muted-foreground">{formatDistance(r.distanceMeters)} · {formatDuration(r.duration)}</p>
