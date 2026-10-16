@@ -50,6 +50,7 @@ function ComparePage() {
               <TableRow>
                 <TableHead>Route</TableHead>
                 <TableHead>Open-places score</TableHead>
+                <TableHead>Comparison score</TableHead>
                 <TableHead>Distance</TableHead>
                 <TableHead>Travel time</TableHead>
                 <TableHead className="hidden md:table-cell">Opening hours available</TableHead>
@@ -62,10 +63,11 @@ function ComparePage() {
                 <TableRow key={r.routeNumber} className={best.has(r.routeNumber) ? "bg-safe-soft/50" : ""}>
                   <TableCell className="font-medium">
                     Route {r.routeNumber}
-                    {best.has(r.routeNumber) && <span className="ml-2 text-[10px] font-semibold uppercase text-safe">Most open places</span>}
+                    {best.has(r.routeNumber) && <span className="ml-2 text-[10px] font-semibold uppercase text-safe">{r.assessment ? "Higher comparison score" : "Most open places"}</span>}
                     {durationSeconds(r.duration) === fastest && <span className="ml-2 text-[10px] font-semibold uppercase text-primary">Fastest</span>}
                   </TableCell>
                   <TableCell><IndexPill value={r.safetyIndex} showLabel={false} /></TableCell>
+                  <TableCell>{r.assessment?.score == null ? "Not available" : `${r.assessment.score}/100`}<p className="mt-1 text-xs text-muted-foreground">{r.assessment ? `${r.assessment.helpPlaces.length} help locations open` : "Plan again to check"}</p></TableCell>
                   <TableCell>{formatDistance(r.distanceMeters)}</TableCell>
                   <TableCell>{formatDuration(r.duration)}</TableCell>
                   <TableCell className="hidden md:table-cell">{r.distanceMeters ? Math.round(r.scoredLengthMeters / r.distanceMeters * 100) : 0}% of route</TableCell>
@@ -81,6 +83,7 @@ function ComparePage() {
           </Table>
         </div>
         <div className="space-y-4">
+          <div className="border-y border-border py-4"><h2 className="font-semibold">Why these routes rank differently</h2><p className="mt-2 text-sm text-muted-foreground">The comparison considers the number of observed open places and nearby open help services. It needs opening-hour information near at least half the journey. Crime and street lighting are not verified; this is not a safety rating.</p></div>
           <div className="rounded-2xl border border-border bg-card p-5">
             <h2 className="font-display font-semibold">Nearby open places vs travel time</h2>
             <p className="mt-2 text-sm text-muted-foreground">A score of 80 means 80% of checked nearby places are open, averaged along the route. It is not a safety rating.</p>

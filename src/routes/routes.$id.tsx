@@ -13,6 +13,7 @@ import { analysisStore, useCurrentAnalysis } from "@/lib/analysisStore";
 import { formatDistance, formatDuration, formatIndex, indexTone } from "@/lib/saferouteApi";
 import { cn } from "@/lib/utils";
 import { googleDirectionsUrl } from "@/lib/directions";
+import { RouteAssessmentPanel } from "@/components/route/RouteAssessmentPanel";
 
 export const Route = createFileRoute("/routes/$id")({
   head: () => ({
@@ -132,6 +133,8 @@ function RouteDetail() {
         </div>
 
         <aside className="space-y-4">
+          {route.assessment && <div className="border-b border-border pb-4"><h2 className="font-display font-semibold">Route comparison score</h2><p className="mt-2 text-2xl font-semibold text-primary">{route.assessment.score == null ? "Not enough information" : `${route.assessment.score} / 100`}</p><p className="mt-2 text-sm text-muted-foreground">Open-place density and nearby help. Not a probability of safety.</p>{route.assessment.reasons.map(reason => <p key={reason} className="mt-2 text-xs text-muted-foreground">{reason}</p>)}</div>}
+          <RouteAssessmentPanel route={route} sample={analysis.source === "demo"} />
           <div className="rounded-2xl border border-border bg-card p-5">
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Open-places score</span>

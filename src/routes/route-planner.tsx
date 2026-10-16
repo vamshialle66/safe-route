@@ -22,6 +22,7 @@ import {
 import { cn } from "@/lib/utils";
 import { MiniHero } from "@/components/layout/MiniHero";
 import { MapLegend } from "@/components/map/MapLegend";
+import { routeComparisonValue } from "@/lib/routeAssessment";
 
 export const Route = createFileRoute("/route-planner")({
   head: () => ({
@@ -51,7 +52,7 @@ function PlannerPage() {
 
   const routes = analysis?.routes ?? [];
   const best = topRouteNumbers(routes);
-  const sorted = [...routes].sort((a, b) => (b.safetyIndex ?? -1) - (a.safetyIndex ?? -1));
+  const sorted = [...routes].sort((a, b) => (routeComparisonValue(b) ?? -1) - (routeComparisonValue(a) ?? -1));
   const onSelect = useCallback((n: number) => setSelected(n), []);
 
   async function analyze() {
@@ -202,7 +203,7 @@ function PlannerPage() {
                           <div className="flex flex-wrap items-center gap-2">
                             <span className="font-display font-semibold">Route {r.routeNumber}</span>
                             {isBest && (
-                              <span className="rounded-full bg-safe px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground">Most open places</span>
+                              <span className="rounded-full bg-safe px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground">{r.assessment ? "Higher comparison score" : "Most open places"}</span>
                             )}
                           </div>
                           <p className="mt-0.5 text-sm text-muted-foreground">
@@ -211,6 +212,7 @@ function PlannerPage() {
                           <p className="mt-1 text-xs text-muted-foreground">
                             {r.safetyIndex == null ? "Opening hours unavailable along this route" : `Open-places score: ${Math.round(r.safetyIndex)} out of 100`}
                           </p>
+                          {r.assessment && <p className="mt-1 text-xs text-muted-foreground">Comparison: {r.assessment.score ?? "not enough information"}{r.assessment.score != null ? "/100" : ""} · {r.assessment.helpPlaces.length} help locations reported open</p>}
                         </div>
                       </button>
                       {isSel && (
@@ -243,6 +245,7 @@ function PlannerPage() {
                 <Button asChild variant="outline" className="w-full">
                   <Link to="/routes">Compare side by side</Link>
                 </Button>
+                <p className="text-xs leading-relaxed text-muted-foreground">Options are ranked by observed open-place density and nearby help, not shop opening percentages alone. Crime and lighting are not verified. Below 50% information coverage, no comparison score is given.</p>
                 <Disclaimer />
               </>
             )}
