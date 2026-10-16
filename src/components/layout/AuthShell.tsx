@@ -22,13 +22,13 @@ export function AuthShell({
         </Link>
         <div className="relative">
           <h2 className="max-w-sm text-3xl font-semibold text-primary-foreground">
-            Your destination matters. So does how you get there.
+            Your routes, contacts and trips. All in one place.
           </h2>
           <ul className="mt-8 space-y-3 text-sm text-primary-foreground/85">
             {[
-              "Safety-scored route comparison",
-              "Segment-level risk visibility",
-              "Emergency contacts and quick actions",
+              "Save routes to your account",
+              "Keep your trip history across devices",
+              "Manage your emergency contacts",
             ].map((item) => (
               <li key={item} className="flex items-center gap-3">
                 <ShieldCheck className="size-4" aria-hidden="true" />
@@ -38,7 +38,7 @@ export function AuthShell({
           </ul>
         </div>
         <p className="relative text-xs text-primary-foreground/70">
-          Sample data is used throughout this preview experience.
+          Plan without an account. Sign in to keep your personal details across devices.
         </p>
       </div>
 

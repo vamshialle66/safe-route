@@ -9,7 +9,7 @@ import { ThemePicker } from "@/components/theme/ThemePicker";
 const LINKS = [
   { to: "/", label: "Home" },
   { to: "/how-it-works", label: "How It Works" },
-  { to: "/safety", label: "Safety" },
+  { to: "/safety", label: "Understand the score" },
   { to: "/about", label: "About" },
 ] as const;
 
@@ -48,7 +48,7 @@ export function PublicNav() {
                 <Link to="/login">Log In</Link>
               </Button>
               <Button asChild size="sm">
-                <Link to="/signup">Get Started</Link>
+                <Link to="/signup">Create account</Link>
               </Button>
             </>
           )}
@@ -86,7 +86,7 @@ export function PublicNav() {
                 <Link to={signedIn ? "/profile" : "/login"}>{signedIn ? "Account" : "Log In"}</Link>
               </Button>
               <Button asChild onClick={() => setOpen(false)}>
-                <Link to="/signup">Get Started</Link>
+                <Link to="/signup">Create account</Link>
               </Button>
             </div>
           </nav>

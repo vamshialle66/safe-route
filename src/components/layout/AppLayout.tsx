@@ -30,10 +30,10 @@ interface NavItem {
 }
 
 const MAIN_NAV: NavItem[] = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/dashboard", label: "My journeys", icon: LayoutDashboard },
   { to: "/route-planner", label: "Plan Route", icon: Compass },
-  { to: "/routes", label: "Route Comparison", icon: Map },
-  { to: "/recent-trips", label: "Route History", icon: History },
+  { to: "/routes", label: "Compare routes", icon: Map },
+  { to: "/recent-trips", label: "Trip history", icon: History },
   { to: "/saved-routes", label: "Saved Routes", icon: Bookmark },
   { to: "/safety-map", label: "Around Me", icon: Map },
   { to: "/emergency", label: "Emergency", icon: LifeBuoy },

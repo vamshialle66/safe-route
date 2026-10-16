@@ -54,11 +54,11 @@ function SettingsPage() {
     <AppLayout title="Settings">
       <div className="mx-auto max-w-2xl space-y-6">
         <section className="rounded-2xl border border-border bg-card p-6">
-          <div className="flex items-center gap-2"><Server className="size-4" /><h2 className="font-display font-semibold">Route engine</h2></div>
+          <div className="flex items-center gap-2"><Server className="size-4" /><h2 className="font-display font-semibold">Live data connection</h2></div>
           <p className="mt-1 text-sm text-muted-foreground">Live results come from Google Maps by default. Only fill this in to use your own SafeRoute server instead (for example http://localhost:3000). Leave it empty for the built-in live engine.</p>
           <Label htmlFor="url" className="mt-4 block">Server address</Label>
           <div className="mt-1.5 flex gap-2">
-            <Input id="url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="Empty = built-in live engine" />
+            <Input id="url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="Leave empty to use Google Maps" />
             <Button onClick={test} disabled={status === "checking"}>
               {status === "checking" && <Loader2 className="size-4 animate-spin" />} Test & save
             </Button>
@@ -72,14 +72,14 @@ function SettingsPage() {
           <div className="mt-6 flex items-center justify-between rounded-xl bg-muted/60 p-4">
             <div>
               <p className="text-sm font-medium">Always use sample data</p>
-              <p className="text-xs text-muted-foreground">Useful for demos without the server.</p>
+              <p className="text-xs text-muted-foreground">Examples only — not real routes or current opening status.</p>
             </div>
             <Switch checked={demo} onCheckedChange={(v) => { setDemo(v); setDemoOnly(v); toast.success(v ? "Sample data on" : "Live data on"); }} />
           </div>
         </section>
         <section className="rounded-2xl border border-border bg-card p-6">
           <h2 className="font-display font-semibold">Places that count toward the score</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Choose which kinds of open places make a route feel lively. Unticked places still show on the map but don't change the score. Applies to new trips and scans.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Choose which place types affect the open-places score. Unticked places still show on the map but don't change the score. Applies to new live trips and nearby searches. Sample results and separate servers do not use these choices.</p>
           <div className="mt-4 grid gap-2 sm:grid-cols-2">
             {PLACE_CATEGORIES.map((c) => (
               <label key={c.id} className="flex min-h-11 cursor-pointer items-start gap-3 rounded-xl border border-border p-3 hover:bg-muted/50">

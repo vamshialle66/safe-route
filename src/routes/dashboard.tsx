@@ -96,7 +96,7 @@ function Dashboard() {
   const quiet = active?.segments.filter((s) => indexTone(s.safetyIndex) === "risk").length ?? 0;
 
   return (
-    <AppLayout title="Dashboard" fullBleed>
+    <AppLayout title="My journeys" fullBleed>
       <div className="mx-auto w-full max-w-[1400px] space-y-5 px-4 py-5 sm:px-6 lg:py-6">
         {/* HERO */}
         <section className="relative overflow-hidden rounded-3xl bg-hero p-6 text-sidebar-accent-foreground shadow-lift sm:p-8">
@@ -109,18 +109,18 @@ function Dashboard() {
                     <span className="absolute inline-flex size-full animate-ping rounded-full bg-safe opacity-75" />
                     <span className="relative inline-flex size-2 rounded-full bg-safe" />
                   </span>
-                  Route engine ready
+                  Plan your next journey
                 </span>
                 {now && (
                   <span className="glass-dark rounded-full px-3 py-1">
-                    {now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} · {night ? "Night mode tips on" : "Daytime"}
+                    {now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} · {night ? "Evening" : "Daytime"}
                   </span>
                 )}
               </div>
               <h1 className="mt-5 font-display text-3xl font-semibold leading-tight sm:text-5xl">
                 {greeting}{session.user ? `, ${displayName(session).split(" ")[0]}` : ""}.
                 <br />
-                <span className="text-sidebar-primary">Where to, safely?</span>
+                <span className="text-sidebar-primary">Where would you like to go?</span>
               </h1>
               <p className="mt-3 max-w-md text-sm text-sidebar-foreground/80 sm:text-base">
                 We check every 100 m of your route for open shops, cafés and services — so you can pick the livelier way home.
@@ -140,9 +140,9 @@ function Dashboard() {
 
               <div className="mt-6 flex flex-wrap gap-2">
                 {[
-                  { to: "/safety-map", icon: Radar, label: "Scan around me" },
+                  { to: "/safety-map", icon: Radar, label: "Find nearby places" },
                   { to: "/saved-routes", icon: Bookmark, label: `${saved.length} saved` },
-                  { to: "/emergency", icon: Share2, label: "Share live location" },
+                  { to: "/emergency", icon: Share2, label: "Share my location" },
                 ].map((q) => (
                   <Link key={q.label} to={q.to} className="glass-dark inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-xs font-medium transition-colors hover:bg-sidebar-accent">
                     <q.icon className="size-3.5" /> {q.label}
@@ -157,7 +157,7 @@ function Dashboard() {
                 <div className="absolute -inset-4 rounded-[2rem] bg-sidebar-primary/20 blur-2xl" aria-hidden="true" />
                 <div className="relative rounded-3xl bg-card p-5 text-card-foreground shadow-lift">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Latest trip</span>
+                    <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Latest route results</span>
                     <SourceBadge source={current.source} />
                   </div>
                   <div className="mt-3 flex items-center gap-2 text-sm font-medium">
@@ -189,7 +189,7 @@ function Dashboard() {
                       </AreaChart>
                     </ResponsiveContainer>
                   </div>
-                  <p className="text-[11px] text-muted-foreground">Index along the route, start → finish</p>
+                  <p className="text-[11px] text-muted-foreground">Open-places score, from start to finish</p>
                 </div>
               </div>
             )}
@@ -200,8 +200,8 @@ function Dashboard() {
         <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           <Metric icon={Store} label="Places checked" value={places} sub={`${open} open right now`} tone="primary" />
           <Metric icon={RouteIcon} label="Routes compared" value={routes.length} sub="on your latest trip" tone="safe" />
-          <Metric icon={Flag} label="Quiet stretches" value={quiet} sub="on the chosen route" tone={quiet ? "risk" : "safe"} />
-          <Metric icon={Clock} label="Trips analysed" value={history.length} sub="kept on this device" tone="moderate" />
+          <Metric icon={Flag} label="Fewer open places" value={quiet} sub="on the chosen route" tone={quiet ? "risk" : "safe"} />
+          <Metric icon={Clock} label="Trips analysed" value={history.length} sub={session.user ? "saved to your account" : "kept on this device"} tone="moderate" />
         </section>
 
         {/* MAP + ROUTES */}
@@ -255,7 +255,7 @@ function Dashboard() {
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-1.5">
                         <span className="font-semibold">Route {r.routeNumber}</span>
-                        {bestSet.has(r.routeNumber) && <Tag className="bg-safe text-safe-foreground">Liveliest</Tag>}
+                        {bestSet.has(r.routeNumber) && <Tag className="bg-safe text-safe-foreground">Most open places</Tag>}
                         {fastest?.routeNumber === r.routeNumber && <Tag className="bg-primary text-primary-foreground">Fastest</Tag>}
                       </div>
                       <p className="mt-0.5 text-xs text-muted-foreground">{formatDistance(r.distanceMeters)} · {formatDuration(r.duration)}</p>
@@ -279,7 +279,7 @@ function Dashboard() {
               <span className="relative grid size-11 place-items-center rounded-full bg-risk-foreground/15"><LifeBuoy className="size-5" /></span>
               <div className="relative flex-1">
                 <p className="font-display font-semibold">Emergency SOS</p>
-                <p className="text-xs opacity-90">Call 112, share location, alert contacts</p>
+                <p className="text-xs opacity-90">Call 112, share a location or contact someone</p>
               </div>
               <ArrowRight className="relative size-4 transition-transform group-hover:translate-x-1" />
             </Link>

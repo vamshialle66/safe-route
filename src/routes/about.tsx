@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Compass, HeartHandshake, Lock, ShieldCheck, Sparkles } from "lucide-react";
 import { PublicLayout, PageHeader } from "@/components/layout/PublicLayout";
 import { Button } from "@/components/ui/button";
-import { DISCLAIMER } from "@/data/mockData";
+import { Disclaimer } from "@/components/route/Disclaimer";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -19,6 +19,8 @@ export const Route = createFileRoute("/about")({
         content:
           "Our mission, our principles, and our commitment to privacy-respecting, non-alarmist safety guidance.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AboutPage,
@@ -33,7 +35,7 @@ const PRINCIPLES = [
   {
     icon: Lock,
     title: "Privacy by default",
-    body: "Location data exists to help you plan a journey. Sharing is opt-in, time-bound and always visible to you while it's active.",
+    body: "You choose when to share a location. Emergency tools can share a location link; they do not continuously track you.",
   },
   {
     icon: HeartHandshake,
@@ -43,7 +45,7 @@ const PRINCIPLES = [
   {
     icon: Sparkles,
     title: "Explainable scoring",
-    body: "Every score comes with the factors behind it. If we can't explain a recommendation, we don't make it.",
+    body: "Scores describe nearby open places, with missing data clearly marked. They are not crime or danger ratings.",
   },
 ];
 
@@ -52,22 +54,20 @@ function AboutPage() {
     <PublicLayout>
       <PageHeader
         eyebrow="About"
-        title="Reaching your destination and reaching it safely are two different problems"
-        description="Navigation apps solved the first one decades ago. SafeRoute exists for the second — for the journeys where the shortest line on a map isn't the one you'd choose."
+        title="More information for the way you travel"
+        description="SafeRoute helps women and anyone planning a journey compare nearby open shops and services — not just the shortest or fastest route."
       />
 
       <section className="mx-auto grid w-full max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-20">
         <div>
           <h2 className="text-2xl font-semibold sm:text-3xl">Our mission</h2>
           <p className="mt-4 text-muted-foreground">
-            Millions of everyday journeys — a late shift, a walk home from the station, a commute
-            that runs past sunset — involve a quiet calculation that navigation software has never
-            helped with. SafeRoute makes that calculation explicit, comparable and transparent.
+            On a walk home or a trip somewhere unfamiliar, you may prefer a route near open shops,
+            cafés or services. SafeRoute helps you compare that information before you set off.
           </p>
           <p className="mt-4 text-muted-foreground">
-            We are frontend-first and integration-ready by design: the interface, scoring model and
-            comparison experience are built now, with a services layer prepared for real mapping and
-            safety data sources.
+            Routes and opening-hours information come from Google Maps. If live services are unavailable,
+            we show clearly labelled sample results. We cannot guarantee safety or replace local knowledge.
           </p>
           <Button asChild className="mt-8">
             <Link to="/how-it-works">
@@ -96,9 +96,9 @@ function AboutPage() {
         <div className="mx-auto w-full max-w-4xl px-4 py-16 text-center sm:px-6 lg:px-8">
           <Compass className="mx-auto size-8 text-primary" aria-hidden="true" />
           <h2 className="mt-5 text-2xl font-semibold sm:text-3xl">Navigate safer. Travel smarter.</h2>
-          <p className="mt-4 text-muted-foreground">{DISCLAIMER}</p>
+          <Disclaimer className="mt-4 text-left" />
           <Button asChild size="lg" className="mt-8">
-            <Link to="/route-planner">Plan a Safe Route</Link>
+            <Link to="/route-planner">Plan a route</Link>
           </Button>
         </div>
       </section>

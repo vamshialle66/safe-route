@@ -79,7 +79,7 @@ function RouteDetail() {
 
           <div className="rounded-2xl border border-border bg-card p-5">
             <div className="flex items-center justify-between">
-              <h2 className="font-display font-semibold">Index along the route</h2>
+              <h2 className="font-display font-semibold">Open-places score along the route</h2>
               <span className="text-xs text-muted-foreground">Each bar is one stretch, start → finish</span>
             </div>
             <div className="mt-4 h-48">
@@ -89,7 +89,7 @@ function RouteDetail() {
                   <YAxis domain={[0, 100]} width={28} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                   <Tooltip
                     cursor={{ fill: "var(--muted)" }}
-                    formatter={(v: number, _n, p) => [p.payload.has ? v.toFixed(0) : "N/A", "Index"]}
+                    formatter={(v: number, _n, p) => [p.payload.has ? v.toFixed(0) : "No data", "Open-places score"]}
                     labelFormatter={(l) => `Stretch ${l}`}
                     contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", fontSize: 12 }}
                   />
@@ -128,27 +128,27 @@ function RouteDetail() {
         <aside className="space-y-4">
           <div className="rounded-2xl border border-border bg-card p-5">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Route index</span>
+              <span className="text-sm text-muted-foreground">Open-places score</span>
               <SourceBadge source={analysis.source} />
             </div>
             <div className="mt-3 flex items-center gap-4">
               <IndexRing value={route.safetyIndex} size={88} />
               <div>
                 <p className={cn("font-display text-lg font-semibold", TONE_CLASSES[indexTone(route.safetyIndex)].text)}>{TONE_CLASSES[indexTone(route.safetyIndex)].label}</p>
-                <p className="text-xs text-muted-foreground">Length-weighted across {route.scoredSegmentCount} scored stretches</p>
+                <p className="text-xs text-muted-foreground">Based on {route.scoredSegmentCount} parts with data; longer parts count more</p>
               </div>
             </div>
             <dl className="mt-5 grid grid-cols-2 gap-3 text-sm">
               <Stat icon={RouteIcon} label="Distance" value={formatDistance(route.distanceMeters)} />
               <Stat icon={Clock} label="Duration" value={formatDuration(route.duration)} />
               <Stat icon={Store} label="Places found" value={`${openPlaces}/${totalPlaces} open`} />
-              <Stat icon={MapPin} label="Data coverage" value={`${coverage}%`} />
+              <Stat icon={MapPin} label="Route with data" value={`${coverage}%`} />
             </dl>
           </div>
 
           {lowStretches.length > 0 && (
             <div className="rounded-2xl border border-risk/30 bg-risk-soft p-5">
-              <p className="font-semibold text-risk">{lowStretches.length} quiet stretch{lowStretches.length > 1 ? "es" : ""}</p>
+              <p className="font-semibold text-risk">{lowStretches.length} part{lowStretches.length > 1 ? "s" : ""} with fewer open places</p>
               <p className="mt-1 text-sm text-foreground/80">
                 Fewer than 40% of nearby places are open on {formatDistance(lowStretches.reduce((a, s) => a + s.lengthMeters, 0))} of this route. Consider sharing your trip with a contact.
               </p>
@@ -160,11 +160,11 @@ function RouteDetail() {
             <p className="font-semibold">How this is worked out</p>
             <ol className="mt-2 list-decimal space-y-1 pl-4 text-muted-foreground">
               <li>Route split into stretches of about 100 m.</li>
-              <li>A 20 m-wide band drawn around each stretch.</li>
-              <li>Places inside the band are counted.</li>
-              <li>Index = % of those places open right now.</li>
+              <li>Nearby places from your selected categories are checked.</li>
+              <li>Places without known opening hours are left out.</li>
+              <li>Score = percentage of counted places open right now.</li>
             </ol>
-            <p className="mt-2 text-xs text-muted-foreground">Overall index {formatIndex(route.safetyIndex)} weights longer stretches more.</p>
+            <p className="mt-2 text-xs text-muted-foreground">The overall score of {formatIndex(route.safetyIndex)} gives longer parts more weight.</p>
           </div>
           <Disclaimer />
         </aside>

@@ -29,7 +29,7 @@ function ComparePage() {
   if (!a || !a.routes.length) {
     return (
       <AppLayout title="Route Comparison">
-        <EmptyState icon={Map} title="Nothing to compare yet" description="Analyse a trip and your alternative routes will line up here." action={<Button asChild><Link to="/route-planner">Plan a route</Link></Button>} />
+        <EmptyState icon={Map} title="Nothing to compare yet" description="Choose a start and destination in Plan Route to see your options here." action={<Button asChild><Link to="/route-planner">Plan a route</Link></Button>} />
       </AppLayout>
     );
   }
@@ -49,11 +49,11 @@ function ComparePage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Route</TableHead>
-                <TableHead>Index</TableHead>
+                <TableHead>Open-places score</TableHead>
                 <TableHead>Distance</TableHead>
                 <TableHead>Duration</TableHead>
-                <TableHead className="hidden md:table-cell">Stretches</TableHead>
-                <TableHead className="hidden md:table-cell">Quiet stretches</TableHead>
+                <TableHead className="hidden md:table-cell">Parts with data</TableHead>
+                <TableHead className="hidden md:table-cell">Fewer open places</TableHead>
                 <TableHead />
               </TableRow>
             </TableHeader>
@@ -62,7 +62,7 @@ function ComparePage() {
                 <TableRow key={r.routeNumber} className={best.has(r.routeNumber) ? "bg-safe-soft/50" : ""}>
                   <TableCell className="font-medium">
                     Route {r.routeNumber}
-                    {best.has(r.routeNumber) && <span className="ml-2 text-[10px] font-semibold uppercase text-safe">Highest</span>}
+                    {best.has(r.routeNumber) && <span className="ml-2 text-[10px] font-semibold uppercase text-safe">Most open places</span>}
                     {durationSeconds(r.duration) === fastest && <span className="ml-2 text-[10px] font-semibold uppercase text-primary">Fastest</span>}
                   </TableCell>
                   <TableCell><IndexPill value={r.safetyIndex} showLabel={false} /></TableCell>
@@ -82,7 +82,7 @@ function ComparePage() {
         </div>
         <div className="space-y-4">
           <div className="rounded-2xl border border-border bg-card p-5">
-            <h2 className="font-display font-semibold">Index vs time</h2>
+            <h2 className="font-display font-semibold">Open-places score and minutes</h2>
             <div className="mt-4 h-56">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data}>
@@ -90,7 +90,7 @@ function ComparePage() {
                   <XAxis dataKey="name" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 11 }} width={28} axisLine={false} tickLine={false} />
                   <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", fontSize: 12 }} />
-                  <Bar dataKey="index" name="Index" fill="var(--safe)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="index" name="Open-places score" fill="var(--safe)" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="minutes" name="Minutes" fill="var(--primary)" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>

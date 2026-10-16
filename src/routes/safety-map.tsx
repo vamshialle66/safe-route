@@ -65,15 +65,15 @@ function SafetyMapPage() {
 
   return (
     <AppLayout title="Around Me" fullBleed>
-      <MiniHero className="m-4 mb-0 lg:hidden" title="Around Me" description="Find out how many places close to you are open right now." />
+      <MiniHero className="m-4 mb-0 lg:hidden" title="Around Me" description="Find nearby shops, pharmacies, ATMs and other services, and check their opening status." />
       <div className="flex flex-col pt-4 lg:h-[calc(100vh-4rem)] lg:flex-row lg:pt-0">
         <aside className="order-2 w-full space-y-4 border-r border-border bg-card p-5 lg:order-1 lg:w-[380px] lg:overflow-y-auto">
-          <MiniHero className="hidden lg:block" title="Around Me" description="Find out how many places close to you are open right now." />
+          <MiniHero className="hidden lg:block" title="Around Me" description="Find nearby shops, pharmacies, ATMs and other services, and check their opening status." />
           <div className="flex gap-2">
             <Button className="flex-1" onClick={() => scan()} disabled={loading}>
-              {loading ? <Loader2 className="size-4 animate-spin" /> : <Crosshair className="size-4" />} Scan my area
+              {loading ? <Loader2 className="size-4 animate-spin" /> : <Crosshair className="size-4" />} Find nearby places
             </Button>
-            <Button variant="outline" onClick={() => scan(true)} disabled={loading}>Sample</Button>
+            <Button variant="outline" onClick={() => scan(true)} disabled={loading}>Try Mumbai</Button>
           </div>
           {data && (
             <>
@@ -101,7 +101,7 @@ function SafetyMapPage() {
                       <p className="truncate text-xs capitalize text-muted-foreground">{(p.types?.[0] ?? "place").replace(/_/g, " ")}</p>
                     </div>
                     <span className={cn("text-xs font-medium", p.openNow === true ? "text-safe" : p.openNow === false ? "text-risk" : "text-muted-foreground")}>
-                      {p.openNow === true ? "Open" : p.openNow === false ? "Closed" : "Unknown"}
+                      {p.openNow === true ? "Open" : p.openNow === false ? "Closed" : "Hours unknown"}
                     </span>
                   </li>
                 ))}
