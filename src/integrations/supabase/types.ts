@@ -41,6 +41,9 @@ export type Database = {
           journey_id: string
           location_label: string
           model: string
+          moderated_at: string | null
+          moderated_by: string | null
+          moderator_note: string | null
           reviewed_at: string | null
           route_label: string
           status: string
@@ -57,6 +60,9 @@ export type Database = {
           journey_id: string
           location_label: string
           model: string
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderator_note?: string | null
           reviewed_at?: string | null
           route_label: string
           status?: string
@@ -73,6 +79,9 @@ export type Database = {
           journey_id?: string
           location_label?: string
           model?: string
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderator_note?: string | null
           reviewed_at?: string | null
           route_label?: string
           status?: string
@@ -277,15 +286,54 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      list_community_tips: {
+        Args: { _limit?: number }
+        Returns: {
+          approved_at: string
+          category: string
+          id: string
+          location_label: string
+          summary: string
+          urgency: string
+        }[]
+      }
+      moderate_alert: {
+        Args: { _decision: string; _id: string; _note?: string }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -412,6 +460,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
   },
 } as const
