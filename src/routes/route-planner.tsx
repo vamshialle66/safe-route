@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils";
 import { MiniHero } from "@/components/layout/MiniHero";
 import { MapLegend } from "@/components/map/MapLegend";
 import { routeComparisonValue } from "@/lib/routeAssessment";
+import { CommunityAlerts } from "@/components/route/CommunityAlerts";
 
 export const Route = createFileRoute("/route-planner")({
   head: () => ({
@@ -247,6 +248,7 @@ function PlannerPage() {
                 </Button>
                 <p className="text-xs leading-relaxed text-muted-foreground">Options are ranked by observed open-place density and nearby help, not shop opening percentages alone. Crime and lighting are not verified. Below 50% information coverage, no comparison score is given.</p>
                 <Disclaimer />
+                <CommunityAlerts key={analysis.id} journeyId={analysis.id} routeLabel={selected ? `Route ${selected}` : "Journey"} />
               </>
             )}
 
