@@ -27,7 +27,9 @@ describe("source-linked Mumbai crime evidence", () => {
     expect(crimeEvidence(route, [{ ...dataset, period_start: "2025-01-01", period_end: "2025-01-31" }], [report], now).adjustment).toBeNull();
   });
   it("routes leaving the reporting boundary cannot be scored against it", () => {
-    const outside = { ...route, segments: [{ ...route.segments[0], geometry: [{ latitude: 19.05, longitude: 72.85 }, { latitude: 19.2, longitude: 72.85 }] }] };
+    const first = route.segments[0];
+    if (!first) throw new Error("Missing test route geometry");
+    const outside = { ...route, segments: [{ ...first, geometry: [{ latitude: 19.05, longitude: 72.85 }, { latitude: 19.2, longitude: 72.85 }] }] };
     expect(crimeEvidence(outside, [dataset], [report], now).adjustment).toBeNull();
   });
   it("deduplicates the same official record", () => {
