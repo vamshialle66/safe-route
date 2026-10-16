@@ -69,7 +69,7 @@ function PlannerPage() {
       setSelected(top);
       if (!a.routes.length) toast.message("No routes were found between these places.");
       else if (fellBack) toast.warning(`Live data unavailable — showing sample data. ${reason ?? ""}`.trim());
-      else toast.success(`${a.routes.length} routes found using current map data`);
+      else toast.success(a.source === "demo" ? `${a.routes.length} example routes ready — not current conditions` : `${a.routes.length} routes found using current map data`);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Something went wrong.");
     } finally {
