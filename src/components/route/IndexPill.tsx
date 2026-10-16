@@ -26,7 +26,7 @@ export function IndexRing({ value, size = 72 }: { value: number | null | undefin
   const c = 2 * Math.PI * r;
   const pct = value == null ? 0 : Math.max(0, Math.min(100, value));
   return (
-    <div className="relative grid place-items-center" style={{ width: size, height: size }}>
+    <div className="relative grid shrink-0 place-items-center" style={{ width: size, height: size }}>
       <svg viewBox="0 0 36 36" className="absolute inset-0 -rotate-90">
         <circle cx="18" cy="18" r={r} fill="none" strokeWidth="3" className="stroke-muted" strokeDasharray={value == null ? "2 2" : undefined} />
         <circle

@@ -69,7 +69,7 @@ function RouteDetail() {
               <Navigation className="size-4" /> Open Google Maps
             </a>
           </Button>
-          <Button asChild variant="outline"><Link to="/routes"><ArrowLeft className="size-4" /> All routes</Link></Button>
+          <Button asChild variant="outline" className="bg-card text-card-foreground"><Link to="/routes"><ArrowLeft className="size-4" /> All routes</Link></Button>
           <Button onClick={() => toast[analysisStore.saveRoute(analysis, route.routeNumber) ? "success" : "message"]("Saved to your routes")}>
             <Bookmark className="size-4" /> Save
           </Button>
