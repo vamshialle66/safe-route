@@ -37,7 +37,7 @@ export const Route = createFileRoute("/route-planner")({
   component: PlannerPage,
 });
 
-const STAGES = ["Finding alternative routes", "Splitting routes into ~100 m stretches", "Looking up places along each stretch", "Scoring every stretch"];
+const STAGES = ["Finding alternative routes", "Checking short parts of each route", "Looking up places along each stretch", "Calculating open-places scores"];
 
 function PlannerPage() {
   const analysis = useCurrentAnalysis();
@@ -90,18 +90,18 @@ function PlannerPage() {
 
   return (
     <AppLayout title="Plan Route" fullBleed>
-      <MiniHero className="m-4 mb-0 lg:hidden" title="Plan Route" description="Where are you heading? We compare up to five routes and score each stretch." />
+      <MiniHero className="m-4 mb-0 lg:hidden" title="Plan Route" description="Where are you heading? Enter a start and destination, then compare open places, time and distance." />
       <div className="flex flex-col pt-4 lg:h-[calc(100vh-4rem)] lg:flex-row lg:pt-0">
         <section className="order-2 flex w-full flex-col border-r border-border bg-card lg:order-1 lg:w-[420px] lg:overflow-y-auto">
           <div className="space-y-4 border-b border-border p-5">
-            <MiniHero className="hidden lg:block" title="Plan Route" description="Where are you heading? We compare up to five routes and score each stretch." />
+            <MiniHero className="hidden lg:block" title="Plan Route" description="Where are you heading? Enter a start and destination, then compare open places, time and distance." />
             <div className="space-y-1">
               <PlaceSearch
                 label="Start"
                 icon={MapPin}
                 value={origin}
                 onChange={setOrigin}
-                placeholder="Search a place or paste lat, lng"
+                placeholder="Where are you starting?"
                 trailing={
                   <Button type="button" variant="ghost" size="icon" className="size-10" onClick={useMyLocation} aria-label="Use my current location" disabled={locating}>
                     {locating ? <Loader2 className="size-4 animate-spin" /> : <Crosshair className="size-4" />}
@@ -129,7 +129,7 @@ function PlannerPage() {
             </div>
 
             <div>
-              <p className="text-xs font-medium text-muted-foreground">Travel mode</p>
+              <p className="text-xs font-medium text-muted-foreground">How are you travelling?</p>
               <div className="mt-1.5 flex flex-wrap gap-1.5" role="radiogroup" aria-label="Travel mode">
                 {TRAVEL_MODES.map((m) => (
                   <button
@@ -151,7 +151,7 @@ function PlannerPage() {
 
             <Button size="lg" className="w-full" onClick={analyze} disabled={loading}>
               {loading ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
-              {loading ? STAGES[stage] + "…" : "Analyse routes"}
+              {loading ? STAGES[stage] + "…" : "Find routes"}
             </Button>
             {!origin && !destination && (
               <button
@@ -202,7 +202,7 @@ function PlannerPage() {
                           <div className="flex flex-wrap items-center gap-2">
                             <span className="font-display font-semibold">Route {r.routeNumber}</span>
                             {isBest && (
-                              <span className="rounded-full bg-safe px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground">Highest index</span>
+                              <span className="rounded-full bg-safe px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground">Most open places</span>
                             )}
                           </div>
                           <p className="mt-0.5 text-sm text-muted-foreground">
@@ -222,7 +222,7 @@ function PlannerPage() {
                           </Button>
                           <Button asChild size="sm" variant="outline">
                             <a href={googleDirectionsUrl(analysis.origin, analysis.destination, analysis.travelMode, r)} target="_blank" rel="noopener noreferrer">
-                              <Navigation className="size-3.5" /> Go
+                              <Navigation className="size-3.5" /> Maps
                             </a>
                           </Button>
                           <Button
@@ -249,7 +249,7 @@ function PlannerPage() {
 
             {!loading && !analysis && (
               <div className="rounded-2xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-                Your routes will appear here once you analyse a trip.
+                Your route options will appear here after you choose a start and destination.
               </div>
             )}
           </div>

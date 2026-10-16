@@ -13,9 +13,10 @@ import {
 } from "lucide-react";
 import { PublicLayout, PageHeader } from "@/components/layout/PublicLayout";
 import { Button } from "@/components/ui/button";
-import { MapView } from "@/components/map/MapView";
-import { MOCK_ROUTES } from "@/data/mockRoutes";
-import { DISCLAIMER } from "@/data/mockData";
+import { RouteMap } from "@/components/map/RouteMap";
+import { demoSegments } from "@/lib/demoAnalysis";
+import { SAMPLE_ORIGIN, SAMPLE_DESTINATION } from "@/lib/geocode";
+import { Disclaimer } from "@/components/route/Disclaimer";
 
 export const Route = createFileRoute("/how-it-works")({
   head: () => ({
@@ -24,27 +25,26 @@ export const Route = createFileRoute("/how-it-works")({
       {
         name: "description",
         content:
-          "From source and destination to safety analysis and route comparison: the seven steps SafeRoute takes before you choose a journey.",
+          "Enter a starting point and destination, compare nearby open places and open directions in Google Maps.",
       },
       { property: "og:title", content: "How SafeRoute Works" },
       {
         property: "og:description",
         content:
-          "See the full flow: generate routes, analyze safety factors, calculate a score, compare and choose.",
+          "Plan a trip, compare open-places scores and choose your route.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: HowItWorksPage,
 });
 
 const FLOW = [
-  { icon: MapPin, title: "Select source", body: "Use your current location or type a starting point. Saved places make this one tap." },
-  { icon: Flag, title: "Select destination", body: "Enter where you're heading. Recent and saved destinations appear as suggestions." },
-  { icon: RouteIcon, title: "Generate available routes", body: "SafeRoute builds realistic alternatives instead of a single 'best' answer." },
-  { icon: ScanSearch, title: "Analyze safety factors", body: "Each route is split into segments and evaluated against every available safety signal." },
-  { icon: Gauge, title: "Calculate safety score", body: "Factor values are weighted into a single 0–100 comparative score per route." },
-  { icon: Scale, title: "Compare routes", body: "Safety, distance, ETA, lighting, public activity and risk segments side by side." },
-  { icon: CheckCircle2, title: "Choose the preferred route", body: "Pick the journey that fits your comfort level — not just the quickest line." },
+  { icon: MapPin, title: "Enter your start and destination", body: "Search for a place and choose a suggestion. You can also use your current location as the start." },
+  { icon: RouteIcon, title: "Choose how you’ll travel", body: "Pick walking, driving or another travel option, then select Find routes." },
+  { icon: Scale, title: "Compare your options", body: "Look at each route’s open-places score, distance and travel time. Higher scores mean a larger share of nearby places are open, not that the route is safer." },
+  { icon: CheckCircle2, title: "Choose a route and open Maps", body: "Select a route to see details, save it, or open directions in Google Maps. Sign in if you want saved routes to follow you across devices." },
 ];
 
 function HowItWorksPage() {
@@ -52,8 +52,8 @@ function HowItWorksPage() {
     <PublicLayout>
       <PageHeader
         eyebrow="How it works"
-        title="Seven steps between you and a more informed journey"
-        description="SafeRoute considers safety-related factors alongside travel convenience, then makes the trade-offs visible so the decision stays yours."
+        title="Plan, compare, and go"
+        description="Start with where you are and where you want to go. SafeRoute adds nearby open places to the usual distance and travel-time comparison."
       />
 
       <section className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
@@ -92,17 +92,17 @@ function HowItWorksPage() {
       <section className="border-y border-border bg-card">
         <div className="mx-auto grid w-full max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8">
           <div>
-            <h2 className="text-2xl font-semibold sm:text-3xl">Safety alongside convenience</h2>
+            <h2 className="text-2xl font-semibold sm:text-3xl">More context than distance alone</h2>
             <p className="mt-4 text-muted-foreground">
-              Distance and travel time still matter — they're shown on every route card. The
-              difference is that safety is the primary differentiator, presented first and largest,
-              with an explanation of what drove the score.
+              A higher open-places score means a larger share of nearby shops and services are open.
+              Compare it with distance and travel time, then choose what suits your journey.
+              It does not tell you how many people are outside or guarantee safety.
             </p>
             <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
               {[
-                "Segment-level analysis rather than a single route-wide guess",
-                "Explicit reasons for every recommendation",
-                "Never implies the fastest route is automatically the best route",
+                "See open-places scores for short parts of your route",
+                "Missing opening hours are left out of the score",
+                "Directions open in Google Maps after you choose a route",
               ].map((item) => (
                 <li key={item} className="flex gap-3">
                   <ShieldCheck className="mt-0.5 size-4 shrink-0 text-safe" aria-hidden="true" />
@@ -117,14 +117,7 @@ function HowItWorksPage() {
               </Link>
             </Button>
           </div>
-          <MapView
-            routes={MOCK_ROUTES}
-            activeRouteId="safest"
-            className="h-[380px] w-full shadow-lift"
-            showControls={false}
-            interactive={false}
-            destinationLabel="14 Elmgrove Terrace"
-          />
+          <div><p className="mb-3 text-xs text-muted-foreground">Example route · Sample data</p><div className="h-[380px] overflow-hidden rounded-xl border border-border"><RouteMap routes={demoSegments(SAMPLE_ORIGIN, SAMPLE_DESTINATION, "WALK").routes} origin={SAMPLE_ORIGIN} destination={SAMPLE_DESTINATION} showPlaces={false} /></div></div>
         </div>
       </section>
 
@@ -134,7 +127,7 @@ function HowItWorksPage() {
             <Compass className="size-4" aria-hidden="true" />
             About the data
           </p>
-          {DISCLAIMER}
+          <Disclaimer />
         </div>
       </section>
     </PublicLayout>

@@ -1,156 +1,35 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Info, ShieldCheck } from "lucide-react";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  ResponsiveContainer,
-  Tooltip as ReTooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight, Store, Info } from "lucide-react";
 import { PublicLayout, PageHeader } from "@/components/layout/PublicLayout";
-import { SafetyScore } from "@/components/safety/SafetyScore";
-import { SafetyBreakdown } from "@/components/safety/SafetyBreakdown";
-import { MOCK_ROUTES } from "@/data/mockRoutes";
-import { DISCLAIMER, SAFETY_FACTOR_INFO } from "@/data/mockData";
-import { safetyService } from "@/services/safetyService";
+import { Button } from "@/components/ui/button";
+import { IndexRing } from "@/components/route/IndexPill";
+import { Disclaimer } from "@/components/route/Disclaimer";
 
 export const Route = createFileRoute("/safety")({
-  head: () => ({
-    meta: [
-      { title: "Safety & Methodology — How the SafeRoute Score Works" },
-      {
-        name: "description",
-        content:
-          "How SafeRoute builds a comparative 0–100 safety score from lighting, public activity, risk level, road conditions and nearby safe locations.",
-      },
-      { property: "og:title", content: "SafeRoute Safety & Methodology" },
-      {
-        property: "og:description",
-        content:
-          "A transparent look at the factors, weights and limitations behind the SafeRoute safety score.",
-      },
-    ],
-  }),
+  head: () => ({ meta: [
+    { title: "Understand the Score — SafeRoute" },
+    { name: "description", content: "Learn what SafeRoute’s open-places score means, how opening hours affect it and why it cannot guarantee safety." },
+    { property: "og:title", content: "Understand the Score — SafeRoute" },
+    { property: "og:description", content: "A simple guide to nearby open places, missing data and the limits of route scores." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: SafetyPage,
 });
 
 function SafetyPage() {
-  const safest = MOCK_ROUTES[0]!;
-  const weights = safetyService.factorWeights();
-  const chartData = weights.map((w) => ({
-    name: w.label,
-    weight: w.weight,
-    value: safest.factors[w.key],
-  }));
-
-  return (
-    <PublicLayout>
-      <PageHeader
-        eyebrow="Safety & methodology"
-        title="What the safety score means — and what it doesn't"
-        description="The score is a comparative indication between the routes available to you right now. It is not a prediction, and it is not a claim about any individual place."
-      />
-
-      <section className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div
-          className="flex items-start gap-3 rounded-2xl border border-moderate/40 bg-moderate-soft p-5 text-sm text-moderate-foreground"
-          role="note"
-        >
-          <Info className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
-          <p>
-            <strong className="font-semibold">Sample data notice.</strong> {DISCLAIMER} None of the
-            figures on this page are real crime statistics.
-          </p>
-        </div>
-
-        <div className="mt-10 grid gap-8 lg:grid-cols-[auto_1fr]">
-          <div className="rounded-3xl border border-border bg-card p-8 shadow-soft">
-            <SafetyScore score={92} label="Excellent" size="lg" caption="Sample route safety score" />
-          </div>
-          <div className="rounded-3xl border border-border bg-card p-8 shadow-soft">
-            <h2 className="font-display text-lg font-semibold">Breakdown (sample values)</h2>
-            <SafetyBreakdown factors={safest.factors} className="mt-6" />
-          </div>
-        </div>
-
-        <div className="mt-10 rounded-3xl border border-border bg-card p-6 shadow-soft sm:p-8">
-          <h2 className="font-display text-lg font-semibold">How each factor contributes</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Factors are weighted, then combined into a single 0–100 score. Comparative risk and
-            public activity carry the most influence.
-          </p>
-          <div className="mt-6 h-72 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} margin={{ left: -18, right: 8, top: 8 }}>
-                <CartesianGrid vertical={false} stroke="var(--color-border)" />
-                <XAxis
-                  dataKey="name"
-                  tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
-                  interval={0}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <YAxis
-                  tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <ReTooltip
-                  contentStyle={{
-                    background: "var(--color-popover)",
-                    border: "1px solid var(--color-border)",
-                    borderRadius: 12,
-                    fontSize: 12,
-                    color: "var(--color-popover-foreground)",
-                  }}
-                  formatter={(value: number, key) =>
-                    key === "weight" ? [`${value}% weight`, "Weight"] : [`${value}%`, "Sample value"]
-                  }
-                />
-                <Bar dataKey="value" radius={[6, 6, 0, 0]} name="value">
-                  {chartData.map((entry) => (
-                    <Cell key={entry.name} fill="var(--color-chart-1)" />
-                  ))}
-                </Bar>
-                <Bar dataKey="weight" radius={[6, 6, 0, 0]} name="weight" fill="var(--color-chart-5)" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          <ul className="mt-6 grid gap-2 text-sm text-muted-foreground sm:grid-cols-2">
-            {weights.map((w) => (
-              <li key={w.key} className="flex items-center justify-between rounded-xl bg-secondary px-4 py-2.5">
-                <span>{w.label}</span>
-                <span className="font-medium text-foreground">{w.weight}% weight</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {SAFETY_FACTOR_INFO.map((factor) => (
-            <div key={factor.id} className="rounded-2xl border border-border bg-card p-6 shadow-soft">
-              <span className="grid size-9 place-items-center rounded-xl bg-primary-soft text-primary">
-                <ShieldCheck className="size-4" aria-hidden="true" />
-              </span>
-              <h3 className="mt-4 font-display text-base font-semibold">{factor.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{factor.description}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-10 rounded-2xl border border-border bg-secondary p-6 text-sm text-muted-foreground">
-          <h2 className="font-display text-base font-semibold text-foreground">Limitations</h2>
-          <ul className="mt-3 space-y-2">
-            <li>Scores compare the routes generated for one journey — not cities or neighbourhoods.</li>
-            <li>Conditions change with time of day, weather and local events.</li>
-            <li>A high score is not a guarantee of safety, and a low score is not an accusation.</li>
-            <li>Always use your own judgement and local knowledge.</li>
-          </ul>
-        </div>
-      </section>
-    </PublicLayout>
-  );
+  return <PublicLayout>
+    <PageHeader eyebrow="Understand the score" title="More open places. Not a promise of safety." description="The open-places score tells you how much of the nearby shop and service activity is open right now. It is one piece of information to help you choose a route." />
+    <section className="mx-auto w-full max-w-5xl space-y-10 px-4 py-12 sm:px-6 lg:px-8">
+      <div className="flex items-start gap-3 border-l-4 border-moderate bg-moderate-soft p-5 text-sm text-moderate-foreground"><Info className="mt-0.5 size-5 shrink-0" /><p>SafeRoute does not check crime rates, street lighting, road conditions or how many people are outside. An open shop does not mean help is guaranteed.</p></div>
+      <div className="grid gap-8 md:grid-cols-2">
+        <div><h2 className="text-2xl font-semibold">A simple example</h2><div className="mt-5 flex items-center gap-5"><IndexRing value={80} size={88} /><div><p className="font-semibold">8 of 10 places are open</p><p className="mt-1 text-sm text-muted-foreground">This short part of the route scores 80 out of 100.</p><p className="mt-2 text-xs text-muted-foreground">Illustration only — not a live result.</p></div></div></div>
+        <div><h2 className="text-2xl font-semibold">How a route gets its score</h2><ol className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-relaxed text-muted-foreground"><li>Split the route into short parts of about 100 metres.</li><li>Find nearby places from your chosen categories.</li><li>Check the share that are open, using places with known opening hours.</li><li>Combine the scores, giving longer parts more weight. Parts with no score are left out.</li></ol></div>
+      </div>
+      <div className="border-y border-border py-8"><h2 className="text-2xl font-semibold">Read the colours</h2><dl className="mt-5 grid gap-5 sm:grid-cols-2"><div><dt className="font-semibold text-safe">Green · 70–100</dt><dd className="mt-1 text-sm text-muted-foreground">A higher share of nearby places are open.</dd></div><div><dt className="font-semibold text-moderate-foreground dark:text-moderate">Amber · 40–69</dt><dd className="mt-1 text-sm text-muted-foreground">A mix of open and closed places.</dd></div><div><dt className="font-semibold text-risk">Red · Below 40</dt><dd className="mt-1 text-sm text-muted-foreground">A lower share of nearby places are open. This is not a danger rating.</dd></div><div><dt className="font-semibold text-muted-foreground">Grey · No score</dt><dd className="mt-1 text-sm text-muted-foreground">Not enough opening-hours data. Missing data does not mean unsafe.</dd></div></dl></div>
+      <div className="grid gap-8 md:grid-cols-2"><div><h2 className="flex items-center gap-2 text-xl font-semibold"><Store className="size-5 text-primary" /> Choose the places that count</h2><p className="mt-3 text-sm leading-relaxed text-muted-foreground">In Settings, choose shops, cafés, pharmacies, police stations, ATMs, public toilets and more. Your choices affect new trips and nearby searches using the built-in live service, not old results, sample data or a separate server.</p><Button asChild variant="outline" className="mt-5"><Link to="/settings">Choose place types <ArrowRight className="size-4" /></Link></Button></div><div><h2 className="text-xl font-semibold">Know the data’s limits</h2><ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-muted-foreground"><li>Google Maps opening hours may be missing or outdated.</li><li>Searches may not find every place along the route.</li><li>Live data means a live lookup, not a check by someone on the street.</li><li>Sample data is an example and does not describe current conditions.</li><li>Use your own judgement and local knowledge.</li></ul></div></div>
+      <Disclaimer />
+      <Button asChild><Link to="/route-planner">Plan a route <ArrowRight className="size-4" /></Link></Button>
+    </section>
+  </PublicLayout>;
 }

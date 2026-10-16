@@ -22,7 +22,7 @@ export function MapLegend() {
           <span className="size-2 rounded-full bg-moderate" />
           <span className="size-2 rounded-full bg-risk" />
         </span>
-        Stretch index
+        Route colours
         <span className="ml-auto text-muted-foreground group-open:rotate-180" aria-hidden="true">▾</span>
       </summary>
       <ul className="space-y-1 px-3 pb-3">
