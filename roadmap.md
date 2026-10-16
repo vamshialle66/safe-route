@@ -5,3 +5,7 @@
 - [x] Replace remaining developer terms in route results and map labels.
 - [x] Make route details understandable through journey distances and plain score explanations.
 - [x] Verify populated results on desktop and phones.
+- [x] Add a multi-factor route comparison using observed activity, nearby help and information coverage.
+- [x] Show factors, reasons and unavailable crime/lighting information in planning and details.
+- [x] Test ranking rules and verify the updated example journey on desktop and phones; live Google checks are unavailable in the sandbox.
+- [ ] Include verified crime and lighting in scoring — blocked on trusted street-level sources for the supported area.

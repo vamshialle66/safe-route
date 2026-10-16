@@ -5,7 +5,7 @@ export function Disclaimer({ className }: { className?: string }) {
   return (
     <p className={cn("flex gap-2 rounded-xl border border-border bg-muted/60 px-3 py-2.5 text-xs leading-relaxed text-muted-foreground", className)}>
       <Info className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
-      The open-places score measures the share of nearby places that are open, using known opening hours. Higher does not mean safer. Crime, street lighting and crowds are not measured.
+      The open-places score shows the percentage open. The separate route comparison uses observed open-place density and nearby help. Neither guarantees safety. Crime, street lighting and crowds are not verified.
     </p>
   );
 }

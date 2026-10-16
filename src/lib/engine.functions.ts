@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { ApiRoute, BackendTravelMode, LatLng, NearbyResponse } from "./saferouteApi";
 
 const MODES: BackendTravelMode[] = ["DRIVE", "BICYCLE", "WALK", "TWO_WHEELER", "TRANSIT"];
@@ -17,6 +18,7 @@ function cats(c: unknown): string[] | undefined {
 export type EngineResult<T> = { ok: true; data: T } | { ok: false; reason: string };
 
 export const liveSegmentsFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((d: { origin: LatLng; destination: LatLng; travelMode: BackendTravelMode; categories?: string[] }) => {
     if (!MODES.includes(d?.travelMode)) throw new Error("Invalid travel mode");
     return { origin: point(d.origin), destination: point(d.destination), travelMode: d.travelMode, categories: cats(d.categories) };
@@ -32,6 +34,7 @@ export const liveSegmentsFn = createServerFn({ method: "POST" })
   });
 
 export const liveNearbyFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((d: LatLng & { categories?: string[] }) => ({ ...point(d), categories: cats(d?.categories) }))
   .handler(async ({ data }): Promise<EngineResult<NearbyResponse>> => {
     const { liveNearby } = await import("./engine.server");

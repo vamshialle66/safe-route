@@ -1,4 +1,5 @@
 import { placeCounts, typesFor } from "./placeCategories";
+import { assessRoute } from "./routeAssessment";
 /**
  * Built-in SafeRoute engine (server-only). Ports the friend's Express backend rules:
  * ~100 m segments, narrow corridor, index = % of scored places open right now,
@@ -271,7 +272,7 @@ export async function liveSegments(origin: LatLng, destination: LatLng, travelMo
     lists.flat().forEach((p) => byId.set(p.id ?? `${p.latitude},${p.longitude}`, p));
     const segments = scoreSegments(splitLine(pts), [...byId.values()], allowed);
     const idx = routeIndex(segments);
-    routes.push({
+    const route: ApiRoute = {
       routeNumber: i + 1,
       distanceMeters: r.distanceMeters ?? 0,
       duration: r.duration!,
@@ -279,7 +280,9 @@ export async function liveSegments(origin: LatLng, destination: LatLng, travelMo
       segments,
       ...idx,
       safetyStatus: idx.safetyIndex == null ? "insufficient-data" : "available",
-    });
+    };
+    route.assessment = assessRoute(route, [...byId.values()], allowed);
+    routes.push(route);
   }
   return { routes };
 }

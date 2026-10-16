@@ -35,7 +35,7 @@ function ComparePage() {
   }
   const best = topRouteNumbers(a.routes);
   const fastest = Math.min(...a.routes.map((r) => durationSeconds(r.duration)));
-  const data = a.routes.map((r) => ({ name: `Route ${r.routeNumber}`, index: r.safetyIndex ?? 0, minutes: Math.round(durationSeconds(r.duration) / 60) }));
+  const data = a.routes.map((r) => ({ name: `Route ${r.routeNumber}`, comparison: r.assessment?.score ?? null, minutes: Math.round(durationSeconds(r.duration) / 60) }));
 
   return (
     <AppLayout
@@ -50,6 +50,7 @@ function ComparePage() {
               <TableRow>
                 <TableHead>Route</TableHead>
                 <TableHead>Open-places score</TableHead>
+                <TableHead>Comparison score</TableHead>
                 <TableHead>Distance</TableHead>
                 <TableHead>Travel time</TableHead>
                 <TableHead className="hidden md:table-cell">Opening hours available</TableHead>
@@ -62,10 +63,11 @@ function ComparePage() {
                 <TableRow key={r.routeNumber} className={best.has(r.routeNumber) ? "bg-safe-soft/50" : ""}>
                   <TableCell className="font-medium">
                     Route {r.routeNumber}
-                    {best.has(r.routeNumber) && <span className="ml-2 text-[10px] font-semibold uppercase text-safe">Most open places</span>}
+                    {best.has(r.routeNumber) && <span className="ml-2 text-[10px] font-semibold uppercase text-safe">{r.assessment ? "Higher comparison score" : "Most open places"}</span>}
                     {durationSeconds(r.duration) === fastest && <span className="ml-2 text-[10px] font-semibold uppercase text-primary">Fastest</span>}
                   </TableCell>
                   <TableCell><IndexPill value={r.safetyIndex} showLabel={false} /></TableCell>
+                  <TableCell>{r.assessment?.score == null ? "Not available" : `${r.assessment.score}/100`}<p className="mt-1 text-xs text-muted-foreground">{r.assessment ? `${r.assessment.helpPlaces.length} help locations open` : "Plan again to check"}</p></TableCell>
                   <TableCell>{formatDistance(r.distanceMeters)}</TableCell>
                   <TableCell>{formatDuration(r.duration)}</TableCell>
                   <TableCell className="hidden md:table-cell">{r.distanceMeters ? Math.round(r.scoredLengthMeters / r.distanceMeters * 100) : 0}% of route</TableCell>
@@ -81,9 +83,10 @@ function ComparePage() {
           </Table>
         </div>
         <div className="space-y-4">
+          <div className="border-y border-border py-4"><h2 className="font-semibold">Why these routes rank differently</h2><p className="mt-2 text-sm text-muted-foreground">The comparison considers the number of observed open places and nearby open help services. It needs opening-hour information near at least half the journey. Crime and street lighting are not verified; this is not a safety rating.</p></div>
           <div className="rounded-2xl border border-border bg-card p-5">
-            <h2 className="font-display font-semibold">Nearby open places vs travel time</h2>
-            <p className="mt-2 text-sm text-muted-foreground">A score of 80 means 80% of checked nearby places are open, averaged along the route. It is not a safety rating.</p>
+            <h2 className="font-display font-semibold">Comparison score vs travel time</h2>
+            <p className="mt-2 text-sm text-muted-foreground">Higher scores mean more open places and help services were found nearby. Routes without enough information have no score bar. This is not a safety rating.</p>
             <div className="mt-4 h-56">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data}>
@@ -91,7 +94,7 @@ function ComparePage() {
                   <XAxis dataKey="name" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 11 }} width={28} axisLine={false} tickLine={false} />
                   <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", fontSize: 12 }} />
-                  <Bar dataKey="index" name="Open-places score" fill="var(--safe)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="comparison" name="Comparison score" fill="var(--safe)" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="minutes" name="Minutes" fill="var(--primary)" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
