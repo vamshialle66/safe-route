@@ -34,9 +34,9 @@ export const Route = createFileRoute("/dashboard")({
   head: () => ({
     meta: [
       { title: "Dashboard — SafeRoute" },
-      { name: "description", content: "Your latest route analysis, live map, recent trips and one-tap emergency tools." },
+      { name: "description", content: "Your route options, nearby open places, recent trips and emergency contacts." },
       { property: "og:title", content: "Dashboard — SafeRoute" },
-      { property: "og:description", content: "Your SafeRoute command centre." },
+      { property: "og:description", content: "Plan journeys and keep your routes, trips and contacts together." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -123,7 +123,7 @@ function Dashboard() {
                 <span className="text-sidebar-primary">Where would you like to go?</span>
               </h1>
               <p className="mt-3 max-w-md text-sm text-sidebar-foreground/80 sm:text-base">
-                We check every 100 m of your route for open shops, cafés and services — so you can pick the livelier way home.
+                Find routes to your destination and compare nearby open shops, cafés and services before you choose.
               </p>
 
               <Link
@@ -200,8 +200,8 @@ function Dashboard() {
         <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           <Metric icon={Store} label="Places checked" value={places} sub={`${open} open right now`} tone="primary" />
           <Metric icon={RouteIcon} label="Routes compared" value={routes.length} sub="on your latest trip" tone="safe" />
-          <Metric icon={Flag} label="Fewer open places" value={quiet} sub="on the chosen route" tone={quiet ? "risk" : "safe"} />
-          <Metric icon={Clock} label="Trips analysed" value={history.length} sub={session.user ? "saved to your account" : "kept on this device"} tone="moderate" />
+          <Metric icon={Flag} label="Areas with fewer open places" value={quiet} sub="on the chosen route" tone={quiet ? "risk" : "safe"} />
+          <Metric icon={Clock} label="Trips planned" value={history.length} sub={session.user ? "saved to your account" : "kept on this device"} tone="moderate" />
         </section>
 
         {/* MAP + ROUTES */}
@@ -221,10 +221,10 @@ function Dashboard() {
                 <span className="grid size-10 place-items-center rounded-xl bg-primary text-primary-foreground"><Navigation className="size-4" /></span>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold">Route {active.routeNumber} selected</p>
-                  <p className="text-xs text-muted-foreground">{formatDistance(active.distanceMeters)} · {formatDuration(active.duration)} · {active.segments.length} stretches</p>
+                  <p className="text-xs text-muted-foreground">{formatDistance(active.distanceMeters)} · {formatDuration(active.duration)}</p>
                 </div>
                 <Button asChild size="sm">
-                  <Link to="/routes/$id" params={{ id: String(active.routeNumber) }}>Open <ArrowUpRight className="size-3.5" /></Link>
+                  <Link to="/routes/$id" params={{ id: String(active.routeNumber) }}>Details <ArrowUpRight className="size-3.5" /></Link>
                 </Button>
               </div>
             )}
