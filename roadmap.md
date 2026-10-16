@@ -12,3 +12,4 @@
 - [x] Add a signed-in concern form with AI classification and editable alert review.
 - [x] Keep saved community alerts unverified, private and separate from route scores.
 - [x] Verify classification, review and saved-alert readback with a signed-in account.
+- [ ] Connect real crime and lighting evidence to scoring — verify available source coverage before implementation.
