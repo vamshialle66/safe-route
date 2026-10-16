@@ -9,6 +9,6 @@
 - [x] Show factors, reasons and unavailable crime/lighting information in planning and details.
 - [x] Test ranking rules and verify the updated example journey on desktop and phones; live Google checks are unavailable in the sandbox.
 - [ ] Include verified crime and lighting in scoring — blocked on trusted street-level sources for the supported area.
-- [ ] Add a signed-in concern form with AI classification and editable alert review.
-- [ ] Keep saved community alerts unverified, private and separate from route scores.
-- [ ] Verify classification, review and saved-alert readback with a signed-in account.
+- [x] Add a signed-in concern form with AI classification and editable alert review.
+- [x] Keep saved community alerts unverified, private and separate from route scores.
+- [x] Verify classification, review and saved-alert readback with a signed-in account.
