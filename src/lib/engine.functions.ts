@@ -23,10 +23,12 @@ export const liveSegmentsFn = createServerFn({ method: "POST" })
     if (!MODES.includes(d?.travelMode)) throw new Error("Invalid travel mode");
     return { origin: point(d.origin), destination: point(d.destination), travelMode: d.travelMode, categories: cats(d.categories) };
   })
-  .handler(async ({ data }): Promise<EngineResult<{ routes: ApiRoute[] }>> => {
+  .handler(async ({ data, context }): Promise<EngineResult<{ routes: ApiRoute[] }>> => {
     const { liveSegments } = await import("./engine.server");
     try {
-      return { ok: true, data: await liveSegments(data.origin, data.destination, data.travelMode, data.categories) };
+      const result = await liveSegments(data.origin, data.destination, data.travelMode, data.categories);
+      const { attachPoliceEvidence } = await import("./crimeEvidence.server");
+      return { ok: true, data: { routes: await attachPoliceEvidence(result.routes, context.supabase) } };
     } catch (e) {
       console.error("liveSegments failed", e);
       return { ok: false, reason: e instanceof Error ? e.message : "Live service unavailable." };
