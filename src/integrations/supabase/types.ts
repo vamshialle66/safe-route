@@ -110,6 +110,98 @@ export type Database = {
         }
         Relationships: []
       }
+      mumbai_crime_datasets: {
+        Row: {
+          completeness: string
+          content_sha256: string
+          coverage_geojson: Json | null
+          id: string
+          methodology: string
+          period_end: string
+          period_start: string
+          retrieved_at: string
+          reviewed_at: string | null
+          source_url: string
+          title: string
+        }
+        Insert: {
+          completeness?: string
+          content_sha256: string
+          coverage_geojson?: Json | null
+          id?: string
+          methodology: string
+          period_end: string
+          period_start: string
+          retrieved_at?: string
+          reviewed_at?: string | null
+          source_url: string
+          title: string
+        }
+        Update: {
+          completeness?: string
+          content_sha256?: string
+          coverage_geojson?: Json | null
+          id?: string
+          methodology?: string
+          period_end?: string
+          period_start?: string
+          retrieved_at?: string
+          reviewed_at?: string | null
+          source_url?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      mumbai_crime_reports: {
+        Row: {
+          category: string
+          dataset_id: string
+          id: string
+          incident_count: number
+          latitude: number | null
+          location_label: string
+          location_precision: string
+          longitude: number | null
+          occurred_on: string | null
+          source_locator: string
+          source_record_id: string
+        }
+        Insert: {
+          category: string
+          dataset_id: string
+          id?: string
+          incident_count?: number
+          latitude?: number | null
+          location_label: string
+          location_precision: string
+          longitude?: number | null
+          occurred_on?: string | null
+          source_locator: string
+          source_record_id: string
+        }
+        Update: {
+          category?: string
+          dataset_id?: string
+          id?: string
+          incident_count?: number
+          latitude?: number | null
+          location_label?: string
+          location_precision?: string
+          longitude?: number | null
+          occurred_on?: string | null
+          source_locator?: string
+          source_record_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mumbai_crime_reports_dataset_id_fkey"
+            columns: ["dataset_id"]
+            isOneToOne: false
+            referencedRelation: "mumbai_crime_datasets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
