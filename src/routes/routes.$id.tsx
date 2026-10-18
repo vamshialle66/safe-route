@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Bookmark, Navigation, Clock, MapPin, Route as RouteIcon, Store } from "lucide-react";
+import { ArrowLeft, Bookmark, Navigation, Clock, MapPin, Route as RouteIcon, Share2, Store } from "lucide-react";
 import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { toast } from "sonner";
 import { AppLayout } from "@/components/layout/AppLayout";
@@ -59,6 +59,15 @@ function RouteDetail() {
   const openPlaces = route.segments.reduce((a, s) => a + s.openPlaceCount, 0);
   const lowStretches = route.segments.filter((s) => indexTone(s.safetyIndex) === "risk");
   const coverage = route.distanceMeters ? Math.round((route.scoredLengthMeters / route.distanceMeters) * 100) : 0;
+
+  async function shareRoute() {
+    const score = route.safetyIndex != null ? `${formatIndex(route.safetyIndex)}/100` : "not scored";
+    const text = `I'm taking this route: ${analysis!.origin.label.split(",")[0]} → ${analysis!.destination.label.split(",")[0]} (${formatDistance(route.distanceMeters)}, about ${formatDuration(route.durationSeconds)}). SafeRoute score: ${score}.`;
+    try {
+      if (navigator.share) await navigator.share({ title: "My route", text });
+      else { await navigator.clipboard.writeText(text); toast.success("Route summary copied — paste it anywhere"); }
+    } catch { /* user cancelled sharing */ }
+  }
 
   return (
     <AppLayout
