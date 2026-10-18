@@ -58,6 +58,7 @@ const MOBILE_NAV: NavItem[] = [
   { to: "/route-planner", label: "Plan", icon: Compass },
   { to: "/routes", label: "Routes", icon: Map },
   { to: "/safety-map", label: "Around me", icon: Radar },
+  { to: "/fake-call", label: "Fake call", icon: PhoneCall },
   { to: "/profile", label: "Profile", icon: User },
 ];
 
@@ -157,7 +158,7 @@ export function AppLayout({
       )}
 
       <div className="lg:pl-64">
-        <header className="sticky top-14 z-30 border-b border-border bg-background/90 backdrop-blur lg:top-0">
+        <header className="sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur">
           <div className="flex h-16 items-center gap-3 px-4 sm:px-6">
             <Button
               variant="outline"
@@ -240,7 +241,7 @@ export function AppLayout({
         aria-label="Mobile navigation"
         className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 backdrop-blur lg:hidden"
       >
-        <ul className="grid grid-cols-5">
+        <ul className="grid grid-cols-6">
           {MOBILE_NAV.map((item) => {
             const Icon = item.icon;
             return (
