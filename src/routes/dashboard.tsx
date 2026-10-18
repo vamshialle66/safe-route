@@ -24,8 +24,6 @@ import { SourceBadge } from "@/components/route/Disclaimer";
 import { RouteMap } from "@/components/map/RouteMap";
 import { MapLegend } from "@/components/map/MapLegend";
 import { useCurrentAnalysis, useHistory, useSaved, analysisStore } from "@/lib/analysisStore";
-import { demoSegments } from "@/lib/demoAnalysis";
-import { SAMPLE_DESTINATION, SAMPLE_ORIGIN } from "@/lib/geocode";
 import { formatDistance, formatDuration, indexTone, topRouteNumbers } from "@/lib/saferouteApi";
 import { displayName, useSession } from "@/lib/session";
 import { cn } from "@/lib/utils";
@@ -61,21 +59,6 @@ function Dashboard() {
   const session = useSession();
   const now = useClock();
   const [selected, setSelected] = useState<number | undefined>();
-
-  // First visit: show a sample trip so the dashboard is never empty.
-  useEffect(() => {
-    if (!analysisStore.current()) {
-      analysisStore.setCurrent({
-        id: crypto.randomUUID(),
-        createdAt: new Date().toISOString(),
-        origin: SAMPLE_ORIGIN,
-        destination: SAMPLE_DESTINATION,
-        travelMode: "WALK",
-        source: "demo",
-        routes: demoSegments(SAMPLE_ORIGIN, SAMPLE_DESTINATION, "WALK").routes,
-      });
-    }
-  }, []);
 
   const routes = current?.routes ?? [];
   const bestSet = topRouteNumbers(routes);
@@ -125,6 +108,7 @@ function Dashboard() {
               <p className="mt-3 max-w-md text-sm text-sidebar-foreground/80 sm:text-base">
                 Find routes to your destination and compare nearby open shops, cafés and services before you choose.
               </p>
+              {!session.user && session.ready && <p className="mt-3 text-sm text-sidebar-foreground">Sign in to search real Google Maps routes and nearby places. <Link to="/login" className="underline">Sign in</Link></p>}
 
               <Link
                 to="/route-planner"
@@ -198,7 +182,7 @@ function Dashboard() {
 
         {/* STATS */}
         <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          <Metric icon={Store} label="Places checked" value={places} sub={`${open} open right now`} tone="primary" />
+          <Metric icon={Store} label="Places checked" value={places} sub={current ? `${open} reported open when checked${current.source === "demo" ? " · example" : ""}` : "plan a journey to check places"} tone="primary" />
           <Metric icon={RouteIcon} label="Routes compared" value={routes.length} sub="on your latest trip" tone="safe" />
           <Metric icon={Flag} label="Areas with fewer open places" value={quiet} sub="on the chosen route" tone={quiet ? "risk" : "safe"} />
           <Metric icon={Clock} label="Trips planned" value={history.length} sub={session.user ? "saved to your account" : "kept on this device"} tone="moderate" />
@@ -270,6 +254,7 @@ function Dashboard() {
                 </button>
               );
             })}
+            {!routes.length && <div className="py-6 text-sm text-muted-foreground"><p>No journeys yet.</p><Button asChild className="mt-3"><Link to="/route-planner">Plan your first journey <ArrowRight className="size-4" /></Link></Button></div>}
 
             <Link
               to="/emergency"
@@ -304,6 +289,7 @@ function Dashboard() {
                 >
                   <div className="flex items-center justify-between">
                     <Compass className="size-4 text-primary" />
+                    <SourceBadge source={h.source} />
                     <IndexPill value={b?.safetyIndex ?? null} showLabel={false} />
                   </div>
                   <p className="mt-3 truncate text-sm font-medium">{h.origin.label.split(",")[0]} → {h.destination.label.split(",")[0]}</p>

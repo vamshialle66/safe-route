@@ -24,6 +24,7 @@ import { MiniHero } from "@/components/layout/MiniHero";
 import { MapLegend } from "@/components/map/MapLegend";
 import { routeComparisonValue } from "@/lib/routeAssessment";
 import { CommunityAlerts } from "@/components/route/CommunityAlerts";
+import { useSession } from "@/lib/session";
 
 export const Route = createFileRoute("/route-planner")({
   head: () => ({
@@ -43,6 +44,9 @@ const STAGES = ["Finding routes to your destination", "Finding shops and service
 
 function PlannerPage() {
   const analysis = useCurrentAnalysis();
+  const session = useSession();
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [showResults, setShowResults] = useState(true);
   const [origin, setOrigin] = useState<NamedPoint | null>(analysis?.origin ?? null);
   const [destination, setDestination] = useState<NamedPoint | null>(analysis?.destination ?? null);
   const [mode, setMode] = useState<BackendTravelMode>(analysis?.travelMode ?? "WALK");
@@ -51,27 +55,33 @@ function PlannerPage() {
   const [locating, setLocating] = useState(false);
   const [selected, setSelected] = useState<number | undefined>(analysis?.routes[0]?.routeNumber);
 
-  const routes = analysis?.routes ?? [];
+  const routes = showResults ? analysis?.routes ?? [] : [];
   const best = topRouteNumbers(routes);
   const sorted = [...routes].sort((a, b) => (routeComparisonValue(b) ?? -1) - (routeComparisonValue(a) ?? -1));
   const onSelect = useCallback((n: number) => setSelected(n), []);
 
-  async function analyze() {
-    if (!origin || !destination) {
+  async function analyze(sample = false) {
+    const start = sample ? SAMPLE_ORIGIN : origin;
+    const end = sample ? SAMPLE_DESTINATION : destination;
+    if (!start || !end) {
       toast.error("Pick a start and a destination from the suggestions.");
       return;
     }
     setLoading(true);
+    setSearchError(null);
+    setShowResults(false);
+    if (sample) { setOrigin(start); setDestination(end); }
     setStage(0);
     const timer = setInterval(() => setStage((s) => Math.min(s + 1, STAGES.length - 1)), 1600);
     try {
-      const { analysis: a, fellBack, reason } = await runAnalysis(origin, destination, mode);
+      const { analysis: a } = await runAnalysis(start, end, mode, sample);
+      setShowResults(true);
       const top = [...topRouteNumbers(a.routes)][0] ?? a.routes[0]?.routeNumber;
       setSelected(top);
       if (!a.routes.length) toast.message("No routes were found between these places.");
-      else if (fellBack) toast.warning(`Live data unavailable — showing sample data. ${reason ?? ""}`.trim());
       else toast.success(a.source === "demo" ? `${a.routes.length} example routes ready — not current conditions` : `${a.routes.length} routes found using current map data`);
     } catch (e) {
+      setSearchError(e instanceof Error ? e.message : "Couldn't find routes. Please try again.");
       toast.error(e instanceof Error ? e.message : "Something went wrong.");
     } finally {
       clearInterval(timer);
@@ -151,25 +161,16 @@ function PlannerPage() {
               </div>
             </div>
 
-            <Button size="lg" className="w-full" onClick={analyze} disabled={loading}>
+            {!session.user && session.ready && <p className="text-sm text-muted-foreground"><Link to="/login" className="font-medium text-primary underline">Sign in</Link> to find real routes. Google Maps searches require an account.</p>}
+            <Button size="lg" className="w-full" onClick={() => analyze()} disabled={loading}>
               {loading ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
               {loading ? STAGES[stage] + "…" : "Find routes"}
             </Button>
-            {!origin && !destination && (
-              <button
-                type="button"
-                className="w-full text-center text-xs text-primary hover:underline"
-                onClick={() => {
-                  setOrigin(SAMPLE_ORIGIN);
-                  setDestination(SAMPLE_DESTINATION);
-                }}
-              >
-                Try a sample trip in Mumbai
-              </button>
-            )}
+            <Button variant="ghost" size="sm" className="w-full" onClick={() => analyze(true)} disabled={loading}>View an example — not for navigation</Button>
           </div>
 
           <div className="flex-1 space-y-3 p-5">
+            {searchError && <div role="alert" className="border-l-2 border-risk pl-3 text-sm"><p className="font-semibold">Real routes couldn't be loaded</p><p className="mt-1 text-muted-foreground">{searchError} No sample routes have been substituted.</p><Button asChild variant="link" className="px-0"><Link to="/settings">Check map data settings</Link></Button></div>}
             {loading && (
               <ol className="space-y-2">
                 {STAGES.map((s, i) => (
@@ -187,6 +188,7 @@ function PlannerPage() {
                   <h2 className="text-sm font-semibold">{routes.length} routes compared</h2>
                   <SourceBadge source={analysis.source} />
                 </div>
+                <p className="text-xs text-muted-foreground">{analysis.source === "demo" ? "Illustration only. These paths and places are invented; do not follow them." : `Checked ${new Date(analysis.createdAt).toLocaleString()}. Opening status can change; search again before travelling.`}</p>
                 {sorted.map((r) => {
                   const isSel = r.routeNumber === selected;
                   const isBest = best.has(r.routeNumber);
@@ -223,11 +225,11 @@ function PlannerPage() {
                               Details <ArrowRight className="size-3.5" />
                             </Link>
                           </Button>
-                          <Button asChild size="sm" variant="outline">
+                          {analysis.source === "live" && <Button asChild size="sm" variant="outline">
                             <a href={googleDirectionsUrl(analysis.origin, analysis.destination, analysis.travelMode, r)} target="_blank" rel="noopener noreferrer">
                               <Navigation className="size-3.5" /> Directions
                             </a>
-                          </Button>
+                          </Button>}
                           <Button
                             size="sm"
                             variant="outline"
