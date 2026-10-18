@@ -109,29 +109,100 @@ function EmergencyPage() {
   );
 }
 
+const CHECKIN_KEY = "saferoute-checkin-deadline";
+const CHECKIN_MINUTES = 20;
+
 function CheckInTimer() {
-  const [minutesLeft, setMinutesLeft] = useState<number | null>(null);
+  const session = useSession();
+  const { data: contacts = [] } = useContacts(session.user?.id);
+  const [deadline, setDeadline] = useState<number | null>(() => {
+    const raw = typeof window !== "undefined" ? window.localStorage.getItem(CHECKIN_KEY) : null;
+    const ts = raw ? Number(raw) : NaN;
+    return Number.isFinite(ts) ? ts : null;
+  });
+  const [now, setNow] = useState(() => Date.now());
+  const [alerting, setAlerting] = useState<string | null>(null);
 
   useEffect(() => {
-    if (minutesLeft == null) return;
-    if (minutesLeft === 0) {
-      toast.error("Check-in missed — share your location with a trusted contact now.", { duration: 15000 });
-      setMinutesLeft(null);
-      return;
-    }
-    const t = setTimeout(() => setMinutesLeft(minutesLeft - 1), 60_000);
-    return () => clearTimeout(t);
-  }, [minutesLeft]);
+    if (deadline == null) return;
+    const t = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, [deadline]);
 
-  if (minutesLeft == null) {
+  function start() {
+    const ts = Date.now() + CHECKIN_MINUTES * 60_000;
+    window.localStorage.setItem(CHECKIN_KEY, String(ts));
+    setDeadline(ts);
+    toast.success(`Check-in timer started — confirm you're safe within ${CHECKIN_MINUTES} minutes`);
+  }
+
+  function clear(message: string) {
+    window.localStorage.removeItem(CHECKIN_KEY);
+    setDeadline(null);
+    toast.success(message);
+  }
+
+  async function alertContact(name: string, phone: string) {
+    setAlerting(phone);
+    let locationLine = "I couldn't share my location automatically — please call me.";
+    try {
+      const p = await currentPosition();
+      locationLine = `My location: https://maps.google.com/?q=${p.latitude},${p.longitude}`;
+    } catch {
+      // keep fallback line
+    }
+    const text = `Safety alert: I missed my SafeRoute check-in and haven't confirmed I'm safe. Please check on me. ${locationLine}`;
+    const digits = phone.replace(/\D/g, "");
+    window.open(`https://wa.me/${digits}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+    setAlerting(null);
+    toast.success(`Opening WhatsApp to alert ${name} — just tap send`);
+  }
+
+  const missed = deadline != null && now >= deadline;
+  const secondsLeft = deadline == null ? 0 : Math.max(0, Math.ceil((deadline - now) / 1000));
+  const minutesLeft = Math.ceil(secondsLeft / 60);
+
+  if (missed) {
+    const reachable = contacts.filter((c) => c.phone.replace(/\D/g, "").length >= 8);
     return (
-      <Button variant="outline" size="lg" onClick={() => setMinutesLeft(20)}>
+      <div className="col-span-2 rounded-2xl border border-risk bg-risk/10 p-4 text-left">
+        <p className="font-display font-semibold text-risk">Check-in missed</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          You didn't confirm you're safe. Alert a trusted contact now — one tap opens WhatsApp with a ready-made message and your location.
+        </p>
+        <div className="mt-3 grid gap-2">
+          {reachable.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No trusted contacts with a phone number yet — add one below, or call 112.</p>
+          ) : (
+            reachable.map((c) => (
+              <Button
+                key={c.id}
+                size="lg"
+                className="w-full bg-risk text-risk-foreground hover:bg-risk/90"
+                disabled={alerting != null}
+                onClick={() => void alertContact(c.name, c.phone)}
+              >
+                <Siren className="size-4" /> {alerting === c.phone ? "Getting your location…" : `Alert ${c.name} on WhatsApp`}
+              </Button>
+            ))
+          )}
+          <Button variant="outline" size="sm" onClick={() => clear("Marked safe — alerts dismissed")}>
+            I'm safe — dismiss
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (deadline == null) {
+    return (
+      <Button variant="outline" size="lg" onClick={start}>
         <Timer className="size-4" /> Check-in 20 min
       </Button>
     );
   }
   return (
-    <Button variant="outline" size="lg" className="border-moderate text-moderate" onClick={() => { setMinutesLeft(null); toast.success("Checked in — timer cancelled"); }}>
+    <Button variant="outline" size="lg" className="border-moderate text-moderate" onClick={() => clear("Checked in — timer cancelled")}>
       <Timer className="size-4" /> {minutesLeft} min left — tap to check in
     </Button>
   );
