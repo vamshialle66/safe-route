@@ -3,7 +3,14 @@ import { matchMappedLamps, type MappedLamp } from "../lightingEvidence";
 import { attachMappedLighting } from "../lightingEvidence.server";
 import type { ApiRoute } from "../saferouteApi";
 
-const route = { segments: [{ geometry: [{ latitude: 19.05, longitude: 72.84 }, { latitude: 19.05, longitude: 72.86 }] }], assessment: { version: 1, score: 59, activity: 59, help: null, coverage: 100, helpPlaces: [], nearestHelpMeters: null, reasons: [] } } as ApiRoute;
+const route: ApiRoute = {
+  routeNumber: 1, distanceMeters: 2100, duration: "1800s", safetyIndex: 59,
+  safetyStatus: "available", scoredSegmentCount: 1, scoredLengthMeters: 2100,
+  segments: [{ segmentNumber: 1, source: "test", lengthMeters: 2100,
+    geometry: [{ latitude: 19.05, longitude: 72.84 }, { latitude: 19.05, longitude: 72.86 }],
+    places: [], placeCount: 0, openPlaceCount: 0, scoredPlaceCount: 0, safetyIndex: null, safetyStatus: "insufficient-data" }],
+  assessment: { version: 1, score: 59, activity: 59, help: null, coverage: 100, helpPlaces: [], nearestHelpMeters: null, reasons: [] },
+};
 const lamp: MappedLamp = { id: "test-only", latitude: 19.05, longitude: 72.85, mappedAt: "2020-01-01T00:00:00Z" };
 const match = (r: ApiRoute, lamps: MappedLamp[]) => matchMappedLamps(r, lamps, "2026-07-15T15:22:01Z");
 
