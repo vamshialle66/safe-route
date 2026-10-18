@@ -1,9 +1,11 @@
 import type { ApiPlace, ApiRoute, LatLng } from "./saferouteApi";
 import type { CrimeEvidence } from "./crimeEvidence";
+import type { LightingEvidence } from "./lightingEvidence";
 
 export interface RouteAssessment {
   version: 1 | 2;
   crime?: CrimeEvidence;
+  lighting?: LightingEvidence;
   score: number | null;
   activity: number | null;
   help: number | null;

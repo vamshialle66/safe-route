@@ -19,3 +19,4 @@
 - Persist AI access/billing blocks in the server-only ai_feature_state table; only an explicit owner action after restored access may clear them, preventing automatic billed retries across restarts.
 - Curated Mumbai police evidence uses privileged offline imports with original-document hashes and source locators; ordinary users have reviewed-read access only, because community reports and AI extraction are not verification.
 - Crime matching uses Turf geometry against whole-route reporting coverage and dated street coordinates; incomplete, stale, oversized or failed queries never change scores, because sparse report collections cannot establish comparative crime rates.
+- Attach the attributed, boundary-filtered Mumbai streetlight snapshot as persisted location-only evidence through the authenticated engine; match real route pieces separately and never score lamp inventory as illumination, because mapped assets do not establish operational lighting.

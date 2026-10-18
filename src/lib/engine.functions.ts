@@ -28,7 +28,8 @@ export const liveSegmentsFn = createServerFn({ method: "POST" })
     try {
       const result = await liveSegments(data.origin, data.destination, data.travelMode, data.categories);
       const { attachPoliceEvidence } = await import("./crimeEvidence.server");
-      return { ok: true, data: { routes: await attachPoliceEvidence(result.routes, context.supabase) } };
+      const { attachMappedLighting } = await import("./lightingEvidence.server");
+      return { ok: true, data: { routes: attachMappedLighting(await attachPoliceEvidence(result.routes, context.supabase)) } };
     } catch (e) {
       console.error("liveSegments failed", e);
       return { ok: false, reason: e instanceof Error ? e.message : "Live service unavailable." };
