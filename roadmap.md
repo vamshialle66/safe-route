@@ -11,9 +11,9 @@
 
 # Live trip sharing
 
-- [ ] shared_trips table + RLS (owner writes, anyone with link reads) + realtime
-- [ ] Server functions: start/update/end trip, public fetch by share code
-- [ ] "Start shared trip" from route details (uses real planned route)
-- [ ] Live trip page for the sharer (position tracking, share link, end trip)
-- [ ] Public watcher page /trip/:code (live map, status, ETA)
-- [ ] Verify end-to-end in browser
+- [x] shared_trips table + RLS (owner writes, anyone with link reads) + realtime
+- [x] Server functions: start/update/end trip, public fetch by share code
+- [x] "Share live trip" from route details + Emergency page
+- [x] Live trip page for the sharer (GPS tracking, share link, arrived/end)
+- [x] Public watcher page /trip/:code (live map, status, no login)
+- [x] Verified end-to-end: start → watch signed-out → live position on map
