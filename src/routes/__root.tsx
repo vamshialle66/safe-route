@@ -18,6 +18,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { supabase } from "@/integrations/supabase/client";
 import { setSessionUser } from "@/lib/session";
 import { clearForSignOut, hydrateForUser } from "@/lib/analysisStore";
+import { FakeCallProvider } from "@/components/safety/FakeCallProvider";
 
 function NotFoundComponent() {
   return (
@@ -151,7 +152,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider delayDuration={200}>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
+        <FakeCallProvider><Outlet /></FakeCallProvider>
         <Toaster position="top-right" richColors />
       </TooltipProvider>
     </QueryClientProvider>

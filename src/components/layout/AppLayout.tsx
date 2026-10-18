@@ -6,6 +6,7 @@ import {
   History,
   LayoutDashboard,
   LifeBuoy,
+  PhoneCall,
   Map,
   Menu,
   Radar,
@@ -41,6 +42,7 @@ const MAIN_NAV: NavItem[] = [
   { to: "/saved-routes", label: "Saved Routes", icon: Bookmark },
   { to: "/safety-map", label: "Around Me", icon: Map },
   { to: "/emergency", label: "Emergency", icon: LifeBuoy },
+  { to: "/fake-call", label: "Fake call", icon: PhoneCall },
   { to: "/notifications", label: "Notifications", icon: Bell },
 ];
 
