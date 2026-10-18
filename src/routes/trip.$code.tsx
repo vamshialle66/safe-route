@@ -111,8 +111,10 @@ function WatchTripPage() {
 
   return (
     <AppLayout
-      title={arrived ? "They've arrived" : ended ? "Trip ended" : "Following live"}
-      description={`${trip.originLabel.split(",")[0]} → ${trip.destinationLabel.split(",")[0]}${trip.routeDistanceMeters ? ` · ${formatDistance(trip.routeDistanceMeters)}` : ""}${trip.routeDurationSeconds ? ` · about ${formatDuration(`${trip.routeDurationSeconds}s`)}` : ""}`}
+      title={trip.travelerName
+        ? arrived ? `${trip.travelerName} has arrived` : ended ? `${trip.travelerName}'s trip ended` : `This is ${trip.travelerName}'s live trip`
+        : arrived ? "They've arrived" : ended ? "Trip ended" : "Following live"}
+      description={`${trip.travelerName && !arrived && !ended ? `${trip.travelerName} is travelling from ` : ""}${trip.originLabel.split(",")[0]} → ${trip.destinationLabel.split(",")[0]}${trip.routeDistanceMeters ? ` · ${formatDistance(trip.routeDistanceMeters)}` : ""}${trip.routeDurationSeconds ? ` · about ${formatDuration(`${trip.routeDurationSeconds}s`)}` : ""}`}
     >
       <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
         <div className="relative h-[320px] sm:h-[420px] overflow-hidden rounded-2xl border border-border">
@@ -135,7 +137,7 @@ function WatchTripPage() {
             )}
             <p className="mt-2 text-sm text-muted-foreground">
               {arrived
-                ? "The person you're following marked themselves as arrived."
+                ? `${trip.travelerName ?? "The person you're following"} marked themselves as arrived.`
                 : ended
                   ? "Live position sharing has stopped."
                   : trip.current

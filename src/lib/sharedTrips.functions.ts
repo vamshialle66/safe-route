@@ -36,9 +36,15 @@ export const startSharedTripFn = createServerFn({ method: "POST" }).middleware([
       .update({ status: "ended", ended_at: new Date().toISOString() })
       .eq("user_id", context.userId)
       .eq("status", "active");
+    const { data: profile } = await context.supabase
+      .from("profiles").select("display_name").eq("id", context.userId).maybeSingle();
+    const email = typeof context.claims?.["email"] === "string" ? (context.claims["email"] as string) : "";
+    const rawName = profile?.display_name?.trim() || email.split("@")[0] || "";
+    const travelerName = rawName ? rawName.charAt(0).toUpperCase() + rawName.slice(1, 60) : null;
     const { data: trip, error } = await context.supabase
       .from("shared_trips")
       .insert({
+        traveler_name: travelerName,
         share_code: makeShareCode(),
         user_id: context.userId,
         origin_label: data.originLabel,
@@ -108,7 +114,7 @@ export const getSharedTripFn = createServerFn({ method: "GET" })
     const { data: trip, error } = await client
       .from("shared_trips")
       .select(
-        "share_code, origin_label, destination_label, origin_lat, origin_lng, destination_lat, destination_lng, route_polyline, route_distance_meters, route_duration_seconds, status, current_lat, current_lng, last_update_at, created_at",
+        "share_code, traveler_name, origin_label, destination_label, origin_lat, origin_lng, destination_lat, destination_lng, route_polyline, route_distance_meters, route_duration_seconds, status, current_lat, current_lng, last_update_at, created_at",
       )
       .eq("share_code", data.shareCode)
       .maybeSingle();
@@ -118,6 +124,7 @@ export const getSharedTripFn = createServerFn({ method: "GET" })
       found: true as const,
       trip: {
         shareCode: trip.share_code,
+        travelerName: trip.traveler_name,
         originLabel: trip.origin_label,
         destinationLabel: trip.destination_label,
         origin: { latitude: trip.origin_lat, longitude: trip.origin_lng },
