@@ -50,6 +50,13 @@
       "when": 1792336048009,
       "tag": "0006_area_report_counts",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792336638244,
+      "tag": "0007_create_shared_trips",
+      "breakpoints": true
     }
   ]
 }

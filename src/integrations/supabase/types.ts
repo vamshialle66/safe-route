@@ -292,6 +292,69 @@ export type Database = {
         }
         Relationships: []
       }
+      shared_trips: {
+        Row: {
+          created_at: string
+          current_lat: number | null
+          current_lng: number | null
+          destination_label: string
+          destination_lat: number
+          destination_lng: number
+          ended_at: string | null
+          id: string
+          last_update_at: string | null
+          origin_label: string
+          origin_lat: number
+          origin_lng: number
+          route_distance_meters: number | null
+          route_duration_seconds: number | null
+          route_polyline: string | null
+          share_code: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_lat?: number | null
+          current_lng?: number | null
+          destination_label: string
+          destination_lat: number
+          destination_lng: number
+          ended_at?: string | null
+          id?: string
+          last_update_at?: string | null
+          origin_label: string
+          origin_lat: number
+          origin_lng: number
+          route_distance_meters?: number | null
+          route_duration_seconds?: number | null
+          route_polyline?: string | null
+          share_code: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_lat?: number | null
+          current_lng?: number | null
+          destination_label?: string
+          destination_lat?: number
+          destination_lng?: number
+          ended_at?: string | null
+          id?: string
+          last_update_at?: string | null
+          origin_label?: string
+          origin_lat?: number
+          origin_lng?: number
+          route_distance_meters?: number | null
+          route_duration_seconds?: number | null
+          route_polyline?: string | null
+          share_code?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       trips: {
         Row: {
           created_at: string

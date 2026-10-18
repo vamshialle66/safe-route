@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { ApiPlace, ApiRoute, LatLng } from "@/lib/saferouteApi";
-import { indexTone, routeGeometry, formatIndex } from "@/lib/saferouteApi";
+import { indexTone, routeGeometry, formatIndex, decodePolyline } from "@/lib/saferouteApi";
 
 export interface LeafletMapProps {
   routes?: ApiRoute[] | undefined;
@@ -14,6 +14,10 @@ export interface LeafletMapProps {
   destination?: LatLng | undefined;
   center?: LatLng | undefined;
   showPlaces?: boolean | undefined;
+  /** Live position of a shared trip — pulsing marker, map follows it. */
+  livePosition?: LatLng | undefined;
+  /** Encoded polyline of the planned route (drawn as a single line). */
+  routePolyline?: string | null | undefined;
 }
 
 function cssVar(name: string) {
@@ -32,6 +36,8 @@ export default function LeafletMap({
   destination,
   center,
   showPlaces = true,
+  livePosition,
+  routePolyline,
 }: LeafletMapProps) {
   const el = useRef<HTMLDivElement>(null);
   const map = useRef<L.Map | null>(null);
@@ -141,6 +147,24 @@ export default function LeafletMap({
       pin(destination, "B", colors.risk);
       bounds.extend(ll(destination));
     }
+    if (routePolyline) {
+      const pts = decodePolyline(routePolyline).map(ll);
+      if (pts.length > 1) {
+        pts.forEach((p) => bounds.extend(p));
+        L.polyline(pts, { color: colors.primary, weight: 6, opacity: 0.85, lineCap: "round" }).addTo(g);
+      }
+    }
+
+    if (livePosition) {
+      const p = ll(livePosition);
+      L.circle(p, { radius: 40, color: colors.primary, weight: 1, fillColor: colors.primary, fillOpacity: 0.15 }).addTo(g);
+      L.circleMarker(p, { radius: 9, color: colors.card, weight: 3, fillColor: colors.primary, fillOpacity: 1 })
+        .bindTooltip("Live position", { sticky: true })
+        .addTo(g);
+      bounds.extend(p);
+      m.panTo(p, { animate: true });
+    }
+
     if (center && !origin) {
       L.circleMarker(ll(center), { radius: 8, color: colors.card, weight: 3, fillColor: colors.primary, fillOpacity: 1 }).addTo(g);
       L.circle(ll(center), { radius: 300, color: colors.primary, weight: 1, fillOpacity: 0.06 }).addTo(g);
@@ -152,7 +176,7 @@ export default function LeafletMap({
       fittedKey.current = key;
       m.fitBounds(bounds, { padding: [48, 48], maxZoom: 16 });
     }
-  }, [routes, selectedRoute, highlightSegment, places, origin, destination, center, showPlaces, onSelectRoute, themeTick]);
+  }, [routes, selectedRoute, highlightSegment, places, origin, destination, center, showPlaces, livePosition, routePolyline, onSelectRoute, themeTick]);
 
   return <div ref={el} className="h-full w-full" role="application" aria-label="Route map" />;
 }

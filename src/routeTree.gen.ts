@@ -30,6 +30,8 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as RoutesIndexRouteImport } from './routes/routes.index'
 import { Route as RoutesIdRouteImport } from './routes/routes.$id'
+import { Route as TripCodeRouteImport } from './routes/trip.$code'
+import { Route as TripLiveRouteImport } from './routes/trip.live'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -136,6 +138,16 @@ const RoutesIdRoute = RoutesIdRouteImport.update({
   path: '/routes/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TripCodeRoute = TripCodeRouteImport.update({
+  id: '/trip/$code',
+  path: '/trip/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TripLiveRoute = TripLiveRouteImport.update({
+  id: '/trip/live',
+  path: '/trip/live',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -158,6 +170,8 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/routes/$id': typeof RoutesIdRoute
+  '/trip/$code': typeof TripCodeRoute
+  '/trip/live': typeof TripLiveRoute
   '/routes/': typeof RoutesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -181,6 +195,8 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/routes/$id': typeof RoutesIdRoute
+  '/trip/$code': typeof TripCodeRoute
+  '/trip/live': typeof TripLiveRoute
   '/routes': typeof RoutesIndexRoute
 }
 export interface FileRoutesById {
@@ -205,6 +221,8 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/routes/$id': typeof RoutesIdRoute
+  '/trip/$code': typeof TripCodeRoute
+  '/trip/live': typeof TripLiveRoute
   '/routes/': typeof RoutesIndexRoute
 }
 export interface FileRouteTypes {
@@ -230,6 +248,8 @@ export interface FileRouteTypes {
     | '/settings'
     | '/signup'
     | '/routes/$id'
+    | '/trip/$code'
+    | '/trip/live'
     | '/routes/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -253,6 +273,8 @@ export interface FileRouteTypes {
     | '/settings'
     | '/signup'
     | '/routes/$id'
+    | '/trip/$code'
+    | '/trip/live'
     | '/routes'
   id:
     | '__root__'
@@ -276,6 +298,8 @@ export interface FileRouteTypes {
     | '/settings'
     | '/signup'
     | '/routes/$id'
+    | '/trip/$code'
+    | '/trip/live'
     | '/routes/'
   fileRoutesById: FileRoutesById
 }
@@ -300,6 +324,8 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
   RoutesIdRoute: typeof RoutesIdRoute
+  TripCodeRoute: typeof TripCodeRoute
+  TripLiveRoute: typeof TripLiveRoute
   RoutesIndexRoute: typeof RoutesIndexRoute
 }
 
@@ -452,6 +478,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RoutesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/trip/$code': {
+      id: '/trip/$code'
+      path: '/trip/$code'
+      fullPath: '/trip/$code'
+      preLoaderRoute: typeof TripCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trip/live': {
+      id: '/trip/live'
+      path: '/trip/live'
+      fullPath: '/trip/live'
+      preLoaderRoute: typeof TripLiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -476,6 +516,8 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
   RoutesIdRoute: RoutesIdRoute,
+  TripCodeRoute: TripCodeRoute,
+  TripLiveRoute: TripLiveRoute,
   RoutesIndexRoute: RoutesIndexRoute,
 }
 export const routeTree = rootRouteImport
