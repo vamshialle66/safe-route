@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { concernSchema, classificationSchema, unverifiedDraft, reviewSchema } from "../communityAlerts";
+import { concernSchema, classificationSchema, unverifiedDraft, reviewSchema, routeBoundingBox, TIP_CORRIDOR_PAD_DEG } from "../communityAlerts";
 describe("Community concern review", () => {
   it("accepts natural language concerns without a predefined selection", () => {
     expect(concernSchema.parse({ journeyId: "trip-1", routeLabel: "Route 1", locationLabel: "Station entrance", concern: "The footpath near the station was very dark tonight." }).concern).toContain("dark");

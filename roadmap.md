@@ -30,3 +30,11 @@
 - [x] Live trip page for the sharer (GPS tracking, share link, arrived/end)
 - [x] Public watcher page /trip/:code (live map, status, no login)
 - [x] Verified end-to-end: start → watch signed-out → live position on map
+
+# Installable app + route-matched tips
+
+- [x] App icon, favicon, manifest (Add to Home Screen, PWA manifest-only)
+- [x] Head tags: theme-color, apple-touch-icon, manifest
+- [x] community_alerts latitude/longitude columns + route-matched list_community_tips RPC
+- [x] Map pin picker when reporting a concern (optional, along the route)
+- [x] Tips section shows only tips pinned along the planned route

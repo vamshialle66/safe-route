@@ -39,7 +39,9 @@ export type Database = {
           created_at: string
           id: string
           journey_id: string
+          latitude: number | null
           location_label: string
+          longitude: number | null
           model: string
           moderated_at: string | null
           moderated_by: string | null
@@ -58,7 +60,9 @@ export type Database = {
           created_at?: string
           id?: string
           journey_id: string
+          latitude?: number | null
           location_label: string
+          longitude?: number | null
           model: string
           moderated_at?: string | null
           moderated_by?: string | null
@@ -77,7 +81,9 @@ export type Database = {
           created_at?: string
           id?: string
           journey_id?: string
+          latitude?: number | null
           location_label?: string
+          longitude?: number | null
           model?: string
           moderated_at?: string | null
           moderated_by?: string | null
@@ -414,17 +420,35 @@ export type Database = {
         }
         Returns: boolean
       }
-      list_community_tips: {
-        Args: { _limit?: number }
-        Returns: {
-          approved_at: string
-          category: string
-          id: string
-          location_label: string
-          summary: string
-          urgency: string
-        }[]
-      }
+      list_community_tips:
+        | {
+            Args: { _limit?: number }
+            Returns: {
+              approved_at: string
+              category: string
+              id: string
+              location_label: string
+              summary: string
+              urgency: string
+            }[]
+          }
+        | {
+            Args: {
+              _limit?: number
+              _max_lat?: number
+              _max_lng?: number
+              _min_lat?: number
+              _min_lng?: number
+            }
+            Returns: {
+              approved_at: string
+              category: string
+              id: string
+              location_label: string
+              summary: string
+              urgency: string
+            }[]
+          }
       list_reviewers: {
         Args: never
         Returns: {

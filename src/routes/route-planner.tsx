@@ -273,7 +273,7 @@ function PlannerPage() {
                 </Button>
                 <p className="text-xs leading-relaxed text-muted-foreground">Options are ranked by observed open-place density and nearby help, not shop opening percentages alone. Crime and lighting are not verified. Below 50% information coverage, no comparison score is given.</p>
                 <Disclaimer />
-                <CommunityAlerts key={analysis.id} journeyId={analysis.id} routeLabel={selected ? `Route ${selected}` : "Journey"} />
+                <CommunityAlerts key={analysis.id} journeyId={analysis.id} routeLabel={selected ? `Route ${selected}` : "Journey"} routeGeometry={analysis.routes.find((r) => r.routeNumber === selected)?.segments.flatMap((s) => s.geometry)} />
               </>
             )}
 
