@@ -17,6 +17,7 @@ export const classifyAlertFn = createServerFn({ method: "POST" }).middleware([re
       const { data: alert, error } = await context.supabase.from("community_alerts").insert({
         ...classification, user_id: context.userId, journey_id: data.journeyId,
         route_label: data.routeLabel, location_label: data.locationLabel, concern: data.concern, model: ALERT_MODEL,
+        ...(data.latitude != null && data.longitude != null ? { latitude: data.latitude, longitude: data.longitude } : {}),
       }).select().single();
       if (error) return { alert: null, error: "The draft could not be saved. Your original description is still here." };
       return { alert, error: null };
@@ -87,9 +88,19 @@ export const moderateAlertFn = createServerFn({ method: "POST" }).middleware([re
     return { ok: true };
   });
 
+// Tips along a route: when a route bounding box is given, only approved tips
+// pinned inside it are returned; otherwise the latest approved tips are.
 export const communityTipsFn = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    const result = await context.supabase.rpc("list_community_tips", { _limit: 10 });
+  .inputValidator(input => z.object({
+    minLat: z.number().optional(), minLng: z.number().optional(),
+    maxLat: z.number().optional(), maxLng: z.number().optional(),
+  }).parse(input ?? {}))
+  .handler(async ({ data, context }) => {
+    const result = await context.supabase.rpc("list_community_tips", {
+      _limit: 10,
+      _min_lat: data.minLat ?? null, _min_lng: data.minLng ?? null,
+      _max_lat: data.maxLat ?? null, _max_lng: data.maxLng ?? null,
+    });
     if (result.error) throw new Error("Community tips could not be loaded.");
     return result.data ?? [];
   });
