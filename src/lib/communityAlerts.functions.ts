@@ -88,3 +88,35 @@ export const communityTipsFn = createServerFn({ method: "POST" }).middleware([re
     if (result.error) throw new Error("Community tips could not be loaded.");
     return result.data ?? [];
   });
+
+// Admin-only: manage who can review community reports. Role checks happen
+// inside the security-definer database functions, never in the browser.
+export const adminOverviewFn = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (!isAdmin) return { allowed: false as const, reviewers: [], counts: { waiting: 0, approved: 0, rejected: 0 } };
+    const [reviewers, alerts] = await Promise.all([
+      context.supabase.rpc("list_reviewers"),
+      context.supabase.from("community_alerts").select("status").neq("status", "draft"),
+    ]);
+    if (reviewers.error || alerts.error) throw new Error("Admin details could not be loaded.");
+    const rows = alerts.data ?? [];
+    return {
+      allowed: true as const,
+      reviewers: reviewers.data ?? [],
+      counts: {
+        waiting: rows.filter(r => r.status === "pending_review").length,
+        approved: rows.filter(r => r.status === "approved").length,
+        rejected: rows.filter(r => r.status === "rejected").length,
+      },
+    };
+  });
+
+export const setReviewerFn = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
+  .inputValidator(input => z.object({ email: z.string().email().max(200), role: z.enum(["admin", "moderator"]), grant: z.boolean() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: result, error } = await context.supabase.rpc("set_reviewer", { _email: data.email, _role: data.role, _grant: data.grant });
+    if (error) throw new Error("This change could not be saved. Only admins can manage reviewers.");
+    if (result !== "ok") throw new Error(result ?? "This change could not be saved.");
+    return { ok: true };
+  });
