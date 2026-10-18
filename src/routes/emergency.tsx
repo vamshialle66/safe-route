@@ -159,6 +159,41 @@ function CheckInTimer() {
   }
 
   const missed = deadline != null && now >= deadline;
+
+  // When the check-in is missed, grab attention: repeat vibration + alarm tone until dismissed.
+  useEffect(() => {
+    if (!missed) return;
+    let audioCtx: AudioContext | null = null;
+    const alert = () => {
+      try {
+        navigator.vibrate?.([600, 200, 600, 200, 600]);
+      } catch {
+        // vibration unsupported — ignore
+      }
+      try {
+        audioCtx ??= new AudioContext();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "square";
+        osc.frequency.value = 880;
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.9);
+        osc.connect(gain).connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.9);
+      } catch {
+        // audio blocked — ignore
+      }
+    };
+    alert();
+    const t = setInterval(alert, 2500);
+    return () => {
+      clearInterval(t);
+      navigator.vibrate?.(0);
+      void audioCtx?.close().catch(() => undefined);
+    };
+  }, [missed]);
+
   const secondsLeft = deadline == null ? 0 : Math.max(0, Math.ceil((deadline - now) / 1000));
   const minutesLeft = Math.ceil(secondsLeft / 60);
 
