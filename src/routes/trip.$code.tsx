@@ -25,7 +25,20 @@ export const Route = createFileRoute("/trip/$code")({
   component: WatchTripPage,
 });
 
-type Trip = Awaited<ReturnType<typeof getSharedTripFn>> extends { found: true; trip: infer T } ? T : never;
+interface Trip {
+  shareCode: string;
+  originLabel: string;
+  destinationLabel: string;
+  origin: { latitude: number; longitude: number };
+  destination: { latitude: number; longitude: number };
+  routePolyline: string | null;
+  routeDistanceMeters: number | null;
+  routeDurationSeconds: number | null;
+  status: "active" | "arrived" | "ended";
+  current: { latitude: number; longitude: number } | null;
+  lastUpdateAt: string | null;
+  createdAt: string;
+}
 
 function WatchTripPage() {
   const { code } = Route.useParams();

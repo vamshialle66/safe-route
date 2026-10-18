@@ -11,11 +11,11 @@ import { useCurrentAnalysis } from "@/lib/analysisStore";
 import { formatDistance, formatDuration } from "@/lib/saferouteApi";
 import { startSharedTripFn, updateSharedTripFn, endSharedTripFn } from "@/lib/sharedTrips.functions";
 
-type Search = { route?: number };
+type Search = { route?: number | undefined };
 
 export const Route = createFileRoute("/trip/live")({
   validateSearch: (s: Record<string, unknown>): Search => ({
-    route: typeof s.route === "number" ? s.route : undefined,
+    route: typeof s["route"] === "number" ? (s["route"] as number) : undefined,
   }),
   head: () => ({
     meta: [
