@@ -157,7 +157,7 @@ export function AppLayout({
       )}
 
       <div className="lg:pl-64">
-        <header className="sticky top-14 z-30 border-b border-border bg-background/90 backdrop-blur lg:top-0">
+        <header className="sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur">
           <div className="flex h-16 items-center gap-3 px-4 sm:px-6">
             <Button
               variant="outline"
