@@ -1,5 +1,11 @@
 # Mumbai street lighting
 
+# Fake call improvements
+
+- [ ] Add ringing audio and a realistic incoming/answered call screen.
+- [ ] Add immediate Fake call access across the app, independent of Emergency.
+- [ ] Verify ringing, answer/end cleanup and phone/desktop layouts.
+
 - [x] Verify a real Mumbai streetlight source, its dates and coverage.
 - [x] Connect usable lighting evidence without treating lamp locations as working lights.
 - [x] Verify evidence matching and public wording (real route matched 14 lamps; 22 tests passed).
