@@ -1,10 +1,11 @@
-# SafeRoute feature batch
-
 # Mumbai street lighting
 
-- [ ] Verify a real Mumbai streetlight source, its dates and coverage.
-- [ ] Connect usable lighting evidence without treating lamp locations as working lights.
-- [ ] Verify evidence matching and public wording.
+- [x] Verify a real Mumbai streetlight source, its dates and coverage.
+- [x] Connect usable lighting evidence without treating lamp locations as working lights.
+- [x] Verify evidence matching and public wording (real route matched 14 lamps; 22 tests passed).
+- [ ] Lighting score: blocked on trustworthy dated working-light or measured-illumination data and a validated methodology; mapped poles alone cannot supply this.
+
+# SafeRoute feature batch
 
 - [x] Fake call screen
 - [x] Shareable route summary
