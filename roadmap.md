@@ -1,5 +1,11 @@
 # SafeRoute feature batch
 
+# Mumbai street lighting
+
+- [ ] Verify a real Mumbai streetlight source, its dates and coverage.
+- [ ] Connect usable lighting evidence without treating lamp locations as working lights.
+- [ ] Verify evidence matching and public wording.
+
 - [x] Fake call screen
 - [x] Shareable route summary
 - [x] 24/7 safe spots filter on Around Me
