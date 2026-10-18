@@ -67,7 +67,7 @@ function LiveTripPage() {
           destinationLng: analysis.destination.longitude,
           routePolyline: route.encodedPolyline ?? null,
           routeDistanceMeters: route.distanceMeters ?? null,
-          routeDurationSeconds: route.duration ?? null,
+          routeDurationSeconds: route.duration ? Math.round(parseFloat(route.duration)) : null,
         },
       });
       setShareCode(code);
