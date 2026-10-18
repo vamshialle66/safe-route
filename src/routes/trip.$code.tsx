@@ -115,7 +115,7 @@ function WatchTripPage() {
       title={trip.travelerName
         ? arrived ? `${trip.travelerName} has arrived` : ended ? `${trip.travelerName}'s trip ended` : `This is ${trip.travelerName}'s live trip`
         : arrived ? "They've arrived" : ended ? "Trip ended" : "Following live"}
-      description={`${trip.travelerName && !arrived && !ended ? `${trip.travelerName} is travelling from ` : ""}${trip.originLabel.split(",")[0]} → ${trip.destinationLabel.split(",")[0]}${trip.routeDistanceMeters ? ` · ${formatDistance(trip.routeDistanceMeters)}` : ""}${trip.routeDurationSeconds ? ` · about ${formatDuration(`${trip.routeDurationSeconds}s`)}` : ""}`}
+      description={`${trip.travelerName && !arrived && !ended ? `${trip.travelerName} is travelling from ` : ""}${friendlyPlace(trip.originLabel, trip.travelerName, "starting point")} → ${friendlyPlace(trip.destinationLabel, trip.travelerName, "destination")}${trip.routeDistanceMeters ? ` · ${formatDistance(trip.routeDistanceMeters)}` : ""}${trip.routeDurationSeconds ? ` · about ${formatDuration(`${trip.routeDurationSeconds}s`)}` : ""}`}
     >
       <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
         <div className="relative h-[320px] sm:h-[420px] overflow-hidden rounded-2xl border border-border">
@@ -154,4 +154,13 @@ function WatchTripPage() {
       </div>
     </AppLayout>
   );
+}
+
+// "My current location" makes sense to the traveller, not to the follower.
+function friendlyPlace(label: string, name: string | null, kind: "starting point" | "destination") {
+  const first = label.split(",")[0]?.trim() ?? "";
+  if (/^(my|your)\s+(current\s+)?location$/i.test(first) || !first) {
+    return name ? `${name}'s ${kind}` : `their ${kind}`;
+  }
+  return first;
 }
