@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { MapPin, Phone, Plus, Share2, Siren, Trash2, UserRound } from "lucide-react";
+import { MapPin, Phone, PhoneCall, Plus, Share2, Siren, Timer, Trash2, UserRound } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
@@ -82,7 +83,10 @@ function EmergencyPage() {
           <div className="mt-6 grid w-full grid-cols-2 gap-3">
             <Button variant="outline" size="lg" onClick={share}><Share2 className="size-4" /> Share location</Button>
             <Button variant="outline" size="lg" asChild><a href="/safety-map"><MapPin className="size-4" /> Open places</a></Button>
+            <Button variant="outline" size="lg" asChild><Link to="/fake-call"><PhoneCall className="size-4" /> Fake call</Link></Button>
+            <CheckInTimer />
           </div>
+          <p className="mt-4 text-xs text-muted-foreground">Your trusted contacts are saved on this device too, so this page still shows them without internet.</p>
         </div>
         <div className="space-y-6">
           <div className="rounded-2xl border border-border bg-card p-5">
