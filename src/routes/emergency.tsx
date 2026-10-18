@@ -108,6 +108,34 @@ function EmergencyPage() {
   );
 }
 
+function CheckInTimer() {
+  const [minutesLeft, setMinutesLeft] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (minutesLeft == null) return;
+    if (minutesLeft === 0) {
+      toast.error("Check-in missed — share your location with a trusted contact now.", { duration: 15000 });
+      setMinutesLeft(null);
+      return;
+    }
+    const t = setTimeout(() => setMinutesLeft(minutesLeft - 1), 60_000);
+    return () => clearTimeout(t);
+  }, [minutesLeft]);
+
+  if (minutesLeft == null) {
+    return (
+      <Button variant="outline" size="lg" onClick={() => setMinutesLeft(20)}>
+        <Timer className="size-4" /> Check-in 20 min
+      </Button>
+    );
+  }
+  return (
+    <Button variant="outline" size="lg" className="border-moderate text-moderate" onClick={() => { setMinutesLeft(null); toast.success("Checked in — timer cancelled"); }}>
+      <Timer className="size-4" /> {minutesLeft} min left — tap to check in
+    </Button>
+  );
+}
+
 function TrustedContacts() {
   const session = useSession();
   const uid = session.user?.id;

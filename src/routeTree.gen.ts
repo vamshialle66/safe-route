@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as EmergencyRouteImport } from './routes/emergency'
+import { Route as FakeCallRouteImport } from './routes/fake-call'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ModerationRouteImport } from './routes/moderation'
@@ -53,6 +54,11 @@ const DashboardRoute = DashboardRouteImport.update({
 const EmergencyRoute = EmergencyRouteImport.update({
   id: '/emergency',
   path: '/emergency',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FakeCallRoute = FakeCallRouteImport.update({
+  id: '/fake-call',
+  path: '/fake-call',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HowItWorksRoute = HowItWorksRouteImport.update({
@@ -137,6 +143,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/dashboard': typeof DashboardRoute
   '/emergency': typeof EmergencyRoute
+  '/fake-call': typeof FakeCallRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/moderation': typeof ModerationRoute
@@ -159,6 +166,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/dashboard': typeof DashboardRoute
   '/emergency': typeof EmergencyRoute
+  '/fake-call': typeof FakeCallRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/moderation': typeof ModerationRoute
@@ -182,6 +190,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/dashboard': typeof DashboardRoute
   '/emergency': typeof EmergencyRoute
+  '/fake-call': typeof FakeCallRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/moderation': typeof ModerationRoute
@@ -206,6 +215,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/emergency'
+    | '/fake-call'
     | '/how-it-works'
     | '/login'
     | '/moderation'
@@ -228,6 +238,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/emergency'
+    | '/fake-call'
     | '/how-it-works'
     | '/login'
     | '/moderation'
@@ -250,6 +261,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/emergency'
+    | '/fake-call'
     | '/how-it-works'
     | '/login'
     | '/moderation'
@@ -273,6 +285,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   DashboardRoute: typeof DashboardRoute
   EmergencyRoute: typeof EmergencyRoute
+  FakeCallRoute: typeof FakeCallRoute
   HowItWorksRoute: typeof HowItWorksRoute
   LoginRoute: typeof LoginRoute
   ModerationRoute: typeof ModerationRoute
@@ -325,6 +338,13 @@ declare module '@tanstack/react-router' {
       path: '/emergency'
       fullPath: '/emergency'
       preLoaderRoute: typeof EmergencyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fake-call': {
+      id: '/fake-call'
+      path: '/fake-call'
+      fullPath: '/fake-call'
+      preLoaderRoute: typeof FakeCallRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/how-it-works': {
@@ -441,6 +461,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   DashboardRoute: DashboardRoute,
   EmergencyRoute: EmergencyRoute,
+  FakeCallRoute: FakeCallRoute,
   HowItWorksRoute: HowItWorksRoute,
   LoginRoute: LoginRoute,
   ModerationRoute: ModerationRoute,

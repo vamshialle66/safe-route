@@ -75,6 +75,9 @@ function RouteDetail() {
           <Button onClick={() => toast[analysisStore.saveRoute(analysis, route.routeNumber) ? "success" : "message"]("Saved to your routes")}>
             <Bookmark className="size-4" /> Save
           </Button>
+          <Button variant="outline" className="bg-card text-card-foreground" onClick={() => void shareRoute()}>
+            <Share2 className="size-4" /> Share
+          </Button>
         </div>
       }
     >
