@@ -50,6 +50,7 @@ function ModerationPage() {
 
   return <AppLayout title="Review community reports">
     <div className="mx-auto max-w-3xl space-y-4">
+      <Button asChild variant="outline" size="sm"><Link to="/admin">Admin dashboard</Link></Button>
       <p className="text-sm text-muted-foreground">Approved reports appear to signed-in users as community tips. Tips show only the category, location and wording — never the reporter or their original description. They stay marked unverified and never change route scores.</p>
       {!user ? <Button asChild><Link to="/login">Sign in to review reports</Link></Button>
         : q.isLoading ? <p className="text-sm text-muted-foreground">Loading…</p>
