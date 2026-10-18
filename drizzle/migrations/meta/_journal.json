@@ -29,6 +29,13 @@
       "when": 1792137106202,
       "tag": "0003_community_alert_moderation",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792335224477,
+      "tag": "0004_admin_reviewer_management",
+      "breakpoints": true
     }
   ]
 }
