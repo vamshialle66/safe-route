@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Bookmark, Navigation, Clock, MapPin, Route as RouteIcon, Share2, Store } from "lucide-react";
+import { ArrowLeft, Bookmark, Navigation, Clock, MapPin, Radio, Route as RouteIcon, Share2, Store } from "lucide-react";
 import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { toast } from "sonner";
 import { AppLayout } from "@/components/layout/AppLayout";
