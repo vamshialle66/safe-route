@@ -94,7 +94,7 @@ export function FakeCallProvider({ children }: { children: ReactNode }) {
   return (
     <FakeCallContext.Provider value={{ caller, setCaller, start }}>
       {state === "idle" && pathname !== "/fake-call" && (
-        <div className="fixed bottom-6 left-4 z-40 hidden lg:block">
+        <div className="fixed bottom-6 left-4 z-40 hidden lg:block lg:left-[17.5rem]">
         <Button ref={startButton} onClick={start} className="h-12 gap-2 rounded-full border border-call-text/15 bg-call-surface px-5 text-call-text shadow-lift hover:bg-call-control" aria-label="Start fake call" title="Start fake call">
           <PhoneCall className="size-5" /><span>Fake call</span>
         </Button>
