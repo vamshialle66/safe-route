@@ -336,6 +336,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      area_report_counts: {
+        Args: { _limit?: number }
+        Returns: {
+          latest_at: string
+          location_label: string
+          reports: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
