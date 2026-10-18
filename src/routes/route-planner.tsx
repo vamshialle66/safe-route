@@ -50,6 +50,7 @@ function PlannerPage() {
   const [origin, setOrigin] = useState<NamedPoint | null>(analysis?.origin ?? null);
   const [destination, setDestination] = useState<NamedPoint | null>(analysis?.destination ?? null);
   const [mode, setMode] = useState<BackendTravelMode>(analysis?.travelMode ?? "WALK");
+  const [when, setWhen] = useState<"now" | "evening" | "latenight">("now");
   const [loading, setLoading] = useState(false);
   const [stage, setStage] = useState(0);
   const [locating, setLocating] = useState(false);
@@ -159,6 +160,28 @@ function PlannerPage() {
                   </button>
                 ))}
               </div>
+            </div>
+
+            <div>
+              <p className="text-xs font-medium text-muted-foreground">When are you going?</p>
+              <div className="mt-1.5 flex flex-wrap gap-1.5" role="radiogroup" aria-label="Departure time">
+                {([["now", "Leave now"], ["evening", "This evening"], ["latenight", "Late night"]] as const).map(([v, label]) => (
+                  <button
+                    key={v}
+                    type="button"
+                    role="radio"
+                    aria-checked={when === v}
+                    onClick={() => setWhen(v)}
+                    className={cn(
+                      "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                      when === v ? "border-primary bg-primary text-primary-foreground" : "border-border bg-background hover:bg-accent",
+                    )}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              {when !== "now" && <p className="mt-1.5 text-xs text-muted-foreground">Scores show places open right now. Recheck just before you leave — opening hours change.</p>}
             </div>
 
             {!session.user && session.ready && <p className="text-sm text-muted-foreground"><Link to="/login" className="font-medium text-primary underline">Sign in</Link> to find real routes. Google Maps searches require an account.</p>}

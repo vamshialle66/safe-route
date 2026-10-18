@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Bookmark, Navigation, Clock, MapPin, Route as RouteIcon, Store } from "lucide-react";
+import { ArrowLeft, Bookmark, Navigation, Clock, MapPin, Route as RouteIcon, Share2, Store } from "lucide-react";
 import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { toast } from "sonner";
 import { AppLayout } from "@/components/layout/AppLayout";
@@ -15,6 +15,11 @@ import { cn } from "@/lib/utils";
 import { googleDirectionsUrl } from "@/lib/directions";
 import { RouteAssessmentPanel } from "@/components/route/RouteAssessmentPanel";
 import { CommunityAlerts } from "@/components/route/CommunityAlerts";
+import { ThumbsDown, ThumbsUp } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSession } from "@/lib/session";
+import { rateRouteFn, routeConfidenceFn } from "@/lib/routeRatings.functions";
 
 export const Route = createFileRoute("/routes/$id")({
   head: () => ({
@@ -60,6 +65,16 @@ function RouteDetail() {
   const lowStretches = route.segments.filter((s) => indexTone(s.safetyIndex) === "risk");
   const coverage = route.distanceMeters ? Math.round((route.scoredLengthMeters / route.distanceMeters) * 100) : 0;
 
+  async function shareRoute() {
+    if (!analysis || !route) return;
+    const score = route.safetyIndex != null ? `${formatIndex(route.safetyIndex)}/100` : "not scored";
+    const text = `I'm taking this route: ${analysis.origin.label.split(",")[0]} → ${analysis.destination.label.split(",")[0]} (${formatDistance(route.distanceMeters)}, about ${formatDuration(route.duration)}). SafeRoute score: ${score}.`;
+    try {
+      if (navigator.share) await navigator.share({ title: "My route", text });
+      else { await navigator.clipboard.writeText(text); toast.success("Route summary copied — paste it anywhere"); }
+    } catch { /* user cancelled sharing */ }
+  }
+
   return (
     <AppLayout
       title={`Route ${route.routeNumber}`}
@@ -74,6 +89,9 @@ function RouteDetail() {
           <Button asChild variant="outline" className="bg-card text-card-foreground"><Link to="/routes"><ArrowLeft className="size-4" /> All routes</Link></Button>
           <Button onClick={() => toast[analysisStore.saveRoute(analysis, route.routeNumber) ? "success" : "message"]("Saved to your routes")}>
             <Bookmark className="size-4" /> Save
+          </Button>
+          <Button variant="outline" className="bg-card text-card-foreground" onClick={() => void shareRoute()}>
+            <Share2 className="size-4" /> Share
           </Button>
         </div>
       }
@@ -135,6 +153,7 @@ function RouteDetail() {
         </div>
 
         <aside className="space-y-4">
+          <WalkerRating key={`rating-${analysis.id}:${route.routeNumber}`} journeyId={analysis.id} routeNumber={route.routeNumber} />
           <CommunityAlerts key={`${analysis.id}:${route.routeNumber}`} journeyId={analysis.id} routeLabel={`Route ${route.routeNumber}`} />
           {route.assessment && <div className="border-b border-border pb-4"><h2 className="font-display font-semibold">Route comparison score</h2><p className="mt-2 text-2xl font-semibold text-primary">{route.assessment.score == null ? "Not enough information" : `${route.assessment.score} / 100`}</p><p className="mt-2 text-sm text-muted-foreground">Open-place density and nearby help. Not a probability of safety.</p>{route.assessment.reasons.map(reason => <p key={reason} className="mt-2 text-xs text-muted-foreground">{reason}</p>)}</div>}
           <RouteAssessmentPanel route={route} sample={analysis.source === "demo"} />
@@ -182,6 +201,49 @@ function RouteDetail() {
         </aside>
       </div>
     </AppLayout>
+  );
+}
+
+function WalkerRating({ journeyId, routeNumber }: { journeyId: string; routeNumber: number }) {
+  const { user } = useSession();
+  const confidence = useServerFn(routeConfidenceFn);
+  const rate = useServerFn(rateRouteFn);
+  const cache = useQueryClient();
+  const key = ["route-rating", journeyId, routeNumber];
+  const q = useQuery({ queryKey: key, queryFn: () => confidence({ data: { journeyId, routeNumber } }), enabled: !!user });
+  const [busy, setBusy] = useState(false);
+
+  if (!user) return null;
+  const d = q.data;
+
+  async function vote(feltSafe: boolean) {
+    setBusy(true);
+    try {
+      await rate({ data: { journeyId, routeNumber, feltSafe } });
+      await cache.invalidateQueries({ queryKey: key });
+      toast.success("Thanks — your rating helps other walkers");
+    } catch (e) { toast.error(e instanceof Error ? e.message : "Could not save"); }
+    finally { setBusy(false); }
+  }
+
+  return (
+    <div className="rounded-2xl border border-border bg-card p-5">
+      <h2 className="font-display font-semibold">Walked this route?</h2>
+      <p className="mt-1 text-sm text-muted-foreground">
+        {d && d.totalCount > 0
+          ? `${d.safeCount} of ${d.totalCount} walkers said they felt safe on this route.`
+          : "No walker ratings yet — be the first after your trip."}
+      </p>
+      <div className="mt-3 flex gap-2">
+        <Button size="sm" variant={d?.mine === true ? "default" : "outline"} disabled={busy} onClick={() => void vote(true)}>
+          <ThumbsUp className="size-4" /> Felt safe
+        </Button>
+        <Button size="sm" variant={d?.mine === false ? "default" : "outline"} disabled={busy} onClick={() => void vote(false)}>
+          <ThumbsDown className="size-4" /> Not really
+        </Button>
+      </div>
+      <p className="mt-2 text-xs text-muted-foreground">Walker ratings are opinions — they never change the route score.</p>
+    </div>
   );
 }
 

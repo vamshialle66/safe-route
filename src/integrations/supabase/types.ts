@@ -235,6 +235,33 @@ export type Database = {
         }
         Relationships: []
       }
+      route_ratings: {
+        Row: {
+          created_at: string
+          felt_safe: boolean
+          id: string
+          journey_id: string
+          route_number: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          felt_safe: boolean
+          id?: string
+          journey_id: string
+          route_number: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          felt_safe?: boolean
+          id?: string
+          journey_id?: string
+          route_number?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       saved_routes: {
         Row: {
           analysis: Json | null
@@ -309,6 +336,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      area_report_counts: {
+        Args: { _limit?: number }
+        Returns: {
+          latest_at: string
+          location_label: string
+          reports: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -339,6 +374,13 @@ export type Database = {
       moderate_alert: {
         Args: { _decision: string; _id: string; _note?: string }
         Returns: undefined
+      }
+      route_confidence: {
+        Args: { _journey_id: string; _route_number: number }
+        Returns: {
+          safe_count: number
+          total_count: number
+        }[]
       }
       set_reviewer: {
         Args: {

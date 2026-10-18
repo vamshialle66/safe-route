@@ -1,24 +1,10 @@
-# Clearer SafeRoute wording
-- [x] Make real searches the default; keep examples explicit and prevent fabricated routes after a failed search.
-- [x] Remove automatic sample journeys and unsupported live-readiness claims from the first screen.
-- [x] Make nearby real places actionable and show search failures with recovery choices.
-- [x] Verify linked Google Maps configuration, signed-in settings save/readback, failure states, 24 tests and public page metadata.
-- [ ] Validate current Google Maps results on the published site — live Maps validation is unavailable in the agent sandbox; requires a signed-in search by the owner on the authorized site.
-- [x] Simplify the home page and explain scores truthfully.
-- [x] Align help pages and main journey labels.
-- [x] Check first-visit pages on desktop and phone sizes.
-- [x] Replace remaining developer terms in route results and map labels.
-- [x] Make route details understandable through journey distances and plain score explanations.
-- [x] Verify populated results on desktop and phones.
-- [x] Add a multi-factor route comparison using observed activity, nearby help and information coverage.
-- [x] Show factors, reasons and unavailable crime/lighting information in planning and details.
-- [x] Test ranking rules and verify the updated example journey on desktop and phones; live Google checks are unavailable in the sandbox.
-- [ ] Include verified crime and lighting in scoring — blocked on trusted street-level sources for the supported area.
-- [x] Add a signed-in concern form with AI classification and editable alert review.
-- [x] Keep saved community alerts unverified, private and separate from route scores.
-- [x] Verify classification, review and saved-alert readback with a signed-in account.
-- [x] Verify Mumbai source coverage: inspected public BMC map layers; no operational lighting feed found, and available police statistics are too coarse for individual roads.
-- [ ] Connect real Mumbai crime and lighting evidence to scoring — blocked on authorized road-level police records and BEST/BMC lighting-status access; public map layers and aggregate crime totals are insufficient.
-- [x] Build a source-linked Mumbai police-report store with restricted verified imports.
-- [x] Connect suitable, dated crime evidence to route comparisons without treating missing reports as no crime.
-- [x] Test location precision, coverage, duplicates and route evidence display.
+# SafeRoute feature batch
+
+- [x] Fake call screen (exit uncomfortable situations)
+- [x] Shareable route summary (send route + score to someone)
+- [x] 24/7 safe spots filter on Around Me ("Help spots")
+- [x] Rate a route after walking it (community confidence, separate from scores)
+- [x] Departure time picker (plan for later, honest labeling)
+- [x] Check-in timer on Emergency page
+- [x] Offline emergency card note
+- [x] Most reported areas list (from approved community reports)
