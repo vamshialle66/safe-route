@@ -43,9 +43,10 @@ const MAIN_NAV: NavItem[] = [
 
 const BOTTOM_NAV: NavItem[] = [
   { to: "/profile", label: "Profile", icon: User },
-  { to: "/moderation", label: "Review reports", icon: ShieldCheck },
   { to: "/settings", label: "Settings", icon: Settings },
 ];
+
+const REVIEWER_NAV: NavItem = { to: "/moderation", label: "Review reports", icon: ShieldCheck };
 
 const MOBILE_NAV: NavItem[] = [
   { to: "/dashboard", label: "Home", icon: LayoutDashboard },

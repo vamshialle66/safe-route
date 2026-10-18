@@ -64,6 +64,11 @@ async function isReviewer(supabase: any, userId: string) {
   return !!admin.data || !!moderator.data;
 }
 
+// Lightweight check so the navigation only shows reviewer tools to people
+// who actually have access. Server-side checks still guard every action.
+export const myReviewerStatusFn = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => ({ reviewer: await isReviewer(context.supabase, context.userId) }));
+
 export const reviewQueueFn = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     if (!(await isReviewer(context.supabase, context.userId))) return { allowed: false as const, alerts: [] };
