@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSession } from "@/lib/session";
 import { ALERT_CATEGORIES, ALERT_URGENCY, concernSchema, reviewSchema } from "@/lib/communityAlerts";
-import { classifyAlertFn, listAlertsFn, reviewAlertFn, deleteAlertFn, communityTipsFn } from "@/lib/communityAlerts.functions";
+import { classifyAlertFn, listAlertsFn, reviewAlertFn, deleteAlertFn, communityTipsFn, areaReportsFn } from "@/lib/communityAlerts.functions";
 import type { Database } from "@/integrations/supabase/types";
 
 type Alert = Database["public"]["Tables"]["community_alerts"]["Row"];
@@ -22,6 +22,8 @@ export function CommunityAlerts({ journeyId, routeLabel }: { journeyId: string; 
   const remove = useServerFn(deleteAlertFn);
   const tipsFn = useServerFn(communityTipsFn);
   const tips = useQuery({ queryKey: ["community-tips", user?.id], queryFn: () => tipsFn(), enabled: !!user });
+  const areasFn = useServerFn(areaReportsFn);
+  const areas = useQuery({ queryKey: ["area-reports", user?.id], queryFn: () => areasFn(), enabled: !!user });
   const cache = useQueryClient();
   const key = ["community-alerts", user?.id, journeyId];
   const saved = useQuery({ queryKey: key, queryFn: () => list({ data: { journeyId } }), enabled: !!user });
@@ -104,6 +106,7 @@ export function CommunityAlerts({ journeyId, routeLabel }: { journeyId: string; 
         <div className="mt-2 flex gap-2"><Button variant="ghost" size="sm" disabled={busy} onClick={() => edit(alert)}><Pencil className="size-3.5" /> Review</Button><Button variant="ghost" size="sm" disabled={busy} onClick={() => void discard(alert.id)}><Trash2 className="size-3.5" /> Delete</Button></div>
       </li>)}</ul></div>}
     </>}
+    {!!areas.data?.length && <div className="mt-5"><h3 className="text-sm font-semibold">Most reported areas</h3><p className="text-xs text-muted-foreground">Where approved community reports come from most. Unverified — not a crime statistic.</p><ul className="mt-2 divide-y divide-border">{areas.data.map(a => <li key={a.location_label} className="flex items-center justify-between gap-2 py-2 text-sm"><span className="break-words">{a.location_label}</span><span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-xs">{a.reports} report{a.reports === 1 ? "" : "s"}</span></li>)}</ul></div>}
     {!!tips.data?.length && <div className="mt-5"><h3 className="text-sm font-semibold">Community tips</h3><p className="text-xs text-muted-foreground">Recent reports approved by a reviewer. Unverified — use your own judgement.</p><ul className="mt-2 divide-y divide-border">{tips.data.map(t => <li key={t.id} className="py-2"><p className="text-sm font-medium">{ALERT_CATEGORIES[t.category as keyof typeof ALERT_CATEGORIES]} · {t.location_label}</p><p className="break-words text-sm">{t.summary}</p><p className="text-xs text-muted-foreground">{ALERT_URGENCY[t.urgency as keyof typeof ALERT_URGENCY]}</p></li>)}</ul></div>}
     {error && <p role="alert" className="mt-3 break-words text-sm text-risk">{error}</p>}
     {success && <p role="status" className="mt-3 text-sm text-safe">{success}</p>}
