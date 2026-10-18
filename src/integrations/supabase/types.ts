@@ -327,9 +327,26 @@ export type Database = {
           urgency: string
         }[]
       }
+      list_reviewers: {
+        Args: never
+        Returns: {
+          created_at: string
+          email: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }[]
+      }
       moderate_alert: {
         Args: { _decision: string; _id: string; _note?: string }
         Returns: undefined
+      }
+      set_reviewer: {
+        Args: {
+          _email: string
+          _grant: boolean
+          _role: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: string
       }
     }
     Enums: {
