@@ -15,6 +15,11 @@ import { cn } from "@/lib/utils";
 import { googleDirectionsUrl } from "@/lib/directions";
 import { RouteAssessmentPanel } from "@/components/route/RouteAssessmentPanel";
 import { CommunityAlerts } from "@/components/route/CommunityAlerts";
+import { ThumbsDown, ThumbsUp } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSession } from "@/lib/session";
+import { rateRouteFn, routeConfidenceFn } from "@/lib/routeRatings.functions";
 
 export const Route = createFileRoute("/routes/$id")({
   head: () => ({
