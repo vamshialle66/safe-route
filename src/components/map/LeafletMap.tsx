@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { ApiPlace, ApiRoute, LatLng } from "@/lib/saferouteApi";
-import { indexTone, routeGeometry, formatIndex } from "@/lib/saferouteApi";
+import { indexTone, routeGeometry, formatIndex, decodePolyline } from "@/lib/saferouteApi";
 
 export interface LeafletMapProps {
   routes?: ApiRoute[] | undefined;
@@ -176,7 +176,7 @@ export default function LeafletMap({
       fittedKey.current = key;
       m.fitBounds(bounds, { padding: [48, 48], maxZoom: 16 });
     }
-  }, [routes, selectedRoute, highlightSegment, places, origin, destination, center, showPlaces, onSelectRoute, themeTick]);
+  }, [routes, selectedRoute, highlightSegment, places, origin, destination, center, showPlaces, livePosition, routePolyline, onSelectRoute, themeTick]);
 
   return <div ref={el} className="h-full w-full" role="application" aria-label="Route map" />;
 }
