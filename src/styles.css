@@ -351,11 +351,9 @@
 
 .dark .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9); }
 
-.fake-call-shortcut { bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)); }
 .call-screen { padding-bottom: env(safe-area-inset-bottom, 0px); }
 .call-avatar-ringing { animation: call-pulse 2.8s ease-in-out infinite; }
 .call-phone-ringing { animation: call-ring 2.8s ease-in-out infinite; }
-@media (min-width: 1024px) { .fake-call-shortcut { bottom: 1.5rem; } }
 @media (max-height: 680px) { .call-screen > div:nth-child(2) { padding-block: 1rem; } .call-screen > div:last-child { padding-bottom: 1.5rem; } }
 @keyframes call-pulse { 0%, 70%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--call-text) 0%, transparent); } 35% { box-shadow: 0 0 0 18px color-mix(in oklab, var(--call-text) 5%, transparent); } }
 @keyframes call-ring { 0%, 30%, 100% { transform: rotate(0); } 8%, 20% { transform: rotate(-15deg); } 14%, 26% { transform: rotate(15deg); } }

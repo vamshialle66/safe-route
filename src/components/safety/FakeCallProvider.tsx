@@ -93,12 +93,14 @@ export function FakeCallProvider({ children }: { children: ReactNode }) {
   const name = caller.trim() || "Mum";
   return (
     <FakeCallContext.Provider value={{ caller, setCaller, start }}>
-      {children}
       {state === "idle" && pathname !== "/fake-call" && (
-        <Button ref={startButton} onClick={start} className="fake-call-shortcut fixed right-4 z-40 h-12 gap-2 rounded-full border border-call-text/15 bg-call-surface px-4 text-call-text shadow-lift hover:bg-call-control" aria-label="Start fake call" title="Start fake call">
+        <div className="sticky top-0 z-50 flex h-14 justify-end border-b border-border bg-background px-4 py-2 lg:fixed lg:bottom-6 lg:right-4 lg:top-auto lg:h-auto lg:border-0 lg:bg-transparent lg:p-0">
+        <Button ref={startButton} onClick={start} className="h-10 gap-2 rounded-full border border-call-text/15 bg-call-surface px-4 text-call-text shadow-lift hover:bg-call-control lg:h-12" aria-label="Start fake call" title="Start fake call">
           <PhoneCall className="size-5" /><span>Fake call</span>
         </Button>
+        </div>
       )}
+      {children}
       {state !== "idle" && (
         <div data-call-screen role="dialog" aria-modal="true" aria-label={state === "incoming" ? `Incoming call from ${name}` : `Call with ${name}`} className="fixed inset-0 z-[100] overflow-y-auto bg-call-surface text-call-text">
           <div className="call-screen mx-auto flex min-h-dvh w-full max-w-md flex-col px-8">
