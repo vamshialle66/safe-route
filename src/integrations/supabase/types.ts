@@ -317,6 +317,7 @@ export type Database = {
           route_polyline: string | null
           share_code: string
           status: string
+          traveler_name: string | null
           user_id: string
         }
         Insert: {
@@ -337,6 +338,7 @@ export type Database = {
           route_polyline?: string | null
           share_code: string
           status?: string
+          traveler_name?: string | null
           user_id: string
         }
         Update: {
@@ -357,6 +359,7 @@ export type Database = {
           route_polyline?: string | null
           share_code?: string
           status?: string
+          traveler_name?: string | null
           user_id?: string
         }
         Relationships: []
