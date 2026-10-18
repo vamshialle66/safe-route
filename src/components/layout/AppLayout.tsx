@@ -23,6 +23,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemePicker } from "@/components/theme/ThemePicker";
 import { displayName, initials, useSession } from "@/lib/session";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
+import { myReviewerStatusFn } from "@/lib/communityAlerts.functions";
 
 interface NavItem {
   to: string;
@@ -74,7 +77,7 @@ function SidebarLink({ item, onNavigate }: { item: NavItem; onNavigate?: (() => 
   );
 }
 
-function SidebarContent({ onNavigate }: { onNavigate?: (() => void) | undefined }) {
+function SidebarContent({ onNavigate, reviewer = false }: { onNavigate?: (() => void) | undefined; reviewer?: boolean | undefined }) {
   return (
     <div className="flex h-full flex-col bg-sidebar">
       <div className="px-5 py-5">
@@ -91,6 +94,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: (() => void) | undefined 
         {BOTTOM_NAV.map((item) => (
           <SidebarLink key={item.to} item={item} onNavigate={onNavigate} />
         ))}
+        {reviewer && <SidebarLink item={REVIEWER_NAV} onNavigate={onNavigate} />}
       </div>
     </div>
   );
@@ -112,11 +116,19 @@ export function AppLayout({
   const [drawer, setDrawer] = useState(false);
   const session = useSession();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const reviewerStatus = useServerFn(myReviewerStatusFn);
+  const reviewerQuery = useQuery({
+    queryKey: ["reviewer-status", session.user?.id],
+    queryFn: () => reviewerStatus(),
+    enabled: !!session.user,
+    staleTime: 60_000,
+  });
+  const isReviewer = reviewerQuery.data?.reviewer === true;
 
   return (
     <div className="min-h-screen bg-background">
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-sidebar-border lg:block">
-        <SidebarContent />
+        <SidebarContent reviewer={isReviewer} />
       </aside>
 
       {drawer && (
@@ -128,7 +140,7 @@ export function AppLayout({
             onClick={() => setDrawer(false)}
           />
           <div className="absolute inset-y-0 left-0 w-72 shadow-lift">
-            <SidebarContent onNavigate={() => setDrawer(false)} />
+            <SidebarContent onNavigate={() => setDrawer(false)} reviewer={isReviewer} />
             <Button
               variant="ghost"
               size="icon"
