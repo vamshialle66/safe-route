@@ -49,10 +49,11 @@ function WatchTripPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["shared-trip", code],
     queryFn: () => getTrip({ data: { shareCode: code } }),
-    refetchInterval: 15000,
+    refetchInterval: 5000,
   });
 
-  const trip = live ?? (data?.found ? data.trip : null);
+  const outcome = data && !data.found ? data.outcome : null;
+  const trip = outcome ? null : live ?? (data?.found ? data.trip : null);
 
   // Realtime: position updates arrive instantly without waiting for the poll.
   useEffect(() => {
@@ -90,6 +91,28 @@ function WatchTripPage() {
 
   if (isLoading) {
     return <AppLayout title="Live trip"><div className="h-64 animate-pulse rounded-2xl bg-muted" /></AppLayout>;
+  }
+
+  if (!trip && outcome) {
+    const who = outcome.travelerName ?? "The person you were following";
+    const isArrived = outcome.status === "arrived";
+    return (
+      <AppLayout title={isArrived ? `${who} has arrived` : "Trip ended"}>
+        <div className={`rounded-2xl border p-6 text-center ${isArrived ? "border-safe/40 bg-safe/10" : "border-border bg-card"}`}>
+          {isArrived ? <Flag className="mx-auto size-8 text-safe" /> : <MapPin className="mx-auto size-8 text-muted-foreground" />}
+          <p className={`mt-3 font-display text-lg font-semibold ${isArrived ? "text-safe" : ""}`}>
+            {isArrived ? `${who} arrived safely` : `${who} ended the trip`}
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {isArrived ? "They marked themselves as arrived" : "They stopped sharing before marking arrival"}
+            {outcome.endedAt ? ` at ${new Date(outcome.endedAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}` : ""}.
+            {" "}Their location is no longer shared.
+          </p>
+          {!isArrived && <p className="mt-2 text-xs text-muted-foreground">If you're worried, call them to check they're okay.</p>}
+          <Button asChild className="mt-4" variant="outline"><Link to="/">Open SafeRoute</Link></Button>
+        </div>
+      </AppLayout>
+    );
   }
 
   if (!trip) {

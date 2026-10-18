@@ -119,7 +119,23 @@ export const getSharedTripFn = createServerFn({ method: "GET" })
       .eq("share_code", data.shareCode)
       .maybeSingle();
     if (error) throw new Error("This trip could not be loaded.");
-    if (!trip) return { found: false as const };
+    if (!trip) {
+      // Ended/arrived trips: tell watchers what happened, without any position.
+      const { data: rows } = await client.rpc("get_shared_trip_outcome", { _share_code: data.shareCode });
+      const o = Array.isArray(rows) ? rows[0] : null;
+      return {
+        found: false as const,
+        outcome: o
+          ? {
+              status: o.status as "arrived" | "ended",
+              travelerName: o.traveler_name,
+              originLabel: o.origin_label,
+              destinationLabel: o.destination_label,
+              endedAt: o.ended_at,
+            }
+          : null,
+      };
+    }
     return {
       found: true as const,
       trip: {
