@@ -16,7 +16,7 @@ import type { LatLng } from "@/lib/saferouteApi";
 import type { Database } from "@/integrations/supabase/types";
 
 type Alert = Database["public"]["Tables"]["community_alerts"]["Row"];
-export function CommunityAlerts({ journeyId, routeLabel, routeGeometry }: { journeyId: string; routeLabel: string; routeGeometry?: LatLng[] }) {
+export function CommunityAlerts({ journeyId, routeLabel, routeGeometry }: { journeyId: string; routeLabel: string; routeGeometry?: LatLng[] | undefined }) {
   const { user } = useSession();
   const classify = useServerFn(classifyAlertFn);
   const list = useServerFn(listAlertsFn);
