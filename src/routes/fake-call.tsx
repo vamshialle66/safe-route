@@ -9,6 +9,7 @@ export const Route = createFileRoute("/fake-call")({
       { title: "Incoming call — SafeRoute" },
       { name: "description", content: "A realistic incoming call screen to help you leave an uncomfortable situation." },
       { property: "og:title", content: "Incoming call — SafeRoute" },
+      { property: "og:description", content: "A realistic incoming call screen to help you leave an uncomfortable situation." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
