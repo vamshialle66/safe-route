@@ -1,9 +1,5 @@
-import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { Button } from "@/components/ui/button";
-import { NotificationItem } from "@/components/common/NotificationItem";
-import { NOTIFICATIONS } from "@/data/mockData";
 
 export const Route = createFileRoute("/notifications")({
   head: () => ({
@@ -20,16 +16,12 @@ export const Route = createFileRoute("/notifications")({
 });
 
 function NotificationsPage() {
-  const [items, setItems] = useState(NOTIFICATIONS);
   return (
     <AppLayout
       title="Notifications"
-      actions={<Button variant="outline" onClick={() => setItems(items.map((i) => ({ ...i, read: true })))}>Mark all read</Button>}
     >
       <div className="mx-auto max-w-2xl space-y-2">
-        {items.map((n) => (
-          <NotificationItem key={n.id} notification={n} onToggleRead={(id) => setItems(items.map((i) => (i.id === id ? { ...i, read: !i.read } : i)))} />
-        ))}
+        <p className="py-8 text-center text-sm text-muted-foreground">No notifications. SafeRoute does not continuously monitor your location or send automatic safety updates.</p>
       </div>
     </AppLayout>
   );

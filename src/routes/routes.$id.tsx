@@ -66,11 +66,11 @@ function RouteDetail() {
       description={`${analysis.origin.label.split(",")[0]} → ${analysis.destination.label.split(",")[0]}`}
       actions={
         <div className="flex flex-wrap gap-2">
-          <Button asChild className="bg-safe text-safe-foreground hover:bg-safe/90">
+          {analysis.source === "live" && <Button asChild className="bg-safe text-safe-foreground hover:bg-safe/90">
             <a href={googleDirectionsUrl(analysis.origin, analysis.destination, analysis.travelMode, route)} target="_blank" rel="noopener noreferrer">
               <Navigation className="size-4" /> Open Google Maps
             </a>
-          </Button>
+          </Button>}
           <Button asChild variant="outline" className="bg-card text-card-foreground"><Link to="/routes"><ArrowLeft className="size-4" /> All routes</Link></Button>
           <Button onClick={() => toast[analysisStore.saveRoute(analysis, route.routeNumber) ? "success" : "message"]("Saved to your routes")}>
             <Bookmark className="size-4" /> Save
@@ -79,6 +79,7 @@ function RouteDetail() {
       }
     >
       <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
+        <p className="text-sm text-muted-foreground lg:col-span-2">{analysis.source === "demo" ? "Example only — paths and places are invented, not suitable for navigation." : `Checked ${new Date(analysis.createdAt).toLocaleString()}. These are saved results, not continuous monitoring. Plan again for current opening status.`}</p>
         <div className="space-y-6">
           <div className="relative h-[300px] sm:h-[380px] overflow-hidden rounded-2xl border border-border">
             <RouteMap routes={[route]} selectedRoute={route.routeNumber} highlightSegment={hl} origin={analysis.origin} destination={analysis.destination} />

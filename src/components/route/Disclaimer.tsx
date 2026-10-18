@@ -18,8 +18,8 @@ export function SourceBadge({ source }: { source: "live" | "demo" }) {
         source === "live" ? "bg-safe-soft text-safe" : "bg-moderate-soft text-moderate-foreground dark:text-moderate",
       )}
     >
-      <span className={cn("size-1.5 rounded-full", source === "live" ? "bg-safe animate-pulse" : "bg-moderate")} />
-      {source === "live" ? "Live data" : "Sample data"}
+      <span className={cn("size-1.5 rounded-full", source === "live" ? "bg-safe" : "bg-moderate")} />
+      {source === "live" ? "Real map results" : "Sample data"}
     </span>
   );
 }

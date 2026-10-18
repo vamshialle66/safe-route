@@ -5,7 +5,8 @@ import { analysisStore, type Analysis, type NamedPoint } from "./analysisStore";
 import { demoSegments } from "./demoAnalysis";
 import { liveNearbyFn, liveSegmentsFn } from "./engine.functions";
 import { supabase } from "@/integrations/supabase/client";
-import { ApiError, getCustomApiUrl, getDemoOnly, saferouteApi, type ApiRoute, type BackendTravelMode, type LatLng, type NearbyResponse } from "./saferouteApi";
+import { ApiError, getCustomApiUrl, saferouteApi, type ApiRoute, type BackendTravelMode, type LatLng, type NearbyResponse } from "./saferouteApi";
+import { requireLiveData } from "./liveDataPolicy";
 
 type Live<T> = { ok: true; data: T } | { ok: false; reason: string };
 
@@ -21,7 +22,7 @@ async function external<T>(call: () => Promise<T>): Promise<Live<T>> {
 async function builtIn<T>(call: () => Promise<Live<T>>): Promise<Live<T>> {
   try {
     const { data } = await supabase.auth.getSession();
-    if (!data.session) return { ok: false, reason: "Sign in to search current Google Maps information. Examples remain available without an account." };
+    if (!data.session) return { ok: false, reason: "Sign in to find real routes and current nearby places." };
     return await call();
   } catch {
     return { ok: false, reason: "The live service couldn't be reached." };
@@ -49,11 +50,11 @@ export async function runAnalysis(
   origin: NamedPoint,
   destination: NamedPoint,
   travelMode: BackendTravelMode,
+  sample = false,
 ): Promise<{ analysis: Analysis; fellBack: boolean; reason?: string }> {
   let source: Analysis["source"] = "live";
-  let reason: string | undefined;
   let routes: ApiRoute[];
-  if (getDemoOnly()) {
+  if (sample) {
     source = "demo";
     await new Promise((r) => setTimeout(r, 900));
     routes = demoSegments(origin, destination, travelMode).routes;
@@ -64,12 +65,8 @@ export async function runAnalysis(
       () => saferouteApi.segments(o, d, travelMode),
       () => liveSegmentsFn({ data: { origin: o, destination: d, travelMode, categories: getScoreCategories() } }),
     );
-    if (r.ok) routes = r.data.routes;
-    else {
-      source = "demo";
-      reason = r.reason;
-      routes = demoSegments(origin, destination, travelMode).routes;
-    }
+    routes = requireLiveData(r).routes;
+    if (!routes.length) throw new Error("No route was found. Try different locations or a different travel mode.");
   }
   routes = routes.map(route => ({ ...route, assessment: route.assessment ?? assessRoute(route, undefined, new Set(typesFor(getScoreCategories()))) }));
   const analysis: Analysis = {
@@ -79,9 +76,8 @@ export async function runAnalysis(
     destination,
     travelMode,
     source,
-    ...(reason ? { fallbackReason: reason } : {}),
     routes,
   };
   analysisStore.setCurrent(analysis);
-  return { analysis, fellBack: source === "demo" && !getDemoOnly(), ...(reason ? { reason } : {}) };
+  return { analysis, fellBack: false };
 }
