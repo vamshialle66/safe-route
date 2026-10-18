@@ -1,4 +1,8 @@
 # Clearer SafeRoute wording
+- [ ] Make real searches the default; keep examples explicit and prevent fabricated routes after a failed search.
+- [ ] Remove automatic sample journeys and unsupported live-readiness claims from the first screen.
+- [ ] Make nearby real places actionable and show search failures with recovery choices.
+- [ ] Verify real-data configuration, non-Maps user flows, tests and public page metadata.
 - [x] Simplify the home page and explain scores truthfully.
 - [x] Align help pages and main journey labels.
 - [x] Check first-visit pages on desktop and phone sizes.
