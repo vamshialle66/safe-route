@@ -66,12 +66,12 @@ function WatchTripPage() {
             prev
               ? {
                   ...prev,
-                  status: r.status as Trip["status"],
+                  status: r["status"] as Trip["status"],
                   current:
-                    r.current_lat != null && r.current_lng != null
-                      ? { latitude: r.current_lat as number, longitude: r.current_lng as number }
+                    r["current_lat"] != null && r["current_lng"] != null
+                      ? { latitude: r["current_lat"] as number, longitude: r["current_lng"] as number }
                       : prev.current,
-                  lastUpdateAt: r.last_update_at as string | null,
+                  lastUpdateAt: (r["last_update_at"] as string | null) ?? null,
                 }
               : prev,
           );
@@ -112,7 +112,7 @@ function WatchTripPage() {
   return (
     <AppLayout
       title={arrived ? "They've arrived" : ended ? "Trip ended" : "Following live"}
-      description={`${trip.originLabel.split(",")[0]} → ${trip.destinationLabel.split(",")[0]}${trip.routeDistanceMeters ? ` · ${formatDistance(trip.routeDistanceMeters)}` : ""}${trip.routeDurationSeconds ? ` · about ${formatDuration(trip.routeDurationSeconds)}` : ""}`}
+      description={`${trip.originLabel.split(",")[0]} → ${trip.destinationLabel.split(",")[0]}${trip.routeDistanceMeters ? ` · ${formatDistance(trip.routeDistanceMeters)}` : ""}${trip.routeDurationSeconds ? ` · about ${formatDuration(`${trip.routeDurationSeconds}s`)}` : ""}`}
     >
       <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
         <div className="relative h-[320px] sm:h-[420px] overflow-hidden rounded-2xl border border-border">
