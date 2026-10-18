@@ -93,6 +93,11 @@ function RouteDetail() {
           <Button variant="outline" className="bg-card text-card-foreground" onClick={() => void shareRoute()}>
             <Share2 className="size-4" /> Share
           </Button>
+          {analysis.source === "live" && (
+            <Button asChild variant="outline" className="bg-card text-card-foreground">
+              <Link to="/trip/live" search={{ route: route.routeNumber }}><Radio className="size-4" /> Share live trip</Link>
+            </Button>
+          )}
         </div>
       }
     >

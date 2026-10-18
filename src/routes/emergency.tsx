@@ -84,6 +84,7 @@ function EmergencyPage() {
             <Button variant="outline" size="lg" onClick={share}><Share2 className="size-4" /> Share location</Button>
             <Button variant="outline" size="lg" asChild><a href="/safety-map"><MapPin className="size-4" /> Open places</a></Button>
             <Button variant="outline" size="lg" asChild><Link to="/fake-call"><PhoneCall className="size-4" /> Fake call</Link></Button>
+            <Button variant="outline" size="lg" asChild><Link to="/trip/live"><Radio className="size-4" /> Live trip</Link></Button>
             <CheckInTimer />
           </div>
           <p className="mt-4 text-xs text-muted-foreground">Your trusted contacts are saved on this device too, so this page still shows them without internet.</p>

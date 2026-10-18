@@ -32,7 +32,7 @@ export const Route = createFileRoute("/trip/live")({
 
 function LiveTripPage() {
   const { route: routeParam } = Route.useSearch();
-  const { user, loading } = useSession();
+  const { user, ready } = useSession();
   const analysis = useCurrentAnalysis();
   const route = analysis?.routes.find((r) => r.routeNumber === (routeParam ?? 1)) ?? analysis?.routes[0];
 
@@ -116,7 +116,7 @@ function LiveTripPage() {
     } catch { /* cancelled */ }
   }
 
-  if (loading) return <AppLayout title="Share live trip"><div className="h-40 animate-pulse rounded-2xl bg-muted" /></AppLayout>;
+  if (!ready) return <AppLayout title="Share live trip"><div className="h-40 animate-pulse rounded-2xl bg-muted" /></AppLayout>;
 
   if (!user) {
     return (
