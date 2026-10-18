@@ -1,8 +1,9 @@
 # Clearer SafeRoute wording
-- [ ] Make real searches the default; keep examples explicit and prevent fabricated routes after a failed search.
-- [ ] Remove automatic sample journeys and unsupported live-readiness claims from the first screen.
-- [ ] Make nearby real places actionable and show search failures with recovery choices.
-- [ ] Verify real-data configuration, non-Maps user flows, tests and public page metadata.
+- [x] Make real searches the default; keep examples explicit and prevent fabricated routes after a failed search.
+- [x] Remove automatic sample journeys and unsupported live-readiness claims from the first screen.
+- [x] Make nearby real places actionable and show search failures with recovery choices.
+- [x] Verify linked Google Maps configuration, signed-in settings save/readback, failure states, 24 tests and public page metadata.
+- [ ] Validate current Google Maps results on the published site — live Maps validation is unavailable in the agent sandbox; requires a signed-in search by the owner on the authorized site.
 - [x] Simplify the home page and explain scores truthfully.
 - [x] Align help pages and main journey labels.
 - [x] Check first-visit pages on desktop and phone sizes.
