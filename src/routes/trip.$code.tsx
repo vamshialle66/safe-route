@@ -27,6 +27,7 @@ export const Route = createFileRoute("/trip/$code")({
 
 interface Trip {
   shareCode: string;
+  travelerName: string | null;
   originLabel: string;
   destinationLabel: string;
   origin: { latitude: number; longitude: number };
