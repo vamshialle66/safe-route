@@ -129,11 +129,11 @@ function CheckInTimer() {
     return () => clearInterval(t);
   }, [deadline]);
 
-  function start() {
-    const ts = Date.now() + CHECKIN_MINUTES * 60_000;
+  function start(minutes: number) {
+    const ts = Date.now() + minutes * 60_000;
     window.localStorage.setItem(CHECKIN_KEY, String(ts));
     setDeadline(ts);
-    toast.success(`Check-in timer started — confirm you're safe within ${CHECKIN_MINUTES} minutes`);
+    toast.success(`Check-in timer started — confirm you're safe within ${minutes === 1 ? "1 minute" : `${minutes} minutes`}`);
   }
 
   function clear(message: string) {
@@ -196,14 +196,20 @@ function CheckInTimer() {
 
   if (deadline == null) {
     return (
-      <Button variant="outline" size="lg" onClick={start}>
-        <Timer className="size-4" /> Check-in 20 min
-      </Button>
+      <div className="col-span-2 flex flex-wrap items-center gap-2">
+        <Button variant="outline" size="lg" onClick={() => start(CHECKIN_MINUTES)}>
+          <Timer className="size-4" /> Check-in 20 min
+        </Button>
+        <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={() => start(1)}>
+          Test with 1 min
+        </Button>
+      </div>
     );
   }
+  const countdownLabel = secondsLeft >= 60 ? `${minutesLeft} min left` : `${secondsLeft} sec left`;
   return (
     <Button variant="outline" size="lg" className="border-moderate text-moderate" onClick={() => clear("Checked in — timer cancelled")}>
-      <Timer className="size-4" /> {minutesLeft} min left — tap to check in
+      <Timer className="size-4" /> {countdownLabel} — tap to check in
     </Button>
   );
 }
