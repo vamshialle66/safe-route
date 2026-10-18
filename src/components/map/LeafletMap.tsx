@@ -14,6 +14,10 @@ export interface LeafletMapProps {
   destination?: LatLng | undefined;
   center?: LatLng | undefined;
   showPlaces?: boolean | undefined;
+  /** Live position of a shared trip — pulsing marker, map follows it. */
+  livePosition?: LatLng | undefined;
+  /** Encoded polyline of the planned route (drawn as a single line). */
+  routePolyline?: string | null | undefined;
 }
 
 function cssVar(name: string) {
