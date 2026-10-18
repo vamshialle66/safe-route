@@ -94,6 +94,14 @@ export const communityTipsFn = createServerFn({ method: "POST" }).middleware([re
     return result.data ?? [];
   });
 
+// Areas with the most approved reports — counts only, never reporter details.
+export const areaReportsFn = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase.rpc("area_report_counts", { _limit: 8 });
+    if (error) throw new Error("Reported areas could not be loaded.");
+    return data ?? [];
+  });
+
 // Admin-only: manage who can review community reports. Role checks happen
 // inside the security-definer database functions, never in the browser.
 export const adminOverviewFn = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
