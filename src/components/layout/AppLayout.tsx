@@ -6,6 +6,7 @@ import {
   History,
   LayoutDashboard,
   LifeBuoy,
+  PhoneCall,
   Map,
   Menu,
   Radar,
@@ -41,6 +42,7 @@ const MAIN_NAV: NavItem[] = [
   { to: "/saved-routes", label: "Saved Routes", icon: Bookmark },
   { to: "/safety-map", label: "Around Me", icon: Map },
   { to: "/emergency", label: "Emergency", icon: LifeBuoy },
+  { to: "/fake-call", label: "Fake call", icon: PhoneCall },
   { to: "/notifications", label: "Notifications", icon: Bell },
 ];
 
@@ -155,7 +157,7 @@ export function AppLayout({
       )}
 
       <div className="lg:pl-64">
-        <header className="sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur">
+        <header className="sticky top-14 z-30 border-b border-border bg-background/90 backdrop-blur lg:top-0">
           <div className="flex h-16 items-center gap-3 px-4 sm:px-6">
             <Button
               variant="outline"

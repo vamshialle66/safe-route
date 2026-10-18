@@ -68,12 +68,24 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-call-surface: var(--call-surface);
+  --color-call-control: var(--call-control);
+  --color-call-text: var(--call-text);
+  --color-call-muted: var(--call-muted);
+  --color-call-answer: var(--call-answer);
+  --color-call-decline: var(--call-decline);
 
   --shadow-soft: 0 1px 2px oklch(0.2 0.06 260 / 0.06), 0 8px 24px -12px oklch(0.2 0.06 260 / 0.14);
   --shadow-lift: 0 2px 6px oklch(0.2 0.06 260 / 0.08), 0 18px 40px -18px oklch(0.2 0.06 260 / 0.22);
 }
 
 :root {
+  --call-surface: oklch(0.19 0.012 260);
+  --call-control: oklch(0.3 0.012 260);
+  --call-text: oklch(0.98 0 0);
+  --call-muted: oklch(0.72 0.008 260);
+  --call-answer: oklch(0.62 0.18 150);
+  --call-decline: oklch(0.59 0.22 25);
   --radius: 0.875rem;
 
   --background: oklch(0.985 0.003 250);
@@ -338,3 +350,11 @@
 .dark[data-accent="sunset"] { --primary: oklch(0.78 0.13 55); --primary-soft: oklch(0.3 0.06 40); }
 
 .dark .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9); }
+
+.call-screen { padding-bottom: env(safe-area-inset-bottom, 0px); }
+.call-avatar-ringing { animation: call-pulse 2.8s ease-in-out infinite; }
+.call-phone-ringing { animation: call-ring 2.8s ease-in-out infinite; }
+@media (max-height: 680px) { .call-screen > div:nth-child(2) { padding-block: 1rem; } .call-screen > div:last-child { padding-bottom: 1.5rem; } }
+@keyframes call-pulse { 0%, 70%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--call-text) 0%, transparent); } 35% { box-shadow: 0 0 0 18px color-mix(in oklab, var(--call-text) 5%, transparent); } }
+@keyframes call-ring { 0%, 30%, 100% { transform: rotate(0); } 8%, 20% { transform: rotate(-15deg); } 14%, 26% { transform: rotate(15deg); } }
+@media (prefers-reduced-motion: reduce) { .call-avatar-ringing, .call-phone-ringing { animation: none; } }
