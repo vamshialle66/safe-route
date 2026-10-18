@@ -66,8 +66,9 @@ function RouteDetail() {
   const coverage = route.distanceMeters ? Math.round((route.scoredLengthMeters / route.distanceMeters) * 100) : 0;
 
   async function shareRoute() {
+    if (!analysis || !route) return;
     const score = route.safetyIndex != null ? `${formatIndex(route.safetyIndex)}/100` : "not scored";
-    const text = `I'm taking this route: ${analysis!.origin.label.split(",")[0]} → ${analysis!.destination.label.split(",")[0]} (${formatDistance(route.distanceMeters)}, about ${formatDuration(route.durationSeconds)}). SafeRoute score: ${score}.`;
+    const text = `I'm taking this route: ${analysis.origin.label.split(",")[0]} → ${analysis.destination.label.split(",")[0]} (${formatDistance(route.distanceMeters)}, about ${formatDuration(route.duration)}). SafeRoute score: ${score}.`;
     try {
       if (navigator.share) await navigator.share({ title: "My route", text });
       else { await navigator.clipboard.writeText(text); toast.success("Route summary copied — paste it anywhere"); }
