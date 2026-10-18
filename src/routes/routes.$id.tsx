@@ -152,6 +152,7 @@ function RouteDetail() {
         </div>
 
         <aside className="space-y-4">
+          <WalkerRating key={`rating-${analysis.id}:${route.routeNumber}`} journeyId={analysis.id} routeNumber={route.routeNumber} />
           <CommunityAlerts key={`${analysis.id}:${route.routeNumber}`} journeyId={analysis.id} routeLabel={`Route ${route.routeNumber}`} />
           {route.assessment && <div className="border-b border-border pb-4"><h2 className="font-display font-semibold">Route comparison score</h2><p className="mt-2 text-2xl font-semibold text-primary">{route.assessment.score == null ? "Not enough information" : `${route.assessment.score} / 100`}</p><p className="mt-2 text-sm text-muted-foreground">Open-place density and nearby help. Not a probability of safety.</p>{route.assessment.reasons.map(reason => <p key={reason} className="mt-2 text-xs text-muted-foreground">{reason}</p>)}</div>}
           <RouteAssessmentPanel route={route} sample={analysis.source === "demo"} />
@@ -199,6 +200,49 @@ function RouteDetail() {
         </aside>
       </div>
     </AppLayout>
+  );
+}
+
+function WalkerRating({ journeyId, routeNumber }: { journeyId: string; routeNumber: number }) {
+  const { user } = useSession();
+  const confidence = useServerFn(routeConfidenceFn);
+  const rate = useServerFn(rateRouteFn);
+  const cache = useQueryClient();
+  const key = ["route-rating", journeyId, routeNumber];
+  const q = useQuery({ queryKey: key, queryFn: () => confidence({ data: { journeyId, routeNumber } }), enabled: !!user });
+  const [busy, setBusy] = useState(false);
+
+  if (!user) return null;
+  const d = q.data;
+
+  async function vote(feltSafe: boolean) {
+    setBusy(true);
+    try {
+      await rate({ data: { journeyId, routeNumber, feltSafe } });
+      await cache.invalidateQueries({ queryKey: key });
+      toast.success("Thanks — your rating helps other walkers");
+    } catch (e) { toast.error(e instanceof Error ? e.message : "Could not save"); }
+    finally { setBusy(false); }
+  }
+
+  return (
+    <div className="rounded-2xl border border-border bg-card p-5">
+      <h2 className="font-display font-semibold">Walked this route?</h2>
+      <p className="mt-1 text-sm text-muted-foreground">
+        {d && d.totalCount > 0
+          ? `${d.safeCount} of ${d.totalCount} walkers said they felt safe on this route.`
+          : "No walker ratings yet — be the first after your trip."}
+      </p>
+      <div className="mt-3 flex gap-2">
+        <Button size="sm" variant={d?.mine === true ? "default" : "outline"} disabled={busy} onClick={() => void vote(true)}>
+          <ThumbsUp className="size-4" /> Felt safe
+        </Button>
+        <Button size="sm" variant={d?.mine === false ? "default" : "outline"} disabled={busy} onClick={() => void vote(false)}>
+          <ThumbsDown className="size-4" /> Not really
+        </Button>
+      </div>
+      <p className="mt-2 text-xs text-muted-foreground">Walker ratings are opinions — they never change the route score.</p>
+    </div>
   );
 }
 
