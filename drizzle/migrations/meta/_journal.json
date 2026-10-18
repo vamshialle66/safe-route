@@ -64,6 +64,13 @@
       "when": 1792346014898,
       "tag": "0008_community_alerts_coordinates_and_route_matched_tips",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1792347264287,
+      "tag": "0009_shared_trips_traveler_name",
+      "breakpoints": true
     }
   ]
 }
