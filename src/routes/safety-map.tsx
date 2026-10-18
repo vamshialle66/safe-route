@@ -38,7 +38,7 @@ function SafetyMapPage() {
   const [data, setData] = useState<NearbyResponse | null>(null);
   const [source, setSource] = useState<"live" | "demo">("live");
   const [loading, setLoading] = useState(false);
-  const [filter, setFilter] = useState<"all" | "open">("all");
+  const [filter, setFilter] = useState<"all" | "open" | "help">("all");
 
   async function scan(useSample = false) {
     setLoading(true);
@@ -63,7 +63,9 @@ function SafetyMapPage() {
     }
   }
 
-  const places = (data?.places ?? []).filter((p) => filter === "all" || p.openNow === true);
+  const HELP_TYPES = new Set(["police", "hospital", "doctor", "pharmacy", "fire_station"]);
+  const places = (data?.places ?? []).filter((p) =>
+    filter === "all" ? true : filter === "open" ? p.openNow === true : (p.types ?? []).some((t) => HELP_TYPES.has(t)));
 
   return (
     <AppLayout title="Around Me" fullBleed>
@@ -91,9 +93,9 @@ function SafetyMapPage() {
                 <SourceBadge source={source} />
               </div>
               <div className="flex gap-1.5">
-                {(["all", "open"] as const).map((f) => (
+                {(["all", "open", "help"] as const).map((f) => (
                   <button key={f} type="button" onClick={() => setFilter(f)} className={cn("rounded-full border px-3 py-1.5 text-xs font-medium", filter === f ? "border-primary bg-primary text-primary-foreground" : "border-border")}>
-                    {f === "all" ? "All places" : "Open now"}
+                    {f === "all" ? "All places" : f === "open" ? "Open now" : "Help spots"}
                   </button>
                 ))}
               </div>
