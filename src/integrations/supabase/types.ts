@@ -416,6 +416,16 @@ export type Database = {
           reports: number
         }[]
       }
+      get_shared_trip_outcome: {
+        Args: { _share_code: string }
+        Returns: {
+          destination_label: string
+          ended_at: string
+          origin_label: string
+          status: string
+          traveler_name: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

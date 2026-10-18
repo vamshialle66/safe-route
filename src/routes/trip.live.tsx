@@ -38,6 +38,7 @@ function LiveTripPage() {
 
   const [shareCode, setShareCode] = useState<string | null>(null);
   const [starting, setStarting] = useState(false);
+  const [finished, setFinished] = useState<"arrived" | "ended" | null>(null);
   const [position, setPosition] = useState<{ latitude: number; longitude: number } | null>(null);
   const [gpsError, setGpsError] = useState<string | null>(null);
   const watchRef = useRef<number | null>(null);
@@ -71,6 +72,7 @@ function LiveTripPage() {
         },
       });
       setShareCode(code);
+      setFinished(null);
       if (!navigator.geolocation) {
         setGpsError("This device can't share its position. The link still works, but won't show live movement.");
         return;
@@ -100,6 +102,7 @@ function LiveTripPage() {
       toast.success(arrived ? "Marked as arrived — followers have been notified" : "Trip ended — the link no longer shows your position");
       setShareCode(null);
       setPosition(null);
+      setFinished(arrived ? "arrived" : "ended");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Couldn't end the trip");
     }
@@ -156,7 +159,19 @@ function LiveTripPage() {
         </div>
 
         <div className="space-y-4">
-          {!shareCode ? (
+          {!shareCode && finished ? (
+            <div className={`rounded-2xl border p-5 ${finished === "arrived" ? "border-safe/40 bg-safe/10" : "border-border bg-card"}`}>
+              <p className={`font-display font-semibold ${finished === "arrived" ? "text-safe" : ""}`}>
+                {finished === "arrived" ? "You've arrived — trip complete" : "Trip ended"}
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {finished === "arrived"
+                  ? "People following your link now see that you arrived safely."
+                  : "People following your link now see that you ended the trip. Your location is no longer shared."}
+              </p>
+              <Button className="mt-4" variant="outline" onClick={() => setFinished(null)}>Start another trip</Button>
+            </div>
+          ) : !shareCode ? (
             <div className="rounded-2xl border border-border bg-card p-5">
               <h2 className="font-display font-semibold">How it works</h2>
               <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-muted-foreground">
