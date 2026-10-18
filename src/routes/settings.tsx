@@ -6,10 +6,9 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ALL_CATEGORY_IDS, PLACE_CATEGORIES, getScoreCategories, setScoreCategories } from "@/lib/placeCategories";
-import { getCustomApiUrl, getDemoOnly, saferouteApi, setApiUrl, setDemoOnly } from "@/lib/saferouteApi";
+import { getCustomApiUrl, saferouteApi, setApiUrl, setDemoOnly } from "@/lib/saferouteApi";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -27,7 +26,6 @@ export const Route = createFileRoute("/settings")({
 
 function SettingsPage() {
   const [url, setUrl] = useState("");
-  const [demo, setDemo] = useState(false);
   const [status, setStatus] = useState<"idle" | "checking" | "ok" | "fail">("idle");
 
   const [cats, setCats] = useState<string[]>(ALL_CATEGORY_IDS);
@@ -40,7 +38,7 @@ function SettingsPage() {
   useEffect(() => {
     setCats(getScoreCategories());
     setUrl(getCustomApiUrl());
-    setDemo(getDemoOnly());
+    setDemoOnly(false);
   }, []);
 
   async function test() {
@@ -55,27 +53,21 @@ function SettingsPage() {
       <div className="mx-auto max-w-2xl space-y-6">
         <section className="rounded-2xl border border-border bg-card p-6">
           <div className="flex items-center gap-2"><Server className="size-4" /><h2 className="font-display font-semibold">Map data settings</h2></div>
-          <p className="mt-1 text-sm text-muted-foreground">Live results come from Google Maps by default. Only fill this in to use your own SafeRoute server instead (for example http://localhost:3000). Most people can leave this empty to use Google Maps.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Real searches use Google Maps after you sign in. Leave this empty unless you run a separate SafeRoute server. Searches never replace missing results with invented routes or places.</p>
           <Label htmlFor="url" className="mt-4 block">Server address</Label>
           <div className="mt-1.5 flex gap-2">
             <Input id="url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="Leave empty to use Google Maps" />
             <Button onClick={test} disabled={status === "checking"}>
-              {status === "checking" && <Loader2 className="size-4 animate-spin" />} Test & save
+              {status === "checking" && <Loader2 className="size-4 animate-spin" />} {url.trim() ? "Test & save" : "Save"}
             </Button>
           </div>
-          {status === "ok" && <p className="mt-3 flex items-center gap-2 text-sm text-safe"><CheckCircle2 className="size-4" /> {url.trim() ? "Connected." : "Using Google Maps for route searches."}</p>}
+          {status === "ok" && <p className="mt-3 flex items-center gap-2 text-sm text-safe"><CheckCircle2 className="size-4" /> {url.trim() ? "Server responded. This does not verify its map data." : "Saved. Google Maps is selected; its availability is checked when you search."}</p>}
           {status === "fail" && (
             <p className="mt-3 flex items-start gap-2 text-sm text-risk">
               <XCircle className="mt-0.5 size-4 shrink-0" /> Couldn't connect. Check the server is running and allows requests from this site.
             </p>
           )}
-          <div className="mt-6 flex items-center justify-between rounded-xl bg-muted/60 p-4">
-            <div>
-              <p className="text-sm font-medium">Always use sample data</p>
-              <p className="text-xs text-muted-foreground">Examples only — not real routes or current opening status.</p>
-            </div>
-            <Switch checked={demo} onCheckedChange={(v) => { setDemo(v); setDemoOnly(v); toast.success(v ? "Sample data on" : "Live data on"); }} />
-          </div>
+          <p className="mt-6 text-xs text-muted-foreground">Examples are available only through the separate example buttons. They cannot turn real searches into sample searches.</p>
         </section>
         <section className="rounded-2xl border border-border bg-card p-6">
           <h2 className="font-display font-semibold">Places that count toward the score</h2>

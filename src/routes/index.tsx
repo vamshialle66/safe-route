@@ -42,7 +42,7 @@ function LandingPage() {
               <Button asChild size="lg" className="bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90"><Link to="/route-planner">Plan a route <ArrowRight className="size-4" /></Link></Button>
               <Button asChild size="lg" variant="ghost" className="glass-dark text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"><Link to="/how-it-works">How it works</Link></Button>
             </div>
-            <p className="mt-3 text-xs text-sidebar-foreground/80">No account needed to plan. Sign in to keep your routes and contacts across devices.</p>
+            <p className="mt-3 text-xs text-sidebar-foreground/80">Sign in for real route searches and nearby places. Examples are available without an account.</p>
             <p className="mt-6 flex max-w-xl items-start gap-2 text-xs leading-relaxed text-sidebar-foreground/80"><Info className="mt-0.5 size-4 shrink-0" /> More open places do not guarantee safety. SafeRoute does not measure crime, street lighting or the number of people outside.</p>
           </div>
           <div className="relative">
@@ -63,7 +63,7 @@ function LandingPage() {
       </section>
       <section className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-2 lg:px-8">
         <div><h2 className="text-2xl font-semibold">What does the score mean?</h2><p className="mt-4 leading-relaxed text-muted-foreground">The score shows the average percentage of nearby shops and services that are open along your journey. Higher means more of the checked places are open, not that the route is safer.</p><p className="mt-3 text-sm text-muted-foreground">For example, if 8 out of 10 checked places are open near a point on your route, the score there is 80 out of 100. Places with unknown hours do not count.</p><Button asChild variant="outline" className="mt-6"><Link to="/safety">Understand the score <ArrowRight className="size-4" /></Link></Button></div>
-        <div className="space-y-5"><div><h3 className="text-lg font-semibold">Live results or clearly marked examples</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">Live data comes from Google Maps. If it cannot be loaded, results are labelled Sample data — examples, not current conditions.</p></div><div><h3 className="text-lg font-semibold">Choose what matters to you</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">Settings lets you choose which place types count, including shops, pharmacies, police stations, ATMs and public toilets.</p></div><Disclaimer /></div>
+        <div className="space-y-5"><div><h3 className="text-lg font-semibold">Real searches, separate examples</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">After sign-in, searches request Google Maps routes and places. If that search fails, we tell you instead of inventing results. Examples are a separate choice, never directions to follow.</p></div><div><h3 className="text-lg font-semibold">Choose what matters to you</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">Settings lets you choose which place types count, including shops, pharmacies, police stations, ATMs and public toilets.</p></div><Disclaimer /></div>
       </section>
     </PublicLayout>
   );
