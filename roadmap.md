@@ -1,5 +1,9 @@
 # Fake call improvements
 
+# Academic synopsis
+- [x] Complete 30 pages using the college template, student names, and guide.
+- [x] Verify all pages and deliver editable Word and PDF copies.
+
 - [x] Add ringing audio and a realistic incoming/answered call screen.
 - [x] Add immediate Fake call access across the app, independent of Emergency.
 - [x] Verify ringing, answer/end cleanup and phone/desktop layouts.
